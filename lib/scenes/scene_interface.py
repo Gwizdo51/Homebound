@@ -35,7 +35,7 @@ class Scene(metaclass=abc.ABCMeta):
         raise NotImplementedError
 
     @abc.abstractmethod
-    def on_mouse_motion(self, x, y):
+    def on_mouse_motion(self, x, y) -> None:
         "Reacts to the user moving the mouse"
         raise NotImplementedError
 

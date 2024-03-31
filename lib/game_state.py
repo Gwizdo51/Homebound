@@ -20,6 +20,7 @@ class GameState:
         self.sound_on = True
         self.saved_game_available = False
         self.exit_game = False
+        self.game_paused = True
 
         # game data
         # self.submenu_1_clicks = self.submenu_2_clicks = self.submenu_3_clicks = 0

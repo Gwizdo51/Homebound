@@ -79,12 +79,18 @@ class SceneMainMenu(Scene):
 
 
     def on_mouse_press(self, x, y, button, modifiers) -> str:
+        next_scene = "main menu"
         if button & mouse.LEFT:
             if (x, y) in self.sound_button:
                 self.game_state.sound_on = not self.game_state.sound_on
-            if (x, y) in self.exit_button:
+            elif (x, y) in self.exit_button:
                 self.game_state.exit_game = True
-        return "main menu"
+            elif (x, y) in self.new_game_button:
+                # print("clicked on new game")
+                next_scene = "colony"
+            elif self.game_state.saved_game_available and ((x, y) in self.resume_button):
+                print("clicked on resume")
+        return next_scene
 
 
     def on_mouse_motion(self, x, y):

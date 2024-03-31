@@ -7,6 +7,9 @@ if ROOT_DIR_PATH not in sys.path:
 
 from lib.scenes.scene_interface import Scene
 from lib.scenes.main_menu import SceneMainMenu
+from lib.scenes.colony import SceneColony
+from lib.scenes.solar_system_map import SceneSolarSystemMap
+from lib.scenes.pause_menu import ScenePauseMenu
 from lib.game_state import GameState
 
 
@@ -18,7 +21,10 @@ class GameManager:
         self.game_state = GameState(window_width=window_width, window_height=window_height)
         # store the scenes in a dict
         self.scenes: dict[str, Scene] = {
-            "main menu": SceneMainMenu(self.game_state)
+            "main menu": SceneMainMenu(self.game_state),
+            "colony": SceneColony(self.game_state),
+            "solar system map": SceneSolarSystemMap(self.game_state),
+            "pause menu": ScenePauseMenu(self.game_state)
         }
         # start the game with the main menu
         self.current_scene = "main menu"
