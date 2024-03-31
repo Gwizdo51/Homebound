@@ -101,7 +101,7 @@ research possible:
 types of resources:
 - raw material:
     - rocks (sand, diamonds, ...)
-    - metal ore (uranium, iron, steel, copper, titanium, ...)
+    - ore (uranium, iron, carbon, copper, titanium, platinum ...)
     - water
 - manufactured ressources:
     - oxygen

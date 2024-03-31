@@ -1,0 +1,9 @@
+name: pyglet_venv
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.12.*
+  - pip=24.0.*
+  - pip:
+    - pyglet==2.0.*
