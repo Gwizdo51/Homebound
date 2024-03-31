@@ -124,8 +124,8 @@ types of resources:
 #### Main menu
 
 - "Game title"
-- Nouvelle partie
 - Continuer
+- Nouvelle partie
 - Quitter
 - Mute button
 
