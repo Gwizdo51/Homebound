@@ -79,7 +79,7 @@ types of buildings (can be upgraded):
 - training school
 - spaceship hangar
 - spaceship factory
-- spaceport (landing + take off)
+- spaceport (only take off)
 - greenhouses (food)
 
 types of spaceships: (different according to the amount of modules they can carry)

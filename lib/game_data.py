@@ -1,4 +1,10 @@
 from pyglet import resource, font
+import sys
+from pathlib import Path
+
+ROOT_DIR_PATH = str(Path(__file__).resolve().parents[1])
+if ROOT_DIR_PATH not in sys.path:
+    sys.path.insert(0, ROOT_DIR_PATH)
 
 
 class GameData:
@@ -23,7 +29,17 @@ class GameData:
         self.game_paused = True
 
         # game data
-        # self.submenu_1_clicks = self.submenu_2_clicks = self.submenu_3_clicks = 0
+
+        # colonies dictionary
+        # self.colonies = {
+        #     "moon": ...,
+        #     "mars": ...
+        # }
+
+        # spaceships in transit
+        # self.flying_spaceships = ...
+
+        # research (currently researching + acquired)
 
 
     def load_resources(self):
@@ -64,4 +80,6 @@ class GameData:
 
 
     def update(self, dt):
+        # update every colony
+        # update every flying spaceships
         pass
