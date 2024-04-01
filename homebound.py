@@ -27,7 +27,7 @@ class GameWindow(pyglet.window.Window):
         # print("window on_mouse_motion call")
         # print(f"clickable area : {self.game_manager.game_state.mouse_clickable_area}")
         # update the cursor shape
-        if self.game_manager.game_state.mouse_clickable_area:
+        if self.game_manager.game_data.mouse_clickable_area:
             self.set_mouse_cursor(self.cursors["hand"])
         else:
             self.set_mouse_cursor(self.cursors["default"])
@@ -47,7 +47,7 @@ class GameWindow(pyglet.window.Window):
         #     print("MOUSE5 button")
         # else:
         #     print("unknown button")
-        if self.game_manager.game_state.exit_game:
+        if self.game_manager.game_data.exit_game:
             self.close()
 
     # def on_mouse_release(self, x, y, button, modifiers):
@@ -109,7 +109,7 @@ class GameWindow(pyglet.window.Window):
         # self.game_manager.scenes[self.game_manager.current_scene].batch.draw()
         self.game_manager.scenes[self.game_manager.current_scene].draw()
         # update the cursor shape
-        self.dispatch_event("on_mouse_motion", self.game_manager.game_state.mouse_x, self.game_manager.game_state.mouse_y, 0, 0)
+        self.dispatch_event("on_mouse_motion", self.game_manager.game_data.mouse_x, self.game_manager.game_data.mouse_y, 0, 0)
 
     # only useful for stuff that needs to know how much time passed between each frames
     def update(self, dt):

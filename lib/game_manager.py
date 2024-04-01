@@ -6,25 +6,25 @@ if ROOT_DIR_PATH not in sys.path:
     sys.path.insert(0, ROOT_DIR_PATH)
 
 from lib.scenes.scene_interface import Scene
-from lib.scenes.main_menu import SceneMainMenu
-from lib.scenes.colony import SceneColony
-from lib.scenes.solar_system_map import SceneSolarSystemMap
-from lib.scenes.pause_menu import ScenePauseMenu
-from lib.game_state import GameState
+from lib.scenes.scene_main_menu import SceneMainMenu
+from lib.scenes.scene_colony import SceneColony
+from lib.scenes.scene_solar_system_map import SceneSolarSystemMap
+from lib.scenes.scene_pause_menu import ScenePauseMenu
+from lib.game_data import GameData
 
 
 class GameManager:
     "handles the communication between the window, the game state and the scenes"
 
     def __init__(self, window_width: int, window_height: int):
-        # init the game state
-        self.game_state = GameState(window_width=window_width, window_height=window_height)
+        # init the game data
+        self.game_data = GameData(window_width=window_width, window_height=window_height)
         # store the scenes in a dict
         self.scenes: dict[str, Scene] = {
-            "main menu": SceneMainMenu(self.game_state),
-            "colony": SceneColony(self.game_state),
-            "solar system map": SceneSolarSystemMap(self.game_state),
-            "pause menu": ScenePauseMenu(self.game_state)
+            "main menu": SceneMainMenu(self.game_data),
+            "colony": SceneColony(self.game_data),
+            "solar system map": SceneSolarSystemMap(self.game_data),
+            "pause menu": ScenePauseMenu(self.game_data)
         }
         # start the game with the main menu
         self.current_scene = "main menu"
@@ -43,4 +43,4 @@ class GameManager:
 
     def update(self, dt):
         # update the game state
-        self.game_state.update(dt)
+        self.game_data.update(dt)

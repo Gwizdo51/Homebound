@@ -1,7 +1,7 @@
 from pyglet import resource, font
 
 
-class GameState:
+class GameData:
     "contains the current state of the game"
 
     def __init__(self, window_width, window_height):
@@ -37,12 +37,12 @@ class GameState:
         # https://fr.fonts2u.com/blaster-italic.police
         resource.add_font("blasteri.ttf")
         self.title_font_name = "Blaster"
-        self.title_font = font.load(self.title_font_name, italic=True)
+        font.load(self.title_font_name, italic=True)
         # orbitron
         # https://fr.fonts2u.com/orbitron-black.police
         resource.add_font("orbitron-black.ttf")
         self.subtitle_font_name = "Orbitron"
-        self.subtitle_font = font.load(self.subtitle_font_name)
+        font.load(self.subtitle_font_name)
         # default
         self.default_font_name = "Arial"
 

@@ -7,7 +7,7 @@ ROOT_DIR_PATH = str(Path(__file__).resolve().parents[1])
 if ROOT_DIR_PATH not in sys.path:
     sys.path.insert(0, ROOT_DIR_PATH)
 
-from lib.game_state import GameState
+from lib.game_data import GameData
 
 
 class Scene(metaclass=abc.ABCMeta):
@@ -18,10 +18,10 @@ class Scene(metaclass=abc.ABCMeta):
     #             hasattr(subclass, 'extract_text') and callable(subclass.extract_text) or
     #             NotImplemented)
 
-    def __init__(self, game_state: GameState):
+    def __init__(self, game_data: GameData):
         if type(self) is Scene:
             raise TypeError("The Scene class should not be instanciated directly")
-        self.game_state = game_state
+        self.game_data = game_data
         self.batch = Batch()
 
     @abc.abstractmethod
