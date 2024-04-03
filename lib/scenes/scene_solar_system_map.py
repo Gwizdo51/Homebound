@@ -20,9 +20,9 @@ class SceneSolarSystemMap(Scene):
 
 
     def draw(self):
+        self.game_data.game_paused = False
 
         # udpate the batch
-        self.game_data.game_paused = False
 
         # draw the batch
         self.batch.draw()

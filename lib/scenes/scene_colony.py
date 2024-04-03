@@ -17,12 +17,18 @@ class SceneColony(Scene):
 
     def __init__(self, game_data: GameData):
         super().__init__(game_data)
+        self.displayed_colony = None
 
 
     def draw(self):
+        self.game_data.game_paused = False
 
         # udpate the batch
-        self.game_data.game_paused = False
+        if self.displayed_colony != self.game_data.active_colony:
+            # update everything
+            ...
+            self.displayed_colony = self.game_data.active_colony
+        # update the rest
 
         # draw the batch
         self.batch.draw()

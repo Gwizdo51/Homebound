@@ -5,9 +5,10 @@ class Building:
         # assigned workers
         # power consumption
         # resource consumption
-        # resource prodution
+        # resource production
         # resources required for next upgrade
-        pass
+        # flags
+        self.enabled = True
 
     def upgrade(self):
         # upgrade the building (+1 lvl)
@@ -24,6 +25,7 @@ class HeadQuarters(Building):
     def __init__(self):
         # max amount of workers
         # resources necessary to upgrade
+        # manufacture queue
         pass
 
     def upgrade(self):

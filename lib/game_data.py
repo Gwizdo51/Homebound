@@ -6,6 +6,8 @@ ROOT_DIR_PATH = str(Path(__file__).resolve().parents[1])
 if ROOT_DIR_PATH not in sys.path:
     sys.path.insert(0, ROOT_DIR_PATH)
 
+from lib.game_entities.colony import Colony
+
 
 class GameData:
     "contains the current state of the game"
@@ -31,15 +33,27 @@ class GameData:
         # game data
 
         # colonies dictionary
-        # self.colonies = {
-        #     "moon": ...,
-        #     "mars": ...
-        # }
+        self.colonies = {
+            # starting colony
+            "moon": ...,
+            "mercury": ...,
+            "venus": ...,
+            "mars": ...,
+            # Jupiter
+            "ganymede": ...,
+            "callisto": ...,
+            # Saturn
+            "titan": ...,
+            "enceladus": ...
+        }
+        self.active_colony = "moon"
 
         # spaceships in transit
         # self.flying_spaceships = ...
 
         # research (currently researching + acquired)
+
+        # earth goal (resources sent + required)
 
 
     def load_resources(self):

@@ -20,9 +20,9 @@ class ScenePauseMenu(Scene):
 
 
     def draw(self):
+        self.game_data.game_paused = True
 
         # udpate the batch
-        self.game_data.game_paused = True
 
         # draw the batch
         self.batch.draw()

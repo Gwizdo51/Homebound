@@ -60,14 +60,15 @@ Game loop:
 - to force the player to go explore, the resources are unlimited but harder / slower to drill as time passes (up to a minimum)
 - each possible colony location has resources either scarce or abundant -> must colonise many worlds to be able to gather enough resources to win
 
-types of workers:
+workers:
 - can be converted into new jobs at schools meow
 - can be assigned to different buildings
 - can be relieved / fired on the moon (sent back to base)
 - each cost a given amount of resources and time to train
-- workers -> build / operate the buildings
-- flyers -> operate the spaceships
-- scientists -> research new technologies:3
+- types:
+    - workers -> build / operate the buildings
+    - flyers -> operate the spaceships
+    - scientists -> research new technologies, train new workers :3
 
 types of buildings (can be upgraded):
 - drilling station
@@ -77,10 +78,10 @@ types of buildings (can be upgraded):
 - liquid tank
 - furnace (metal ore processing)
 - training school
-- spaceship hangar
+- spaceship hangar (maybe not)
 - spaceship factory
 - spaceport (only take off)
-- greenhouses (food)
+- greenhouses (food / oxygen)
 
 types of spaceships: (different according to the amount of modules they can carry)
 - small -> 1 modules
@@ -89,7 +90,7 @@ types of spaceships: (different according to the amount of modules they can carr
 
 spaceship modules:
 - Liquid tanks
-- resources storage
+- cargo hold
 - base module (deployed on new colonies, base main building)
 - passengers module
 
