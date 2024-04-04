@@ -11,10 +11,11 @@ class Colony:
         }
         # resources
         self.resources = {
-            "water": 0,
-            "oxygen": 0,
             "power": 0,
             "food": 0,
+            "water": 0,
+            "oxygen": 0,
+            "hydrogen": 0,
             "iron ore": 0,
             "iron": 0,
             "copper ore": 0,
@@ -31,7 +32,7 @@ class Colony:
         }
         # workers
         self.workers = {
-            "worker": 0,
+            "engineer": 0,
             "scientist": 0,
             "pilot": 0
         }

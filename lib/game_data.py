@@ -9,6 +9,11 @@ if ROOT_DIR_PATH not in sys.path:
 from lib.game_entities.colony import Colony
 
 
+def center_image(img):
+    img.anchor_x = img.width // 2
+    img.anchor_y = img.height // 2
+
+
 class GameData:
     "contains the current state of the game"
 
@@ -91,6 +96,26 @@ class GameData:
         self.sound_on_img = resource.image("sound_on.png")
         # https://www.svgrepo.com/svg/486852/sound-mute
         self.sound_off_img = resource.image("sound_off.png")
+
+        # window with title bar
+        self.side_window = resource.image("Example_Window.png")
+        self.side_window.anchor_y = self.side_window.height // 2
+
+        # moon background
+        # https://www.space.com/734-moon-smart-1-returns-close-ups.html
+        self.moon_background_img = resource.image("moon_surface_pixelated.png")
+        # self.moon_background_img = resource.image("moon_surface.jpg")
+
+        # icons
+        # https://www.svgrepo.com/svg/334853/plane-alt
+        self.icon_plane_light_gray = resource.image("icon-plane-c0c0c0.png")
+        center_image(self.icon_plane_light_gray)
+        # https://www.svgrepo.com/svg/385283/wrench-tool-options
+        self.icon_wrench_light_gray = resource.image("icon-wrench-c0c0c0.png")
+        center_image(self.icon_wrench_light_gray)
+        # https://www.svgrepo.com/svg/152182/chemistry-lab-instrument
+        self.icon_vial_light_gray = resource.image("icon-vial-c0c0c0.png")
+        center_image(self.icon_vial_light_gray)
 
 
     def update(self, dt):

@@ -27,7 +27,8 @@ class GameManager:
             "pause menu": ScenePauseMenu(self.game_data)
         }
         # start the game with the main menu
-        self.current_scene = "main menu"
+        # self.current_scene = "main menu"
+        self.current_scene = "colony"
 
     def on_mouse_press(self, x, y, button, modifiers):
         # print("game manager mouse press")

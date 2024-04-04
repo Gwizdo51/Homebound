@@ -153,7 +153,7 @@ class SceneSubMenu1(Scene):
 
         # clickable shape
         self.clickable_shape = shapes.Circle(x=self.game_state.window_width/2, y=self.game_state.window_height/2, radius=75, batch=self.batch)
-        self.clicks_counter = Label(f"clicks : {self.game_state.submenu_1_clicks}", font_name=self.game_state.font, font_size=15,
+        self.clicks_counter = Label("", font_name=self.game_state.font, font_size=15,
                                     x=self.game_state.window_width/2, y=self.game_state.window_height/2 - 150, anchor_x="center", batch=self.batch)
 
     def draw(self):
@@ -192,7 +192,7 @@ class SceneSubMenu2(Scene):
 
         # clickable shape
         self.clickable_shape = shapes.Rectangle(x=self.game_state.window_width/2 - 50, y=self.game_state.window_height/2 - 50, width=100, height=100, batch=self.batch)
-        self.clicks_counter = Label(f"clicks : {self.game_state.submenu_2_clicks}", font_name=self.game_state.font, font_size=15,
+        self.clicks_counter = Label("", font_name=self.game_state.font, font_size=15,
                                     x=self.game_state.window_width/2, y=self.game_state.window_height/2 - 150, anchor_x="center", batch=self.batch)
 
     def draw(self):
@@ -231,7 +231,7 @@ class SceneSubMenu3(Scene):
 
         # clickable shape
         self.clickable_shape = shapes.Star(x=self.game_state.window_width/2, y=self.game_state.window_height/2, outer_radius=100, inner_radius=30, num_spikes=5, rotation=-90, batch=self.batch)
-        self.clicks_counter = Label(f"clicks : {self.game_state.submenu_3_clicks}", font_name=self.game_state.font, font_size=15,
+        self.clicks_counter = Label("", font_name=self.game_state.font, font_size=15,
                                     x=self.game_state.window_width/2, y=self.game_state.window_height/2 - 150, anchor_x="center", batch=self.batch)
 
     def draw(self):

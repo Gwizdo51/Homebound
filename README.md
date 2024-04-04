@@ -66,7 +66,7 @@ workers:
 - can be relieved / fired on the moon (sent back to base)
 - each cost a given amount of resources and time to train
 - types:
-    - workers -> build / operate the buildings
+    - engineers -> build / operate the buildings
     - flyers -> operate the spaceships
     - scientists -> research new technologies, train new workers :3
 
