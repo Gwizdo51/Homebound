@@ -104,15 +104,15 @@ class SceneColony(Scene):
         )
         self.left_window_content["pilots_icon"].scale = .15
         # workers counter label
-        self.left_window_content["engineers_counter_label"] = Label("XX/XX", font_name=self.game_data.default_font_name, font_size=12,
+        self.left_window_content["engineers_counter_label"] = Label("", font_name=self.game_data.default_font_name, font_size=12,
             x = self.left_window.width // 2 + 15 - 100,
             y = self.game_data.window_height - 200,
             anchor_x="center", batch=self.batch, group=self.foreground_group)
-        self.left_window_content["scientists_counter_label"] = Label("XX/XX", font_name=self.game_data.default_font_name, font_size=12,
+        self.left_window_content["scientists_counter_label"] = Label("", font_name=self.game_data.default_font_name, font_size=12,
             x = self.left_window.width // 2 + 15,
             y = self.game_data.window_height - 200,
             anchor_x="center", batch=self.batch, group=self.foreground_group)
-        self.left_window_content["pilots_counter_label"] = Label("XX/XX", font_name=self.game_data.default_font_name, font_size=12,
+        self.left_window_content["pilots_counter_label"] = Label("", font_name=self.game_data.default_font_name, font_size=12,
             x = self.left_window.width // 2 + 15 + 100,
             y = self.game_data.window_height - 200,
             anchor_x="center", batch=self.batch, group=self.foreground_group)
@@ -149,6 +149,10 @@ class SceneColony(Scene):
         #     - ore (available / maximum storage + produced every minute)
         #     - metal (available / maximum storage + produced every minute)
 
+        # left window update
+        self.left_window_content["engineers_counter_label"].text = f"{self.game_data.colonies[self.game_data.active_colony].workers["engineers"]["available"]}/{self.game_data.colonies[self.game_data.active_colony].workers["engineers"]["total"]}"
+        self.left_window_content["scientists_counter_label"].text = f"{self.game_data.colonies[self.game_data.active_colony].workers["scientists"]["available"]}/{self.game_data.colonies[self.game_data.active_colony].workers["scientists"]["total"]}"
+        self.left_window_content["pilots_counter_label"].text = f"{self.game_data.colonies[self.game_data.active_colony].workers["pilots"]}"
 
         # draw the batch
         self.batch.draw()

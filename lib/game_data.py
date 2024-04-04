@@ -38,18 +38,18 @@ class GameData:
         # game data
 
         # colonies dictionary
-        self.colonies = {
+        self.colonies: dict[str, Colony] = {
             # starting colony
-            "moon": ...,
-            "mercury": ...,
-            "venus": ...,
-            "mars": ...,
+            "moon": Colony(starting_colony=True),
+            "mercury": Colony(),
+            "venus": Colony(),
+            "mars": Colony(),
             # Jupiter
-            "ganymede": ...,
-            "callisto": ...,
+            "ganymede": Colony(),
+            "callisto": Colony(),
             # Saturn
-            "titan": ...,
-            "enceladus": ...
+            "titan": Colony(),
+            "enceladus": Colony()
         }
         self.active_colony = "moon"
 

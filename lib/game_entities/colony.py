@@ -32,9 +32,15 @@ class Colony:
         }
         # workers
         self.workers = {
-            "engineer": 0,
-            "scientist": 0,
-            "pilot": 0
+            "engineers": {
+                "available": 0,
+                "total": 0
+            },
+            "scientists": {
+                "available": 0,
+                "total": 0
+            },
+            "pilots": 0
         }
         # special init if colony is the starting colony
         self.starting_colony = starting_colony
