@@ -27,30 +27,41 @@ class SceneColony(Scene):
         self.building_grid_lines = []
         # 8 horizontal lines
         self.building_tile_size = 75
-        bulding_grid_lines_color = (30, 52, 82, 255)
-        for horizontal_line_index in range(8):
-            self.building_grid_lines.append(shapes.Line(
-                x = (self.game_data.window_width / 2) - (3.5 * self.building_tile_size),
-                y = (self.game_data.window_height / 2) - (3.5 * self.building_tile_size) + (horizontal_line_index * self.building_tile_size),
-                x2 = (self.game_data.window_width / 2) + (3.5 * self.building_tile_size),
-                y2 = (self.game_data.window_height / 2) - (3.5 * self.building_tile_size) + (horizontal_line_index * self.building_tile_size),
-                width=7,
-                color=bulding_grid_lines_color,
-                batch=self.batch,
-                group=self.middleground_group
-            ))
+        self.bulding_grid_lines_color = (30, 52, 82, 255)
+        # for horizontal_line_index in range(8):
+        #     self.building_grid_lines.append(shapes.Line(
+        #         x = (self.game_data.window_width / 2) - (3.5 * self.building_tile_size),
+        #         y = (self.game_data.window_height / 2) - (3.5 * self.building_tile_size) + (horizontal_line_index * self.building_tile_size),
+        #         x2 = (self.game_data.window_width / 2) + (3.5 * self.building_tile_size),
+        #         y2 = (self.game_data.window_height / 2) - (3.5 * self.building_tile_size) + (horizontal_line_index * self.building_tile_size),
+        #         width=1,
+        #         color=self.bulding_grid_lines_color,
+        #         batch=self.batch,
+        #         group=self.middleground_group
+        #     ))
         # 8 vertical lines
-        for vertical_line_index in range(8):
-            self.building_grid_lines.append(shapes.Line(
-                x = (self.game_data.window_width / 2) - (3.5 * self.building_tile_size) + (vertical_line_index * self.building_tile_size) + 4,
-                y = (self.game_data.window_height / 2) - (3.5 * self.building_tile_size),
-                x2 = (self.game_data.window_width / 2) - (3.5 * self.building_tile_size) + (vertical_line_index * self.building_tile_size) + 4,
-                y2 = (self.game_data.window_height / 2) + (3.5 * self.building_tile_size) + 7,
-                width=7,
-                color=bulding_grid_lines_color,
+        # for vertical_line_index in range(8):
+        #     self.building_grid_lines.append(shapes.Line(
+        #         x = (self.game_data.window_width / 2) - (3.5 * self.building_tile_size) + (vertical_line_index * self.building_tile_size),
+        #         y = (self.game_data.window_height / 2) - (3.5 * self.building_tile_size),
+        #         x2 = (self.game_data.window_width / 2) - (3.5 * self.building_tile_size) + (vertical_line_index * self.building_tile_size),
+        #         y2 = (self.game_data.window_height / 2) + (3.5 * self.building_tile_size),
+        #         width=1,
+        #         color=self.bulding_grid_lines_color,
+        #         batch=self.batch,
+        #         group=self.middleground_group
+        #     ))
+
+        self.test_line = shapes.Line(
+                x = 0,
+                y = 0,
+                x2 = 100,
+                y2 = 100,
+                color=(0, 0, 0, 255),
+                width=10,
                 batch=self.batch,
                 group=self.middleground_group
-            ))
+            )
 
         # left window
         self.left_window = Sprite(

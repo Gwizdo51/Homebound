@@ -116,6 +116,12 @@ class GameData:
         # https://www.svgrepo.com/svg/152182/chemistry-lab-instrument
         self.icon_vial_light_gray = resource.image("icon-vial-c0c0c0.png")
         center_image(self.icon_vial_light_gray)
+        # https://www.svgrepo.com/svg/390846/lightning-bolt-weather-storm-energy-electricity
+        self.icon_bolt_light_gray = resource.image("icon-lightning-bolt-c0c0c0.png")
+        center_image(self.icon_bolt_light_gray)
+        # https://www.svgrepo.com/svg/499449/water-drop
+        self.icon_water_light_gray = resource.image("icon-water-c0c0c0.png")
+        center_image(self.icon_water_light_gray)
 
 
     def update(self, dt):
