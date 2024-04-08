@@ -1,4 +1,4 @@
-from pyglet.text import Label
+from pyglet.text import Label, HTMLLabel
 import pyglet.shapes as shapes
 from pyglet.sprite import Sprite
 from pyglet.window import key, mouse
@@ -12,6 +12,12 @@ if ROOT_DIR_PATH not in sys.path:
 
 from lib.scenes.scene_interface import Scene
 from lib.game_data import GameData
+
+
+class BuildingWidget:
+
+    def __init__(self, game_data, building_grid_line, building_grid_column):
+        self.is_selected = False
 
 
 class SceneColony(Scene):
@@ -28,40 +34,40 @@ class SceneColony(Scene):
         # 8 horizontal lines
         self.building_tile_size = 75
         self.bulding_grid_lines_color = (30, 52, 82, 255)
-        # for horizontal_line_index in range(8):
-        #     self.building_grid_lines.append(shapes.Line(
-        #         x = (self.game_data.window_width / 2) - (3.5 * self.building_tile_size),
-        #         y = (self.game_data.window_height / 2) - (3.5 * self.building_tile_size) + (horizontal_line_index * self.building_tile_size),
-        #         x2 = (self.game_data.window_width / 2) + (3.5 * self.building_tile_size),
-        #         y2 = (self.game_data.window_height / 2) - (3.5 * self.building_tile_size) + (horizontal_line_index * self.building_tile_size),
-        #         width=1,
-        #         color=self.bulding_grid_lines_color,
-        #         batch=self.batch,
-        #         group=self.middleground_group
-        #     ))
-        # 8 vertical lines
-        # for vertical_line_index in range(8):
-        #     self.building_grid_lines.append(shapes.Line(
-        #         x = (self.game_data.window_width / 2) - (3.5 * self.building_tile_size) + (vertical_line_index * self.building_tile_size),
-        #         y = (self.game_data.window_height / 2) - (3.5 * self.building_tile_size),
-        #         x2 = (self.game_data.window_width / 2) - (3.5 * self.building_tile_size) + (vertical_line_index * self.building_tile_size),
-        #         y2 = (self.game_data.window_height / 2) + (3.5 * self.building_tile_size),
-        #         width=1,
-        #         color=self.bulding_grid_lines_color,
-        #         batch=self.batch,
-        #         group=self.middleground_group
-        #     ))
-
-        self.test_line = shapes.Line(
-                x = 0,
-                y = 0,
-                x2 = 100,
-                y2 = 100,
-                color=(0, 0, 0, 255),
-                width=10,
+        for horizontal_line_index in range(8):
+            self.building_grid_lines.append(shapes.Line(
+                x = (self.game_data.window_width / 2) - (3.5 * self.building_tile_size),
+                y = (self.game_data.window_height / 2) - (3.5 * self.building_tile_size) + (horizontal_line_index * self.building_tile_size),
+                x2 = (self.game_data.window_width / 2) + (3.5 * self.building_tile_size),
+                y2 = (self.game_data.window_height / 2) - (3.5 * self.building_tile_size) + (horizontal_line_index * self.building_tile_size),
+                width=5,
+                color=self.bulding_grid_lines_color,
                 batch=self.batch,
                 group=self.middleground_group
-            )
+            ))
+        # 8 vertical lines
+        for vertical_line_index in range(8):
+            self.building_grid_lines.append(shapes.Line(
+                x = (self.game_data.window_width / 2) - (3.5 * self.building_tile_size) + (vertical_line_index * self.building_tile_size),
+                y = (self.game_data.window_height / 2) - (3.5 * self.building_tile_size),
+                x2 = (self.game_data.window_width / 2) - (3.5 * self.building_tile_size) + (vertical_line_index * self.building_tile_size),
+                y2 = (self.game_data.window_height / 2) + (3.5 * self.building_tile_size),
+                width=5,
+                color=self.bulding_grid_lines_color,
+                batch=self.batch,
+                group=self.middleground_group
+            ))
+
+        # self.test_line = shapes.Line(
+        #         x = 0,
+        #         y = 0,
+        #         x2 = 100,
+        #         y2 = 100,
+        #         color=(0, 0, 0, 255),
+        #         width=10,
+        #         batch=self.batch,
+        #         group=self.middleground_group
+        #     )
 
         # left window
         self.left_window = Sprite(
@@ -128,8 +134,21 @@ class SceneColony(Scene):
             y = self.game_data.window_height - 200,
             anchor_x="center", batch=self.batch, group=self.foreground_group)
         # resources
+        self.left_window_content["resources_label"] = Label("RESOURCES", font_name=self.game_data.subtitle_font_name, font_size=20,
+            x=25, y=self.game_data.window_height - 240, width=315,
+            align="center", anchor_y="center", batch=self.batch, group=self.foreground_group)
+        # power icon
+        self.left_window_content["power_icon"] = Sprite(img=self.game_data.icon_bolt_light_gray,
+            x = self.left_window.width // 2 + 15 - 50,
+            y = self.game_data.window_height - 300,
+            batch=self.batch,
+            group=self.foreground_group)
+        self.left_window_content["power_icon"].scale = .1
         # spaceships
         # spaceship modules
+
+        # test garbage collection
+        # self.test_circle = None
 
 
     def draw(self):
@@ -152,18 +171,30 @@ class SceneColony(Scene):
         # - landed spaceships by type
         # - available spaceship modules by type
         # - resources:
-        #     - power available / total
-        #     - food (available + produced, positive or negative, every minute)
-        #     - water (available + produced, positive or negative, every minute)
+        #     - power consumed / total
+        #     - food (available / maximum storage + produced, positive or negative, every minute)
+        #     - water (available / maximum storage + produced, positive or negative, every minute)
         #     - liquid oxygen (available / maximum storage + produced, positive or negative, every minute)
         #     - liquid hydrogen (available / maximum storage + produced every minute)
         #     - ore (available / maximum storage + produced every minute)
         #     - metal (available / maximum storage + produced every minute)
 
         # left window update
-        self.left_window_content["engineers_counter_label"].text = f"{self.game_data.colonies[self.game_data.active_colony].workers["engineers"]["available"]}/{self.game_data.colonies[self.game_data.active_colony].workers["engineers"]["total"]}"
-        self.left_window_content["scientists_counter_label"].text = f"{self.game_data.colonies[self.game_data.active_colony].workers["scientists"]["available"]}/{self.game_data.colonies[self.game_data.active_colony].workers["scientists"]["total"]}"
-        self.left_window_content["pilots_counter_label"].text = f"{self.game_data.colonies[self.game_data.active_colony].workers["pilots"]}"
+        self.left_window_content["engineers_counter_label"].text = f"{self.game_data.colonies[self.game_data.active_colony].data["workers"]["engineers"]["available"]}/{self.game_data.colonies[self.game_data.active_colony].data["workers"]["engineers"]["total"]}"
+        self.left_window_content["scientists_counter_label"].text = f"{self.game_data.colonies[self.game_data.active_colony].data["workers"]["scientists"]["available"]}/{self.game_data.colonies[self.game_data.active_colony].data["workers"]["scientists"]["total"]}"
+        self.left_window_content["pilots_counter_label"].text = f"{self.game_data.colonies[self.game_data.active_colony].data["workers"]["pilots"]}"
+
+        # test garbage collection
+        # if self.test_circle is None:
+        #     self.test_circle = shapes.Circle(
+        #         x = self.game_data.window_width // 2,
+        #         y = self.game_data.window_height // 2,
+        #         radius = 300,
+        #         batch=self.batch,
+        #         group=self.foreground_group
+        #     )
+        # else:
+        #     self.test_circle = None
 
         # draw the batch
         self.batch.draw()

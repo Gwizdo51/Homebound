@@ -3,14 +3,10 @@ class Colony:
     def __init__(self, production_factors = {}, starting_colony: bool = False):
         # buildings (matrix of Building objects, 7x7)
         self.building_grid = [[None for i in range(7)] for j in range(7)]
-        # landed spaceships
-        self.spaceships = {
-            "class_0": 0,
-            "class_1": 0,
-            "class_2": 0
-        }
+        # colony data
+        self.data = {}
         # resources
-        self.resources = {
+        self.data["resources"] = {
             "power": 0,
             "food": 0,
             "water": 0,
@@ -18,20 +14,23 @@ class Colony:
             "hydrogen": 0,
             "iron ore": 0,
             "iron": 0,
+            "aluminium ore": 0,
+            "aluminium": 0,
             "copper ore": 0,
             "copper": 0,
-            "uranium ore": 0,
-            "uranium": 0
+            "titanium ore": 0,
+            "titanium": 0
         }
         # production factors
-        self.production_factors = {
+        self.data["production_factors"] = {
             "water": 1.,
             "iron ore": 1.,
             "copper ore": 1.,
-            "uranium ore": 1.
+            "aluminium ore": 1.,
+            "titanium ore": 1.
         }
         # workers
-        self.workers = {
+        self.data["workers"] = {
             "engineers": {
                 "available": 0,
                 "total": 0
@@ -42,13 +41,25 @@ class Colony:
             },
             "pilots": 0
         }
+        # landed spaceships
+        self.data["spaceships"] = {
+            "class_0": 0,
+            "class_1": 0,
+            "class_2": 0
+        }
+        # spaceship modules
+        self.data["spaceship_modules"] = {}
         # special init if colony is the starting colony
         self.starting_colony = starting_colony
-        if starting_colony:
+        if self.starting_colony:
             ...
 
 
-    def add_building(self):
+    def add_building(self, type, index_line, index_column):
+        pass
+
+
+    def cancel_building(self, type, index_line, index_column):
         pass
 
 
@@ -61,8 +72,8 @@ class Colony:
         pass
 
 
-    def launch_ship(self):
-        pass
+    # def launch_ship(self):
+    #     pass
 
 
     def manufacture(self):
@@ -76,4 +87,8 @@ class Colony:
     def update(self, dt):
         # update the resources based on the workers and the buildings
         # update manufacture time (factories, schools)
-        pass
+        for line_index in range(7):
+            for column_index in range(7):
+                building = self.building_grid[line_index][column_index]
+                if building is not None:
+                    building.update(dt)

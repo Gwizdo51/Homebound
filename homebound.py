@@ -113,6 +113,7 @@ class GameWindow(pyglet.window.Window):
 
     # only useful for stuff that needs to know how much time passed between each frames
     def update(self, dt):
+        # print(dt)
         self.game_manager.update(dt)
 
 

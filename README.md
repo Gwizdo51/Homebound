@@ -70,19 +70,6 @@ workers:
     - flyers -> operate the spaceships
     - scientists -> research new technologies, train new workers :3
 
-types of buildings (can be upgraded):
-- drilling station
-- warehouse
-- research station
-- water electrolysis station (oxygen + hydrogen)
-- liquid tank
-- furnace (metal ore processing)
-- training school
-- spaceship hangar (maybe not)
-- spaceship factory
-- spaceport (only take off)
-- greenhouses (food / oxygen)
-
 types of spaceships: (different according to the amount of modules they can carry)
 - small -> 1 modules
 - medium -> 2 modules
@@ -101,17 +88,51 @@ research possible:
 
 types of resources:
 - raw material:
-    - rocks (sand, diamonds, ...)
-    - ore (uranium, iron, carbon, copper, titanium, platinum ...)
+    - rocks (sand, diamonds, ...) (maybe not)
+    - ore (uranium, **iron**, carbon, **copper**, gold, **titanium**, platinum, **aluminium** ...)
     - water
 - manufactured ressources:
-    - oxygen
-    - electricity
+    - electric power
     - food
     - metal
-    - hydrogen
-    - liquid oxygen
-    - liquid hydrogen
+    - oxygen (liquid)
+    - hydrogen (liquid)
+
+types of buildings (can be upgraded):
+- headquarters
+- drilling station:
+    - can produce: water, ore
+    - keeps producing the same resource
+    - continuous production
+- warehouse:
+    - can store solid resources: food, ore, metals
+    - doesn't produce
+- research station
+- water electrolysis station (oxygen + hydrogen):
+    - can produce: oxygen + hydrogen
+    - keeps producing the same resources
+    - continuous production
+- liquid tank:
+    - can store liquid resources: water, oxygen, hydrogen
+    - doesn't produce
+- furnace (metal ore processing):
+    - can produce: 1 type of refined metal
+    - keeps producing the same resource
+    - cycle production
+- training school:
+    - can produce workers
+    - has a production queue
+    - cycle production
+- spaceship hangar (maybe not)
+- factory:
+    - can produce: spaceships, spaceship modules
+    - has a production queue
+    - cycle production
+- spaceport (only take off)
+- greenhouses (food / oxygen):
+    - can produce: food
+    - keeps producing the same resource
+    - continuous production
 
 ## Scenes
 
@@ -151,8 +172,9 @@ types of resources:
 - show building grid
 - show resources (materials + life support)
 - show members on base, by job
-- button to build -> show list of unlocked buildings
-- when hovering buildings, show:
+<!-- - button to build -> show list of unlocked buildings -->
+- when clicking on empty building slot, show list of available buildings
+- when hovering buildings, show: (maybe not)
     - building type
     - power required
     - number of assigned workers
@@ -164,7 +186,8 @@ types of resources:
     - button to enable/disable building
     - button to upgrade building, with required resources
     - button to destroy building
-- "send spaceship" button (only available if a spaceport has been built) -> pop up:
+<!-- - "send spaceship" button (only available if a spaceport has been built) -> pop up: -->
+- when clicking on spaceport, option to send spaceships:
     - destination field
     - which spaceship to use
     - which modules to attach

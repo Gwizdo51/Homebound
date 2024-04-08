@@ -54,11 +54,21 @@ class GameData:
         self.active_colony = "moon"
 
         # spaceships in transit
-        # self.flying_spaceships = ...
+        self.flying_spaceships = []
 
         # research (currently researching + acquired)
 
         # earth goal (resources sent + required)
+
+
+    def launch_ship(self):
+        pass
+
+
+    def update(self, dt):
+        # update every colony
+        # update every flying spaceships
+        pass
 
 
     def load_resources(self):
@@ -122,9 +132,3 @@ class GameData:
         # https://www.svgrepo.com/svg/499449/water-drop
         self.icon_water_light_gray = resource.image("icon-water-c0c0c0.png")
         center_image(self.icon_water_light_gray)
-
-
-    def update(self, dt):
-        # update every colony
-        # update every flying spaceships
-        pass
