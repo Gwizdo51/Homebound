@@ -121,7 +121,7 @@ if __name__ == "__main__":
     # init the window
     window = GameWindow(1280, 720, "Homebound", resizable=False)
     # update the game 60 times per seconds
-    update_rate = 60
+    update_rate = 30
     pyglet.clock.schedule_interval(window.update, 1/update_rate)
     # run the game
     pyglet.app.run()

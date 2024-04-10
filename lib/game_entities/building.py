@@ -1,87 +1,24 @@
+from typing import Any
+
+
 class Building:
     # parent class for all types of buildings
     # defines a basic building:
-    # - costs nothing to build
-    # - no power consumption / production
-    # - no resource/item production
-    # - no storage
-    # - no assigned workers
-    # - cannot upgrade
+    # - can assign workers
     # - can enable/disable
+    # - can build and upgrade
+
+    parameters_per_level: dict[int, Any]
 
     def __init__(self, colony_data):
         if type(self) is Building:
             raise TypeError("The Building class should not be instanciated directly")
         self.colony_data = colony_data
-        # construction costs
-        # self.construction_cost = {
-        #     "iron": 0,
-        #     "aluminium": 0,
-        #     "copper": 0,
-        #     "titanium": 0
-        # }
         # building level
         # 0: not built
         # 1, 2, 3: current building level
         self.level = 0
-        # power
-        # self.power = {
-        #     "consumed": 0,
-        #     "produced": 0
-        # }
-        # resources required for upgrades
-        # self.upgrade_costs = {
-        #     1: {
-        #         "iron": 0,
-        #         "aluminium": 0,
-        #         "copper": 0,
-        #         "titanium": 0
-        #     },
-        #     2: {
-        #         "iron": 0,
-        #         "aluminium": 0,
-        #         "copper": 0,
-        #         "titanium": 0
-        #     }
-        # }
-        # storage
-        # self.storage = {
-        #     "power": 0,
-        #     "food": 0,
-        #     "water": 0,
-        #     "oxygen": 0,
-        #     "hydrogen": 0,
-        #     "iron ore": 0,
-        #     "iron": 0,
-        #     "aluminium ore": 0,
-        #     "aluminium": 0,
-        #     "copper ore": 0,
-        #     "copper": 0,
-        #     "titanium ore": 0,
-        #     "titanium": 0
-        # }
-        # assigned/maximum workers:
-        # self.has_jobs = False
-        # self.production_jobs = {
-        #     "engineers": {
-        #         "assigned": 0,
-        #         "maximum": 0
-        #     },
-        #     "scientists": {
-        #         "assigned": 0,
-        #         "maximum": 0
-        #     }
-        # }
-        # self.construction_jobs = {
-        #     "engineers": {
-        #         "assigned": 0,
-        #         "maximum": 0
-        #     },
-        #     "scientists": {
-        #         "assigned": 0,
-        #         "maximum": 0
-        #     }
-        # }
+        self.level_max = 3
         self.assigned_workers = {
             "construction": {
                 "engineers": 0,
@@ -94,111 +31,114 @@ class Building:
         }
         # construction/upgrade timer
         self.is_constructing = True
-        self.construction_percent = 0
-        # production type:
-        # 0: doesn't produce
-        # 1: produces continuously
-        # 2: produces by cycle
-        # self.production_type = 0
+        self.construction_workload_completed = 0
         # flags
-        self.enabled = False
+        self.enabled = True
 
     @property
-    def parameters(self):
+    def parameters(self) -> dict[str, Any]:
         return self.parameters_per_level[self.level]
 
-    @property
-    def can_upgrade(self):
-        return False
+    # @property
+    # def can_construct(self):
+    #     return False
+
+    def can_construct(self):
+        # checks if building/upgrading is possible
+        # construction is possible if every required resource is available in the colony
+        if self.level == self.level_max or self.is_constructing:
+            construction_possible = False
+        else:
+            construction_possible = True
+            for resource_name in self.parameters["construction_costs"].keys():
+                if self.colony_data["resources"][resource_name] < self.parameters["constuction_costs"][resource_name]:
+                    construction_possible = False
+                    break
+        return construction_possible
 
     def upgrade(self):
         # upgrade the building (+1 lvl)
-        pass
+        # only called when upgrade is possible
+        self.is_constructing = True
+        self.construction_workload_completed = 0
+        # remove every required construction resources from the colony resources
+        for resource_name in self.parameters["construction_costs"].keys():
+            self.colony_data["resources"][resource_name] -= self.parameters["constuction_costs"][resource_name]
 
-    def assign_worker(self, add: bool, worker_type, work_type):
-        # assign or unassign a worker to a job in this building
-        pass
+    def can_assign_worker(self, add: bool, job_type: str, worker_type: str) -> bool:
+        assignment_possible = False
+        if add:
+            # if there are vacant jobs in the building ...
+            if self.assigned_workers[job_type][worker_type] < self.parameters["jobs"][job_type][worker_type]:
+                # if there are available workers ...
+                if self.colony_data["workers"][worker_type]["available"] > 0:
+                    assignment_possible = True
+        else:
+            # if there are assigned workers ...
+            if self.assigned_workers[job_type][worker_type] > 0:
+                assignment_possible = True
+        return assignment_possible
+
+    def assign_worker(self, add: bool, job_type: str, worker_type: str, all: bool = False):
+        # assign / unassign a job to a worker in this building
+        # assign / unassign all of them if "all" is True
+        # only called when assignment / unassignment is possible
+        # work_type = "construction" or "production"
+        # job_type = "engineers" or "scientists"
+        if add:
+            if all:
+                # fill as many vacant jobs as possible
+                available_jobs = self.parameters["jobs"][job_type][worker_type] - self.assigned_workers[job_type][worker_type]
+                workers_to_assign = min(available_jobs, self.colony_data["workers"][worker_type]["available"])
+                self.colony_data["workers"][worker_type]["available"] -= workers_to_assign
+                self.assigned_workers[job_type][worker_type] += workers_to_assign
+            else:
+                # assign a worker to the job
+                # remove an available worker from the colony
+                self.colony_data["workers"][worker_type]["available"] -= 1
+                # add the worker to the job
+                self.assigned_workers[job_type][worker_type] += 1
+        else:
+            if all:
+                # remove all workers
+                self.colony_data["workers"][worker_type]["available"] += self.assigned_workers[job_type][worker_type]
+                self.assigned_workers[job_type][worker_type] = 0
+            else:
+                # add an available worker to the colony
+                self.colony_data["workers"][worker_type]["available"] += 1
+                # remove a worker from the job
+                self.assigned_workers[job_type][worker_type] -= 1
+
+    def remove_all_workers(self):
+        self.assign_worker(add=False, job_type="engineers", work_type="construction", all=True)
+        self.assign_worker(add=False, job_type="engineers", work_type="production", all=True)
+        # no scientists can work in a construction job
+        # self.assign_worker(add=False, job_type="scientists", work_type="construction", all=True)
+        self.assign_worker(add=False, job_type="scientists", work_type="production", all=True)
+
+    def power_switch(self):
+        if self.enabled:
+            # fire every worker
+            self.assign_worker(add=False, job_type="engineers", work_type="production", all=True)
+            self.assign_worker(add=False, job_type="scientists", work_type="production", all=True)
+        self.enabled = not self.enabled
 
     def update(self, dt):
-        # update the time required for upgrading
-        # update the colony resources
-        pass
-
-    def enable(self):
-        pass
-
-    def disable(self):
-        pass
+        # update construction status
+        if self.is_constructing:
+            # every assigned worker at the "construction" job makes 1 construction workload per second
+            self.construction_workload_completed += self.assigned_workers["construction"]["engineers"] * dt
+            # check if construction is finished
+            if self.construction_workload_completed >= self.parameters["construction_workload"]:
+                # stop the construction
+                self.is_constructing = False
+                # upgrade the building
+                self.level += 1
+                # fire every worker at the construction jobs
+                self.assign_worker(add=False, job_type="engineers", work_type="construction", all=True)
 
 
 class BuildingHeadQuarters(Building):
-    # implements the Building class
-
-    # cannot be constructed or upgraded
-    # construction_cost = {
-    #     0: {
-    #         "iron": 0,
-    #         "aluminium": 0,
-    #         "copper": 0,
-    #         "titanium": 0
-    #     },
-    #     1: {
-    #         "iron": 0,
-    #         "aluminium": 0,
-    #         "copper": 0,
-    #         "titanium": 0
-    #     },
-    #     2: {
-    #         "iron": 0,
-    #         "aluminium": 0,
-    #         "copper": 0,
-    #         "titanium": 0
-    #     }
-    # }
-
-    # parameters = {
-    #     # "construction_costs": {
-    #     #     0: {
-    #     #         "iron": 0,
-    #     #         "aluminium": 0,
-    #     #         "copper": 0,
-    #     #         "titanium": 0
-    #     #     }
-    #     # },
-    #     "power": {
-    #         1: {
-    #             "consumed": 100,
-    #             "produced": 100
-    #         }
-    #     },
-    #     "has_production_jobs": False,
-    #     # "jobs": {
-    #     #     # 0: {
-    #     #     #     "construction": {
-    #     #     #         "engineers": 0,
-    #     #     #         "scientists": 0
-    #     #     #     }
-    #     #     1: {
-    #     #         ""
-    #     #     }
-    #     #     }
-    #     "storage": {
-    #         1: {
-    #             "food": 50,
-    #             "water": 50,
-    #             "oxygen": 50,
-    #             "hydrogen": 50,
-    #             "iron ore": 250,
-    #             "iron": 250,
-    #             "aluminium ore": 250,
-    #             "aluminium": 250,
-    #             "copper ore": 250,
-    #             "copper": 250,
-    #             "titanium ore": 250,
-    #             "titanium": 250
-    #         }
-    #     }
-    # }
 
     parameters_per_level = {
         1: {
@@ -237,8 +177,8 @@ class BuildingHeadQuarters(Building):
         super().__init__(colony_data)
         # headquarters are always at level 1
         self.level = 1
+        self.level_max = 1
         self.is_constructing = False
-        self.construction_percent = 100
         # assigned workers
         # self.assigned_jobs = {
         #     "engineers": 0,
@@ -250,18 +190,22 @@ class BuildingHeadQuarters(Building):
     # def parameters(self):
     #     return self.parameters_per_level[self.level]
 
-    def upgrade(self):
-        # can't upgrade headquarters
-        pass
+    # def can_construct(self):
+    #     # cannot build or upgrade the headquarters
+    #     return False
 
-    def update(self, dt):
-        # can't
-        pass
+    # def upgrade(self):
+    #     # can't upgrade headquarters
+    #     pass
+
+    # def update(self, dt):
+    #     # super().update(dt)
+    #     pass
 
 
 class BuildingSolarPanels(Building):
 
-    parameters = {
+    parameters_per_level = {
         0: {
             "power": {
                 "consumed": 0,
@@ -273,6 +217,7 @@ class BuildingSolarPanels(Building):
                 "copper": 0,
                 "titanium": 0
             },
+            "construction_workload": 0,
             "storage": None,
             "jobs": {
                 "construction": {
@@ -296,6 +241,7 @@ class BuildingSolarPanels(Building):
                 "copper": 0,
                 "titanium": 0
             },
+            "construction_workload": 0,
             "storage": None,
             "jobs": {
                 "construction": {
@@ -319,6 +265,7 @@ class BuildingSolarPanels(Building):
                 "copper": 0,
                 "titanium": 0
             },
+            "construction_workload": 0,
             "storage": None,
             "jobs": {
                 "construction": {
@@ -350,50 +297,837 @@ class BuildingSolarPanels(Building):
         }
     }
 
-    def __init__(self, colony_data):
-        super().__init__(colony_data)
+    # def __init__(self, colony_data):
+    #     super().__init__(colony_data)
 
-    def upgrade(self):
-        pass
+    # @property
+    # def can_construct(self):
+    #     # checks if building/upgrading is possible
+    #     # construction is possible if every required resource is available in the colony
+    #     if self.level < 3:
+    #         construction_possible = True
+    #         for resource in self.parameters[]
+    #     else:
+    #         construction_possible = False
+    #     return construction_possible
 
-    def update(self, dt):
-        pass
+    # def upgrade(self):
+    #     pass
+
+    # def update(self, dt):
+    #     super().update(dt)
 
 
 class BuildingDrillingStation(Building):
-    pass
+
+    parameters_per_level = {
+        0: {
+            "power": {
+                "consumed": 0,
+                "produced": 0
+            },
+            "construction_costs": {
+                "iron": 0,
+                "aluminium": 0,
+                "copper": 0,
+                "titanium": 0
+            },
+            "construction_workload": 0,
+            "storage": None,
+            "jobs": {
+                "construction": {
+                    "engineers": 0,
+                    "scientists": 0
+                },
+                "production": {
+                    "engineers": 0,
+                    "scientists": 0
+                }
+            }
+        },
+        1: {
+            "power": {
+                "consumed": 0,
+                "produced": 0
+            },
+            "construction_costs": {
+                "iron": 0,
+                "aluminium": 0,
+                "copper": 0,
+                "titanium": 0
+            },
+            "construction_workload": 0,
+            "storage": None,
+            "jobs": {
+                "construction": {
+                    "engineers": 0,
+                    "scientists": 0
+                },
+                "production": {
+                    "engineers": 0,
+                    "scientists": 0
+                }
+            }
+        },
+        2: {
+            "power": {
+                "consumed": 0,
+                "produced": 0
+            },
+            "construction_costs": {
+                "iron": 0,
+                "aluminium": 0,
+                "copper": 0,
+                "titanium": 0
+            },
+            "construction_workload": 0,
+            "storage": None,
+            "jobs": {
+                "construction": {
+                    "engineers": 0,
+                    "scientists": 0
+                },
+                "production": {
+                    "engineers": 0,
+                    "scientists": 0
+                }
+            }
+        },
+        3: {
+            "power": {
+                "consumed": 0,
+                "produced": 0
+            },
+            "storage": None,
+            "jobs": {
+                "construction": {
+                    "engineers": 0,
+                    "scientists": 0
+                },
+                "production": {
+                    "engineers": 0,
+                    "scientists": 0
+                }
+            }
+        }
+    }
 
 
 class BuildingWarehouse(Building):
-    pass
+
+    parameters_per_level = {
+        0: {
+            "power": {
+                "consumed": 0,
+                "produced": 0
+            },
+            "construction_costs": {
+                "iron": 0,
+                "aluminium": 0,
+                "copper": 0,
+                "titanium": 0
+            },
+            "construction_workload": 0,
+            "storage": None,
+            "jobs": {
+                "construction": {
+                    "engineers": 0,
+                    "scientists": 0
+                },
+                "production": {
+                    "engineers": 0,
+                    "scientists": 0
+                }
+            }
+        },
+        1: {
+            "power": {
+                "consumed": 0,
+                "produced": 0
+            },
+            "construction_costs": {
+                "iron": 0,
+                "aluminium": 0,
+                "copper": 0,
+                "titanium": 0
+            },
+            "construction_workload": 0,
+            "storage": None,
+            "jobs": {
+                "construction": {
+                    "engineers": 0,
+                    "scientists": 0
+                },
+                "production": {
+                    "engineers": 0,
+                    "scientists": 0
+                }
+            }
+        },
+        2: {
+            "power": {
+                "consumed": 0,
+                "produced": 0
+            },
+            "construction_costs": {
+                "iron": 0,
+                "aluminium": 0,
+                "copper": 0,
+                "titanium": 0
+            },
+            "construction_workload": 0,
+            "storage": None,
+            "jobs": {
+                "construction": {
+                    "engineers": 0,
+                    "scientists": 0
+                },
+                "production": {
+                    "engineers": 0,
+                    "scientists": 0
+                }
+            }
+        },
+        3: {
+            "power": {
+                "consumed": 0,
+                "produced": 0
+            },
+            "storage": None,
+            "jobs": {
+                "construction": {
+                    "engineers": 0,
+                    "scientists": 0
+                },
+                "production": {
+                    "engineers": 0,
+                    "scientists": 0
+                }
+            }
+        }
+    }
 
 
 class BuildingLiquidTank(Building):
-    pass
+
+    parameters_per_level = {
+        0: {
+            "power": {
+                "consumed": 0,
+                "produced": 0
+            },
+            "construction_costs": {
+                "iron": 0,
+                "aluminium": 0,
+                "copper": 0,
+                "titanium": 0
+            },
+            "construction_workload": 0,
+            "storage": None,
+            "jobs": {
+                "construction": {
+                    "engineers": 0,
+                    "scientists": 0
+                },
+                "production": {
+                    "engineers": 0,
+                    "scientists": 0
+                }
+            }
+        },
+        1: {
+            "power": {
+                "consumed": 0,
+                "produced": 0
+            },
+            "construction_costs": {
+                "iron": 0,
+                "aluminium": 0,
+                "copper": 0,
+                "titanium": 0
+            },
+            "construction_workload": 0,
+            "storage": None,
+            "jobs": {
+                "construction": {
+                    "engineers": 0,
+                    "scientists": 0
+                },
+                "production": {
+                    "engineers": 0,
+                    "scientists": 0
+                }
+            }
+        },
+        2: {
+            "power": {
+                "consumed": 0,
+                "produced": 0
+            },
+            "construction_costs": {
+                "iron": 0,
+                "aluminium": 0,
+                "copper": 0,
+                "titanium": 0
+            },
+            "construction_workload": 0,
+            "storage": None,
+            "jobs": {
+                "construction": {
+                    "engineers": 0,
+                    "scientists": 0
+                },
+                "production": {
+                    "engineers": 0,
+                    "scientists": 0
+                }
+            }
+        },
+        3: {
+            "power": {
+                "consumed": 0,
+                "produced": 0
+            },
+            "storage": None,
+            "jobs": {
+                "construction": {
+                    "engineers": 0,
+                    "scientists": 0
+                },
+                "production": {
+                    "engineers": 0,
+                    "scientists": 0
+                }
+            }
+        }
+    }
 
 
 class BuildingElectrolysisStation(Building):
-    pass
+
+    parameters_per_level = {
+        0: {
+            "power": {
+                "consumed": 0,
+                "produced": 0
+            },
+            "construction_costs": {
+                "iron": 0,
+                "aluminium": 0,
+                "copper": 0,
+                "titanium": 0
+            },
+            "construction_workload": 0,
+            "storage": None,
+            "jobs": {
+                "construction": {
+                    "engineers": 0,
+                    "scientists": 0
+                },
+                "production": {
+                    "engineers": 0,
+                    "scientists": 0
+                }
+            }
+        },
+        1: {
+            "power": {
+                "consumed": 0,
+                "produced": 0
+            },
+            "construction_costs": {
+                "iron": 0,
+                "aluminium": 0,
+                "copper": 0,
+                "titanium": 0
+            },
+            "construction_workload": 0,
+            "storage": None,
+            "jobs": {
+                "construction": {
+                    "engineers": 0,
+                    "scientists": 0
+                },
+                "production": {
+                    "engineers": 0,
+                    "scientists": 0
+                }
+            }
+        },
+        2: {
+            "power": {
+                "consumed": 0,
+                "produced": 0
+            },
+            "construction_costs": {
+                "iron": 0,
+                "aluminium": 0,
+                "copper": 0,
+                "titanium": 0
+            },
+            "construction_workload": 0,
+            "storage": None,
+            "jobs": {
+                "construction": {
+                    "engineers": 0,
+                    "scientists": 0
+                },
+                "production": {
+                    "engineers": 0,
+                    "scientists": 0
+                }
+            }
+        },
+        3: {
+            "power": {
+                "consumed": 0,
+                "produced": 0
+            },
+            "storage": None,
+            "jobs": {
+                "construction": {
+                    "engineers": 0,
+                    "scientists": 0
+                },
+                "production": {
+                    "engineers": 0,
+                    "scientists": 0
+                }
+            }
+        }
+    }
 
 
 class BuildingFurnace(Building):
-    pass
+
+    parameters_per_level = {
+        0: {
+            "power": {
+                "consumed": 0,
+                "produced": 0
+            },
+            "construction_costs": {
+                "iron": 0,
+                "aluminium": 0,
+                "copper": 0,
+                "titanium": 0
+            },
+            "construction_workload": 0,
+            "storage": None,
+            "jobs": {
+                "construction": {
+                    "engineers": 0,
+                    "scientists": 0
+                },
+                "production": {
+                    "engineers": 0,
+                    "scientists": 0
+                }
+            }
+        },
+        1: {
+            "power": {
+                "consumed": 0,
+                "produced": 0
+            },
+            "construction_costs": {
+                "iron": 0,
+                "aluminium": 0,
+                "copper": 0,
+                "titanium": 0
+            },
+            "construction_workload": 0,
+            "storage": None,
+            "jobs": {
+                "construction": {
+                    "engineers": 0,
+                    "scientists": 0
+                },
+                "production": {
+                    "engineers": 0,
+                    "scientists": 0
+                }
+            }
+        },
+        2: {
+            "power": {
+                "consumed": 0,
+                "produced": 0
+            },
+            "construction_costs": {
+                "iron": 0,
+                "aluminium": 0,
+                "copper": 0,
+                "titanium": 0
+            },
+            "construction_workload": 0,
+            "storage": None,
+            "jobs": {
+                "construction": {
+                    "engineers": 0,
+                    "scientists": 0
+                },
+                "production": {
+                    "engineers": 0,
+                    "scientists": 0
+                }
+            }
+        },
+        3: {
+            "power": {
+                "consumed": 0,
+                "produced": 0
+            },
+            "storage": None,
+            "jobs": {
+                "construction": {
+                    "engineers": 0,
+                    "scientists": 0
+                },
+                "production": {
+                    "engineers": 0,
+                    "scientists": 0
+                }
+            }
+        }
+    }
 
 
 class BuildingSchool(Building):
-    pass
+
+    parameters_per_level = {
+        0: {
+            "power": {
+                "consumed": 0,
+                "produced": 0
+            },
+            "construction_costs": {
+                "iron": 0,
+                "aluminium": 0,
+                "copper": 0,
+                "titanium": 0
+            },
+            "construction_workload": 0,
+            "storage": None,
+            "jobs": {
+                "construction": {
+                    "engineers": 0,
+                    "scientists": 0
+                },
+                "production": {
+                    "engineers": 0,
+                    "scientists": 0
+                }
+            }
+        },
+        1: {
+            "power": {
+                "consumed": 0,
+                "produced": 0
+            },
+            "construction_costs": {
+                "iron": 0,
+                "aluminium": 0,
+                "copper": 0,
+                "titanium": 0
+            },
+            "construction_workload": 0,
+            "storage": None,
+            "jobs": {
+                "construction": {
+                    "engineers": 0,
+                    "scientists": 0
+                },
+                "production": {
+                    "engineers": 0,
+                    "scientists": 0
+                }
+            }
+        },
+        2: {
+            "power": {
+                "consumed": 0,
+                "produced": 0
+            },
+            "construction_costs": {
+                "iron": 0,
+                "aluminium": 0,
+                "copper": 0,
+                "titanium": 0
+            },
+            "construction_workload": 0,
+            "storage": None,
+            "jobs": {
+                "construction": {
+                    "engineers": 0,
+                    "scientists": 0
+                },
+                "production": {
+                    "engineers": 0,
+                    "scientists": 0
+                }
+            }
+        },
+        3: {
+            "power": {
+                "consumed": 0,
+                "produced": 0
+            },
+            "storage": None,
+            "jobs": {
+                "construction": {
+                    "engineers": 0,
+                    "scientists": 0
+                },
+                "production": {
+                    "engineers": 0,
+                    "scientists": 0
+                }
+            }
+        }
+    }
 
 
 class BuildingGreenhouse(Building):
-    pass
+
+    parameters_per_level = {
+        0: {
+            "power": {
+                "consumed": 0,
+                "produced": 0
+            },
+            "construction_costs": {
+                "iron": 0,
+                "aluminium": 0,
+                "copper": 0,
+                "titanium": 0
+            },
+            "construction_workload": 0,
+            "storage": None,
+            "jobs": {
+                "construction": {
+                    "engineers": 0,
+                    "scientists": 0
+                },
+                "production": {
+                    "engineers": 0,
+                    "scientists": 0
+                }
+            }
+        },
+        1: {
+            "power": {
+                "consumed": 0,
+                "produced": 0
+            },
+            "construction_costs": {
+                "iron": 0,
+                "aluminium": 0,
+                "copper": 0,
+                "titanium": 0
+            },
+            "construction_workload": 0,
+            "storage": None,
+            "jobs": {
+                "construction": {
+                    "engineers": 0,
+                    "scientists": 0
+                },
+                "production": {
+                    "engineers": 0,
+                    "scientists": 0
+                }
+            }
+        },
+        2: {
+            "power": {
+                "consumed": 0,
+                "produced": 0
+            },
+            "construction_costs": {
+                "iron": 0,
+                "aluminium": 0,
+                "copper": 0,
+                "titanium": 0
+            },
+            "construction_workload": 0,
+            "storage": None,
+            "jobs": {
+                "construction": {
+                    "engineers": 0,
+                    "scientists": 0
+                },
+                "production": {
+                    "engineers": 0,
+                    "scientists": 0
+                }
+            }
+        },
+        3: {
+            "power": {
+                "consumed": 0,
+                "produced": 0
+            },
+            "storage": None,
+            "jobs": {
+                "construction": {
+                    "engineers": 0,
+                    "scientists": 0
+                },
+                "production": {
+                    "engineers": 0,
+                    "scientists": 0
+                }
+            }
+        }
+    }
 
 
 class BuildingFactory(Building):
-    pass
+    parameters_per_level = {
+        0: {
+            "power": {
+                "consumed": 0,
+                "produced": 0
+            },
+            "construction_costs": {
+                "iron": 0,
+                "aluminium": 0,
+                "copper": 0,
+                "titanium": 0
+            },
+            "construction_workload": 0,
+            "storage": None,
+            "jobs": {
+                "construction": {
+                    "engineers": 0,
+                    "scientists": 0
+                },
+                "production": {
+                    "engineers": 0,
+                    "scientists": 0
+                }
+            }
+        },
+        1: {
+            "power": {
+                "consumed": 0,
+                "produced": 0
+            },
+            "construction_costs": {
+                "iron": 0,
+                "aluminium": 0,
+                "copper": 0,
+                "titanium": 0
+            },
+            "construction_workload": 0,
+            "storage": None,
+            "jobs": {
+                "construction": {
+                    "engineers": 0,
+                    "scientists": 0
+                },
+                "production": {
+                    "engineers": 0,
+                    "scientists": 0
+                }
+            }
+        },
+        2: {
+            "power": {
+                "consumed": 0,
+                "produced": 0
+            },
+            "construction_costs": {
+                "iron": 0,
+                "aluminium": 0,
+                "copper": 0,
+                "titanium": 0
+            },
+            "construction_workload": 0,
+            "storage": None,
+            "jobs": {
+                "construction": {
+                    "engineers": 0,
+                    "scientists": 0
+                },
+                "production": {
+                    "engineers": 0,
+                    "scientists": 0
+                }
+            }
+        },
+        3: {
+            "power": {
+                "consumed": 0,
+                "produced": 0
+            },
+            "storage": None,
+            "jobs": {
+                "construction": {
+                    "engineers": 0,
+                    "scientists": 0
+                },
+                "production": {
+                    "engineers": 0,
+                    "scientists": 0
+                }
+            }
+        }
+    }
 
 
 class BuildingSpaceport(Building):
-    pass
+    parameters_per_level = {
+        0: {
+            "power": {
+                "consumed": 0,
+                "produced": 0
+            },
+            "construction_costs": {
+                "iron": 0,
+                "aluminium": 0,
+                "copper": 0,
+                "titanium": 0
+            },
+            "construction_workload": 0,
+            "storage": None,
+            "jobs": {
+                "construction": {
+                    "engineers": 0,
+                    "scientists": 0
+                },
+                "production": {
+                    "engineers": 0,
+                    "scientists": 0
+                }
+            }
+        },
+        1: {
+            "power": {
+                "consumed": 0,
+                "produced": 0
+            },
+            "construction_costs": {
+                "iron": 0,
+                "aluminium": 0,
+                "copper": 0,
+                "titanium": 0
+            },
+            "construction_workload": 0,
+            "storage": None,
+            "jobs": {
+                "construction": {
+                    "engineers": 0,
+                    "scientists": 0
+                },
+                "production": {
+                    "engineers": 0,
+                    "scientists": 0
+                }
+            }
+        }
+    }
 
 
 class BuildingResearchLabs(Building):

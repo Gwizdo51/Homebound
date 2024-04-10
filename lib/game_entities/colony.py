@@ -1,3 +1,13 @@
+import sys
+from pathlib import Path
+
+ROOT_DIR_PATH = str(Path(__file__).resolve().parents[2])
+if ROOT_DIR_PATH not in sys.path:
+    sys.path.insert(0, ROOT_DIR_PATH)
+
+from lib.game_entities.building import Building, BuildingHeadQuarters, BuildingSolarPanels
+
+
 class Colony:
 
     def __init__(self, production_factors = {}, starting_colony: bool = False):
@@ -53,6 +63,10 @@ class Colony:
         self.starting_colony = starting_colony
         if self.starting_colony:
             ...
+
+
+    def can_add_building(self, type) -> bool:
+        return True
 
 
     def add_building(self, type, index_line, index_column):
