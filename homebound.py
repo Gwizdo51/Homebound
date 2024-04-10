@@ -17,6 +17,8 @@ class GameWindow(pyglet.window.Window):
             "default": self.get_system_mouse_cursor(self.CURSOR_DEFAULT),
             "hand": self.get_system_mouse_cursor(self.CURSOR_HAND)
         }
+        # window icon
+        self.set_icon(self.game_manager.game_data.game_logo)
 
         # self.counter = 0
 

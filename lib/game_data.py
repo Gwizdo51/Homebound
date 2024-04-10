@@ -116,6 +116,10 @@ class GameData:
         self.moon_background_img = resource.image("moon_surface_pixelated.png")
         # self.moon_background_img = resource.image("moon_surface.jpg")
 
+        # game icon
+        # https://www.pngegg.com/en/png-nocyw
+        self.game_logo = resource.image("game-logo-32.png")
+
         # icons
         # https://www.svgrepo.com/svg/334853/plane-alt
         self.icon_plane_light_gray = resource.image("icon-plane-c0c0c0.png")

@@ -1,5 +1,6 @@
 import sys
 from pathlib import Path
+from typing import Optional
 
 ROOT_DIR_PATH = str(Path(__file__).resolve().parents[2])
 if ROOT_DIR_PATH not in sys.path:
@@ -12,7 +13,7 @@ class Colony:
 
     def __init__(self, production_factors = {}, starting_colony: bool = False):
         # buildings (matrix of Building objects, 7x7)
-        self.building_grid = [[None for i in range(7)] for j in range(7)]
+        self.building_grid: list[list[Optional[Building]]] = [[None for i in range(7)] for j in range(7)]
         # colony data
         self.data = {}
         # resources
@@ -31,14 +32,30 @@ class Colony:
             "titanium ore": 0,
             "titanium": 0
         }
-        # production factors
-        self.data["production_factors"] = {
-            "water": 1.,
-            "iron ore": 1.,
-            "copper ore": 1.,
-            "aluminium ore": 1.,
-            "titanium ore": 1.
+        # resource buffer for the buildings production
+        self.data["resources_buffer"] = {
+            "food": 0,
+            "water": 0,
+            "oxygen": 0,
+            "hydrogen": 0,
+            "iron ore": 0,
+            "iron": 0,
+            "aluminium ore": 0,
+            "aluminium": 0,
+            "copper ore": 0,
+            "copper": 0,
+            "titanium ore": 0,
+            "titanium": 0
         }
+        # production factors
+        # self.data["production_factors"] = {
+        #     "water": 1.,
+        #     "iron ore": 1.,
+        #     "copper ore": 1.,
+        #     "aluminium ore": 1.,
+        #     "titanium ore": 1.
+        # }
+        self.data["production_factors"] = production_factors
         # workers
         self.data["workers"] = {
             "engineers": {
@@ -66,14 +83,22 @@ class Colony:
 
     @property
     def power(self) -> dict[str, int]:
-        return {
+        power = {
             "consumed": 0,
             "produced": 0
         }
+        for line_index in range(7):
+            for column_index in range(7):
+                building = self.building_grid[line_index][column_index]
+                if building is not None:
+                    building_power = building.parameters["power"]
+                    power["consumed"] += building_power["consumed"]
+                    power["produced"] += building_power["produced"]
+        return power
 
     @property
     def max_storage(self) -> dict[str, int]:
-        return {
+        max_storage = {
             "food": 0,
             "water": 0,
             "oxygen": 0,
@@ -87,6 +112,15 @@ class Colony:
             "titanium ore": 0,
             "titanium": 0
         }
+        for line_index in range(7):
+            for column_index in range(7):
+                building = self.building_grid[line_index][column_index]
+                if building is not None:
+                    building_storage = building.parameters["storage"]
+                    if building_storage is not None:
+                        for resource in building_storage.keys():
+                            max_storage[resource] += building_storage[resource]
+        return max_storage
 
 
     def can_add_building(self, type) -> bool:
@@ -96,6 +130,7 @@ class Colony:
 
     def can_upgrade_building(self) -> bool:
         # checks whether the colony has enough resources and power to upgrade the building
+        # if the building next level power requirements are not met, return False
         return True
 
 
@@ -136,9 +171,17 @@ class Colony:
 
     def update(self, dt):
         # update the resources based on the workers and the buildings
-        # update manufacture time (factories, schools)
+        # update manufacture time (factories, schools, furnaces)
         for line_index in range(7):
             for column_index in range(7):
                 building = self.building_grid[line_index][column_index]
                 if building is not None:
                     building.update(dt)
+        # add the resources in the buffer to the colony, taking into account the maximum storage space of the colony
+        max_storage = self.max_storage
+        for resource in self.data["resources_buffer"].keys():
+            self.data["resources"][resource] = min(max_storage[resource], self.data["resources"][resource] + self.data["resources_buffer"][resource])
+            # clear the resource buffer
+            self.data["resources_buffer"][resource] = 0
+        # remove the resources (oxygen + food) consumed by the workers
+        ...
