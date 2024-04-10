@@ -4,13 +4,13 @@ from typing import Any
 class Building:
     # parent class for all types of buildings
     # defines a basic building:
-    # - can assign workers
+    # - can assign/remove workers
     # - can enable/disable
     # - can build and upgrade
 
     parameters_per_level: dict[int, Any]
 
-    def __init__(self, colony_data):
+    def __init__(self, colony_data: dict[str]):
         if type(self) is Building:
             raise TypeError("The Building class should not be instanciated directly")
         self.colony_data = colony_data
@@ -43,7 +43,7 @@ class Building:
     # def can_construct(self):
     #     return False
 
-    def can_construct(self):
+    def can_upgrade(self) -> bool:
         # checks if building/upgrading is possible
         # construction is possible if every required resource is available in the colony
         if self.level == self.level_max or self.is_constructing:
@@ -116,9 +116,14 @@ class Building:
         # self.assign_worker(add=False, job_type="scientists", work_type="construction", all=True)
         self.assign_worker(add=False, job_type="scientists", work_type="production", all=True)
 
-    def power_switch(self):
+    def can_use_power_switch(self) -> bool:
+        # whether the building can be turned on/off
+        return False
+
+    def use_power_switch(self):
+        # only used if building can be turned on/off
         if self.enabled:
-            # fire every worker
+            # fire every worker from the production jobs
             self.assign_worker(add=False, job_type="engineers", work_type="production", all=True)
             self.assign_worker(add=False, job_type="scientists", work_type="production", all=True)
         self.enabled = not self.enabled
@@ -173,7 +178,7 @@ class BuildingHeadQuarters(Building):
         }
     }
 
-    def __init__(self, colony_data):
+    def __init__(self, colony_data: dict[str]):
         super().__init__(colony_data)
         # headquarters are always at level 1
         self.level = 1
@@ -317,6 +322,10 @@ class BuildingSolarPanels(Building):
     # def update(self, dt):
     #     super().update(dt)
 
+    def can_use_power_switch(self):
+        # can only be turned off if the power it produces isn't used in the colony -> check at the colony level
+        return True
+
 
 class BuildingDrillingStation(Building):
 
@@ -343,7 +352,8 @@ class BuildingDrillingStation(Building):
                     "engineers": 0,
                     "scientists": 0
                 }
-            }
+            },
+            "production_speed": 1
         },
         1: {
             "power": {
@@ -411,6 +421,14 @@ class BuildingDrillingStation(Building):
             }
         }
     }
+
+    def __init__(self, colony_data: dict[str]):
+        super().__init__(colony_data)
+        # self.resource_produced = "water", "iron ore", "aluminium ore", "copper ore" or "titanium ore"
+        self.resource_produced = None
+
+    def produce(self, resource_type: str):
+        self.resource_produced = resource_type
 
 
 class BuildingWarehouse(Building):

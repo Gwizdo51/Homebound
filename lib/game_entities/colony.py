@@ -17,7 +17,7 @@ class Colony:
         self.data = {}
         # resources
         self.data["resources"] = {
-            "power": 0,
+            # "power": 0,
             "food": 0,
             "water": 0,
             "oxygen": 0,
@@ -64,8 +64,38 @@ class Colony:
         if self.starting_colony:
             ...
 
+    @property
+    def power(self) -> dict[str, int]:
+        return {
+            "consumed": 0,
+            "produced": 0
+        }
+
+    @property
+    def max_storage(self) -> dict[str, int]:
+        return {
+            "food": 0,
+            "water": 0,
+            "oxygen": 0,
+            "hydrogen": 0,
+            "iron ore": 0,
+            "iron": 0,
+            "aluminium ore": 0,
+            "aluminium": 0,
+            "copper ore": 0,
+            "copper": 0,
+            "titanium ore": 0,
+            "titanium": 0
+        }
+
 
     def can_add_building(self, type) -> bool:
+        # checks whether the colony has enough resources and power to add the building
+        return True
+
+
+    def can_upgrade_building(self) -> bool:
+        # checks whether the colony has enough resources and power to upgrade the building
         return True
 
 
@@ -77,7 +107,13 @@ class Colony:
         pass
 
 
-    def delete_building(self):
+    def can_disable_building(self) -> bool:
+        # checks whether the building can be turned off
+        # if the building is a solar panel, prevent turning it off if the power it produces is used
+        pass
+
+
+    def destroy_building(self):
         pass
 
 
