@@ -48,14 +48,14 @@ class Building:
         # checks if building/upgrading is possible
         # construction is possible if every required resource is available in the colony
         if self.level == self.level_max or self.is_constructing:
-            construction_possible = False
+            can_upgrade = False
         else:
-            construction_possible = True
+            can_upgrade = True
             for resource_name in self.parameters["construction_costs"].keys():
                 if self.colony_data["resources"][resource_name] < self.parameters["constuction_costs"][resource_name]:
-                    construction_possible = False
+                    can_upgrade = False
                     break
-        return construction_possible
+        return can_upgrade
 
     def upgrade(self):
         # upgrade the building (+1 lvl)
@@ -65,6 +65,17 @@ class Building:
         # remove every required construction resources from the colony resources
         for resource_name in self.parameters["construction_costs"].keys():
             self.colony_data["resources"][resource_name] -= self.parameters["constuction_costs"][resource_name]
+
+    def cancel_upgrade(self):
+        # cancel the current upgrade
+        # remove all workers at the construction jobs
+        self.assign_worker(add=False, job_type="engineers", work_type="construction", all=True)
+        # refund the resources to the colony
+        for resource_name in self.parameters["construction_costs"].keys():
+            self.colony_data["resources_buffer"][resource_name] += self.parameters["construction_costs"][resource_name]
+        # reset the construction status
+        self.is_constructing = False
+        self.construction_workload_completed = 0
 
     def can_assign_worker(self, add: bool, job_type: str, worker_type: str) -> bool:
         assignment_possible = False
@@ -146,6 +157,8 @@ class Building:
 
 class BuildingHeadQuarters(Building):
 
+    name = "headquarters"
+
     parameters_per_level = {
         1: {
             "power": {
@@ -211,6 +224,8 @@ class BuildingHeadQuarters(Building):
 
 
 class BuildingSolarPanels(Building):
+
+    name = "solar_panels"
 
     parameters_per_level = {
         0: {
@@ -332,6 +347,8 @@ class BuildingSolarPanels(Building):
 
 class BuildingDrillingStation(Building):
 
+    name = "drilling_station"
+
     parameters_per_level = {
         0: {
             "power": {
@@ -446,6 +463,8 @@ class BuildingDrillingStation(Building):
 
 
 class BuildingWarehouse(Building):
+
+    name = "warehouse"
 
     parameters_per_level = {
         0: {
@@ -576,6 +595,8 @@ class BuildingWarehouse(Building):
 
 class BuildingLiquidTank(Building):
 
+    name = "liquid_tank"
+
     parameters_per_level = {
         0: {
             "power": {
@@ -686,6 +707,8 @@ class BuildingLiquidTank(Building):
 
 
 class BuildingElectrolysisStation(Building):
+
+    name = "electrolysis_station"
 
     parameters_per_level = {
         0: {
@@ -799,6 +822,8 @@ class BuildingElectrolysisStation(Building):
 
 
 class BuildingFurnace(Building):
+
+    name = "furnace"
 
     parameters_per_level = {
         0: {
@@ -933,6 +958,8 @@ class BuildingFurnace(Building):
 
 class BuildingSpaceport(Building):
 
+    name = "spaceport"
+
     parameters_per_level = {
         0: {
             "power": {
@@ -983,6 +1010,8 @@ class BuildingSpaceport(Building):
 
 
 class BuildingGreenhouse(Building):
+
+    name = "greenhouse"
 
     parameters_per_level = {
         0: {
@@ -1097,6 +1126,8 @@ class BuildingGreenhouse(Building):
 
 class BuildingSchool(Building):
 
+    name = "school"
+
     items_workload = {
         "engineers": 0,
         "scientists": 0,
@@ -1152,11 +1183,7 @@ class BuildingSchool(Building):
                 }
             },
             "production_speed": 1,
-            "items_workload": {
-                "engineers": 0,
-                "scientists": 0,
-                "pilots": 0
-            }
+            "queue_max_size": 5
         },
         2: {
             "power": {
@@ -1182,11 +1209,7 @@ class BuildingSchool(Building):
                 }
             },
             "production_speed": 1,
-            "items_workload": {
-                "engineers": 0,
-                "scientists": 0,
-                "pilots": 0
-            }
+            "queue_max_size": 5
         },
         3: {
             "power": {
@@ -1205,11 +1228,7 @@ class BuildingSchool(Building):
                 }
             },
             "production_speed": 1,
-            "items_workload": {
-                "engineers": 0,
-                "scientists": 0,
-                "pilots": 0
-            }
+            "queue_max_size": 5
         }
     }
 
@@ -1218,12 +1237,17 @@ class BuildingSchool(Building):
         self.training_queue = []
         self.training_workload_completed = 0
 
+    def can_add_worker(self) -> bool:
+        return len(self.training_queue) < self.parameters["queue_max_size"]
+
     def add_worker_to_queue(self, worker_type):
         # worker_type = "engineers", "scientists" or "pilots"
-        self.training_queue.append(worker_type)
+        # add a worker to the queue only if it isn't full
+        if self.can_add_worker():
+            self.training_queue.append(worker_type)
 
     def can_cancel_training(self) -> bool:
-        return len(self.training_queue) >= 1
+        return len(self.training_queue) > 0
 
     def cancel_training(self):
         # can be called even if impossible (update != on_draw)
@@ -1233,7 +1257,7 @@ class BuildingSchool(Building):
             self.training_workload_completed = 0
 
     def can_clear_queue(self) -> bool:
-        return len(self.training_queue) >= 2
+        return len(self.training_queue) > 1
 
     def clear_queue(self):
         # can be called even if impossible (update != on_draw)
@@ -1250,13 +1274,12 @@ class BuildingSchool(Building):
 
     def update(self, dt):
         super().update(dt)
-        # add the trained workers to the colony
-        # only produce if enabled, at least level 1 and the training queue is not empty
+        # only train if enabled, at least level 1 and the training queue is not empty
         if self.enabled and (self.level > 0) and (len(self.training_queue) > 0):
             self.training_workload_completed += dt * self.parameters["production_speed"] \
                 * (self.assigned_workers["production"]["engineers"] + self.assigned_workers["production"]["scientists"])
             # if the cycle is completed ...
-            if self.training_workload_completed >= self.parameters["items_workload"][self.training_queue[0]]:
+            if self.training_workload_completed >= self.items_workload[self.training_queue[0]]:
                 # add the worker to the colony
                 self.colony_data["workers"][self.training_queue[0]]["available"] += 1
                 self.colony_data["workers"][self.training_queue[0]]["total"] += 1
@@ -1267,46 +1290,69 @@ class BuildingSchool(Building):
 
 class BuildingFactory(Building):
 
+    name = "factory"
+
     items_price = {
         "spaceship_small": {
             "resources": {
-                ...: ...
+                "iron": 0,
+                "aluminium": 0,
+                "copper": 0,
+                "titanium": 0
             },
             "workload": 0
         },
         "spaceship_medium": {
             "resources": {
-                ...: ...
+                "iron": 0,
+                "aluminium": 0,
+                "copper": 0,
+                "titanium": 0
             },
             "workload": 0
         },
         "spaceship_large": {
             "resources": {
-                ...: ...
+                "iron": 0,
+                "aluminium": 0,
+                "copper": 0,
+                "titanium": 0
             },
             "workload": 0
         },
         "module_cargo_hold": {
             "resources": {
-                ...: ...
+                "iron": 0,
+                "aluminium": 0,
+                "copper": 0,
+                "titanium": 0
             },
             "workload": 0
         },
         "module_liquid_tanks": {
             "resources": {
-                ...: ...
+                "iron": 0,
+                "aluminium": 0,
+                "copper": 0,
+                "titanium": 0
             },
             "workload": 0
         },
         "module_passengers": {
             "resources": {
-                ...: ...
+                "iron": 0,
+                "aluminium": 0,
+                "copper": 0,
+                "titanium": 0
             },
             "workload": 0
         },
         "module_headquarters": {
             "resources": {
-                ...: ...
+                "iron": 0,
+                "aluminium": 0,
+                "copper": 0,
+                "titanium": 0
             },
             "workload": 0
         },
@@ -1360,7 +1406,8 @@ class BuildingFactory(Building):
                     "scientists": 0
                 }
             },
-            "production_speed": 1
+            "production_speed": 1,
+            "queue_max_size": 5
         },
         2: {
             "power": {
@@ -1386,6 +1433,7 @@ class BuildingFactory(Building):
                 }
             },
             "production_speed": 1,
+            "queue_max_size": 5
         },
         3: {
             "power": {
@@ -1404,6 +1452,7 @@ class BuildingFactory(Building):
                 }
             },
             "production_speed": 1,
+            "queue_max_size": 5
         }
     }
 
@@ -1412,55 +1461,77 @@ class BuildingFactory(Building):
         self.items_queue = []
         self.item_workload_completed = 0
 
-    def can_make_item(self, item) -> bool:
-        ...
+    def can_make_item(self, item_name: str) -> bool:
+        # check if the queue is full
+        if len(self.items_queue) >= self.parameters["queue_max_size"]:
+            can_make_item = False
+        else:
+            # check if the colony has enough resources to make the item
+            can_make_item = True
+            item_resources_required = self.items_price[item_name]["resources"]
+            for resource_name in item_resources_required.keys():
+                if self.colony_data["resources"][resource_name] < item_resources_required[resource_name]:
+                    can_make_item = False
+                    break
+        return can_make_item
 
-    def add_item_to_queue(self, item):
-        # pay the item price
-        # add the item to the list
-        self.training_queue.append(item)
+    def add_item_to_queue(self, item_name: str):
+        if self.can_make_item(item_name):
+            # pay the item price
+            item_resources_required = self.items_price[item_name]["resources"]
+            for resource_name in item_resources_required.keys():
+                self.colony_data["resources"][resource_name] -= item_resources_required[resource_name]
+            # add the item to the list
+            self.items_queue.append(item_name)
 
-    def can_cancel_training(self) -> bool:
-        return len(self.training_queue) >= 1
+    def can_cancel_item(self) -> bool:
+        return len(self.items_queue) > 0
 
-    def cancel_training(self):
+    def cancel_item(self):
         # can be called even if impossible (update != on_draw)
-        if self.can_cancel_training():
-            # cancel the current training worker
-            self.training_queue.pop(0)
-            self.training_workload_completed = 0
+        if self.can_cancel_item():
+            # give the resources back to the colony
+            item_resources_required = self.items_price[self.items_queue[0]]["resources"]
+            for resource_name in item_resources_required.keys():
+                self.colony_data["resources_buffer"][resource_name] += item_resources_required[resource_name]
+            # cancel the current item
+            self.items_queue.pop(0)
+            self.item_workload_completed = 0
 
     def can_clear_queue(self) -> bool:
-        return len(self.training_queue) >= 2
+        return len(self.items_queue) > 1
 
     def clear_queue(self):
         # can be called even if impossible (update != on_draw)
-        if self.can_clear_queue():
-            # clear the queue (everything but the current training worker)
-            self.training_queue = [self.training_queue[0]]
+        # while the queue contains more than 1 item ...
+        while len(self.items_queue) > 1:
+            # delete the last item of the queue
+            item_deleted = self.items_queue.pop(-1)
+            # give the resources of the item deleted back to the colony
+            item_resources_required = self.items_price[item_deleted]["resources"]
+            for resource_name in item_resources_required.keys():
+                self.colony_data["resources_buffer"][resource_name] += item_resources_required[resource_name]
 
     def use_power_switch(self):
-        # clear the queue and reset the training cycle if the building is turned off
+        # clear the queue and reset the workload completed if the building is turned off
         if self.enabled:
-            self.training_queue = []
-            self.training_workload_completed = 0
+            self.items_queue = []
+            self.item_workload_completed = 0
         super().use_power_switch()
 
     def update(self, dt):
         super().update(dt)
-        # add the trained workers to the colony
-        # only produce if enabled, at least level 1 and the training queue is not empty
-        if self.enabled and (self.level > 0) and (len(self.training_queue) > 0):
-            self.training_workload_completed += dt * self.parameters["production_speed"] \
+        # only make item if enabled, at least level 1 and the training queue is not empty
+        if self.enabled and (self.level > 0) and (len(self.items_queue) > 0):
+            self.item_workload_completed += dt * self.parameters["production_speed"] \
                 * (self.assigned_workers["production"]["engineers"] + self.assigned_workers["production"]["scientists"])
             # if the cycle is completed ...
-            if self.training_workload_completed >= self.parameters["items_workload"][self.training_queue[0]]:
-                # add the worker to the colony
-                self.colony_data["workers"][self.training_queue[0]]["available"] += 1
-                self.colony_data["workers"][self.training_queue[0]]["total"] += 1
+            if self.item_workload_completed >= self.items_price[self.items_queue[0]]["workload"]:
+                # add the item to the colony
+                self.colony_data["items"][self.items_queue[0]] += 1
                 # remove the first element from the queue and reset the cycle
-                self.training_queue.pop(0)
-                self.training_workload_completed = 0
+                self.items_queue.pop(0)
+                self.item_workload_completed = 0
 
 
 class BuildingResearchLabs(Building):
