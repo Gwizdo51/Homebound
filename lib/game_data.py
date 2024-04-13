@@ -121,6 +121,8 @@ class GameData:
         self.game_logo = resource.image("game-logo-32.png")
 
         # icons
+
+        # workers
         # https://www.svgrepo.com/svg/334853/plane-alt
         self.icon_plane_light_gray = resource.image("icon-plane-c0c0c0.png")
         center_image(self.icon_plane_light_gray)
@@ -130,9 +132,42 @@ class GameData:
         # https://www.svgrepo.com/svg/152182/chemistry-lab-instrument
         self.icon_vial_light_gray = resource.image("icon-vial-c0c0c0.png")
         center_image(self.icon_vial_light_gray)
+
+        # resources
         # https://www.svgrepo.com/svg/390846/lightning-bolt-weather-storm-energy-electricity
         self.icon_bolt_light_gray = resource.image("icon-lightning-bolt-c0c0c0.png")
         center_image(self.icon_bolt_light_gray)
         # https://www.svgrepo.com/svg/499449/water-drop
         self.icon_water_light_gray = resource.image("icon-water-c0c0c0.png")
         center_image(self.icon_water_light_gray)
+        # https://www.svgrepo.com/svg/244783/apple
+        self.icon_apple_light_gray = resource.image("icon-apple-c0c0c0.png")
+        center_image(self.icon_apple_light_gray)
+        # https://thenounproject.com/icon/iron-ingot-52023/
+        self.icon_ingot_light_gray = resource.image("icon-ingot-c0c0c0.png")
+        center_image(self.icon_ingot_light_gray)
+        # https://www.svgrepo.com/svg/321290/rock
+        self.icon_ore_light_gray = resource.image("icon-ore-c0c0c0.png")
+        center_image(self.icon_ore_light_gray)
+
+        # items
+        # https://www.svgrepo.com/svg/161941/spaceship
+        self.icon_spaceship_light_gray = resource.image("icon-spaceship-c0c0c0.png")
+        center_image(self.icon_spaceship_light_gray)
+        # https://www.svgrepo.com/svg/445050/container-optimize-solid
+        self.icon_crate_light_gray = resource.image("icon-crate-c0c0c0.png")
+        center_image(self.icon_crate_light_gray)
+        # https://www.svgrepo.com/svg/244184/barrel
+        self.icon_barrel_light_gray = resource.image("icon-barrel-c0c0c0.png")
+        center_image(self.icon_barrel_light_gray)
+        # https://www.svgrepo.com/svg/122440/car-seat
+        self.icon_seat_light_gray = resource.image("icon-seat-c0c0c0.png")
+        center_image(self.icon_seat_light_gray)
+        # https://www.svgrepo.com/svg/436792/house-fill
+        self.icon_house_light_gray = resource.image("icon-house-c0c0c0.png")
+        center_image(self.icon_house_light_gray)
+
+        # misc
+        # https://www.svgrepo.com/svg/521755/minus
+        self.icon_minus_white = resource.image("icon-minus-FFFFFF.png")
+        center_image(self.icon_minus_white)

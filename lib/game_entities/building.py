@@ -170,13 +170,13 @@ class BuildingHeadQuarters(Building):
                 "water": 50,
                 "oxygen": 50,
                 "hydrogen": 50,
-                "iron ore": 250,
+                "iron_ore": 250,
                 "iron": 250,
-                "aluminium ore": 250,
+                "aluminium_ore": 250,
                 "aluminium": 250,
-                "copper ore": 250,
+                "copper_ore": 250,
                 "copper": 250,
-                "titanium ore": 250,
+                "titanium_ore": 250,
                 "titanium": 250
             },
             "jobs": {
@@ -446,7 +446,7 @@ class BuildingDrillingStation(Building):
 
     def __init__(self, colony_data):
         super().__init__(colony_data)
-        # self.resource_produced = "water", "iron ore", "aluminium ore", "copper ore" or "titanium ore"
+        # self.resource_produced = "water", "iron_ore", "aluminium_ore", "copper_ore" or "titanium_ore"
         self.resource_produced = None
 
     def produce(self, resource_type: str):
@@ -505,13 +505,13 @@ class BuildingWarehouse(Building):
             "construction_workload": 0,
             "storage": {
                 "food": 0,
-                "iron ore": 0,
+                "iron_ore": 0,
                 "iron": 0,
-                "aluminium ore": 0,
+                "aluminium_ore": 0,
                 "aluminium": 0,
-                "copper ore": 0,
+                "copper_ore": 0,
                 "copper": 0,
-                "titanium ore": 0,
+                "titanium_ore": 0,
                 "titanium": 0
             },
             "jobs": {
@@ -539,13 +539,13 @@ class BuildingWarehouse(Building):
             "construction_workload": 0,
             "storage": {
                 "food": 0,
-                "iron ore": 0,
+                "iron_ore": 0,
                 "iron": 0,
-                "aluminium ore": 0,
+                "aluminium_ore": 0,
                 "aluminium": 0,
-                "copper ore": 0,
+                "copper_ore": 0,
                 "copper": 0,
-                "titanium ore": 0,
+                "titanium_ore": 0,
                 "titanium": 0
             },
             "jobs": {
@@ -566,13 +566,13 @@ class BuildingWarehouse(Building):
             },
             "storage": {
                 "food": 0,
-                "iron ore": 0,
+                "iron_ore": 0,
                 "iron": 0,
-                "aluminium ore": 0,
+                "aluminium_ore": 0,
                 "aluminium": 0,
-                "copper ore": 0,
+                "copper_ore": 0,
                 "copper": 0,
-                "titanium ore": 0,
+                "titanium_ore": 0,
                 "titanium": 0
             },
             "jobs": {
@@ -923,37 +923,57 @@ class BuildingFurnace(Building):
         }
     }
 
+    # TODO: consume ore !
+    # ore to ingot ratio : 2/1
+
     def __init__(self, colony_data):
         super().__init__(colony_data)
         # self.resource_produced = "iron", "aluminium", "copper" or "titanium"
         self.resource_produced = None
         self.smelting_completed_percent = 0
+        # whether ore has been consumed for the current cycle
+        self.ore_consumed = False
 
     def switch_production(self, resource_type: str):
         if self.resource_produced != resource_type:
             # reset the smelting cycle
             self.smelting_completed_percent = 0
+            self.ore_consumed = False
         self.resource_produced = resource_type
 
     def use_power_switch(self):
         # reset the smelting cycle if the building is turned off
         if self.enabled:
             self.smelting_completed_percent = 0
+            self.ore_consumed = False
         super().use_power_switch()
+
+    def _try_start_cycle(self):
+        ore_to_consume = self.resource_produced + "_ore"
+        # if the colony has enough ore to start a cycle ...
+        if self.colony_data["resources"][ore_to_consume] >= 2 * self.parameters["production_per_cycle"]:
+            # consume the ore
+            self.colony_data["resources"][ore_to_consume] -= 2 * self.parameters["production_per_cycle"]
+            self.ore_consumed = True
 
     def update(self, dt):
         super().update(dt)
         # dump the produced resources into the colony resource buffer
         # only produce if enabled, at least level 1, and a resource to produce has been selected
         if self.enabled and (self.level > 0) and (self.resource_produced is not None):
-            self.smelting_completed_percent += dt * self.parameters["production_speed"] \
-                * (self.assigned_workers["production"]["engineers"] + self.assigned_workers["production"]["scientists"])
-            # if the cycle is completed ...
-            if self.smelting_completed_percent >= 100:
-                # add the resource to the buffer
-                self.colony_data["resources_buffer"][self.resource_produced] += self.parameters["production_per_cycle"]
-                # reset the cycle
-                self.smelting_completed_percent = 0
+            if not self.ore_consumed:
+                # try to consume ore for the next production cycle
+                self._try_start_cycle()
+            if self.ore_consumed:
+                self.smelting_completed_percent += dt * self.parameters["production_speed"] \
+                    * (self.assigned_workers["production"]["engineers"] + self.assigned_workers["production"]["scientists"])
+                # if the cycle is completed ...
+                if self.smelting_completed_percent >= 100:
+                    # add the resource to the buffer
+                    self.colony_data["resources_buffer"][self.resource_produced] += self.parameters["production_per_cycle"]
+                    # reset the cycle
+                    self.smelting_completed_percent = 0
+                    self.ore_consumed = False
 
 
 class BuildingSpaceport(Building):
@@ -1268,8 +1288,10 @@ class BuildingSchool(Building):
     def use_power_switch(self):
         # clear the queue and reset the training cycle if the building is turned off
         if self.enabled:
-            self.training_queue = []
-            self.training_workload_completed = 0
+            # self.training_queue = []
+            # self.training_workload_completed = 0
+            while self.can_cancel_training():
+                self.can_cancel_training()
         super().use_power_switch()
 
     def update(self, dt):
@@ -1515,8 +1537,10 @@ class BuildingFactory(Building):
     def use_power_switch(self):
         # clear the queue and reset the workload completed if the building is turned off
         if self.enabled:
-            self.items_queue = []
-            self.item_workload_completed = 0
+            # self.items_queue = []
+            # self.item_workload_completed = 0
+            while self.can_cancel_item():
+                self.cancel_item()
         super().use_power_switch()
 
     def update(self, dt):

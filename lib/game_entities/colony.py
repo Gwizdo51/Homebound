@@ -41,13 +41,13 @@ class Colony:
             "water": 0,
             "oxygen": 0,
             "hydrogen": 0,
-            "iron ore": 0,
+            "iron_ore": 0,
             "iron": 0,
-            "aluminium ore": 0,
+            "aluminium_ore": 0,
             "aluminium": 0,
-            "copper ore": 0,
+            "copper_ore": 0,
             "copper": 0,
-            "titanium ore": 0,
+            "titanium_ore": 0,
             "titanium": 0
         }
         # resource buffer for the buildings production
@@ -56,22 +56,22 @@ class Colony:
             "water": 0,
             "oxygen": 0,
             "hydrogen": 0,
-            "iron ore": 0,
+            "iron_ore": 0,
             "iron": 0,
-            "aluminium ore": 0,
+            "aluminium_ore": 0,
             "aluminium": 0,
-            "copper ore": 0,
+            "copper_ore": 0,
             "copper": 0,
-            "titanium ore": 0,
+            "titanium_ore": 0,
             "titanium": 0
         }
         # production factors
         self.data["production_factors"] = {
             "water": 1.,
-            "iron ore": 1.,
-            "copper ore": 1.,
-            "aluminium ore": 1.,
-            "titanium ore": 1.
+            "iron_ore": 1.,
+            "copper_ore": 1.,
+            "aluminium_ore": 1.,
+            "titanium_ore": 1.
         }
         self.data["production_factors"].update(production_factors)
         # workers
@@ -139,13 +139,13 @@ class Colony:
             "water": 0,
             "oxygen": 0,
             "hydrogen": 0,
-            "iron ore": 0,
+            "iron_ore": 0,
             "iron": 0,
-            "aluminium ore": 0,
+            "aluminium_ore": 0,
             "aluminium": 0,
-            "copper ore": 0,
+            "copper_ore": 0,
             "copper": 0,
-            "titanium ore": 0,
+            "titanium_ore": 0,
             "titanium": 0
         }
         for line_index in range(7):
@@ -163,7 +163,7 @@ class Colony:
         return self.building_grid[self.selected_building_tile_coords[1]][self.selected_building_tile_coords[0]]
 
     @selected_building.setter
-    def selected_building(self, building: Building):
+    def selected_building(self, building: Optional[Building]):
         self.building_grid[self.selected_building_tile_coords[1]][self.selected_building_tile_coords[0]] = building
 
 
@@ -184,6 +184,16 @@ class Colony:
         return can_add_building
 
 
+    def add_building(self, building_name: str):
+        if self.can_add_building(building_name):
+            # add the building to the colony
+            self.selected_building = self.building_types_dict[building_name](self.data)
+            # pay the resources for the building
+            construction_costs = self.selected_building.parameters["construction_costs"]
+            for resource_name in construction_costs.keys():
+                self.data["resources"][resource_name] -= construction_costs[resource_name]
+
+
     def can_upgrade_building(self) -> bool:
         # checks whether the colony has enough resources and power to upgrade the building
         # if the building next level power requirements are not met, return False
@@ -202,16 +212,6 @@ class Colony:
         return can_upgrade_building
 
 
-    def add_building(self, building_name: str):
-        if self.can_add_building(building_name):
-            # add the building to the colony
-            self.selected_building = self.building_types_dict[building_name](self.data)
-            # pay the resources for the building
-            construction_costs = self.selected_building.parameters["construction_costs"]
-            for resource_name in construction_costs.keys():
-                self.data["resources"][resource_name] -= construction_costs[resource_name]
-
-
     def cancel_building_construction(self):
         # cancel the selected building construction
         self.selected_building.cancel_upgrade()
@@ -220,9 +220,28 @@ class Colony:
             self.selected_building = None
 
 
+    def can_destroy_building(self) -> bool:
+        can_destroy_building = True
+        # the selected building cannot be destroyed if the power it produces is being used
+        # -> if destroying the building would make the available power negative, return False
+        power = self.power
+        power_available = power["produced"] - power["consumed"]
+        building = self.selected_building
+        power_produced = building.parameters["power"]["produced"] - building.parameters["power"]["consumed"]
+        if power_available - power_produced < 0:
+            can_destroy_building = False
+        # it also cannot be destroyed if it is the headquarters
+        return can_destroy_building and (building.name != "headquarters")
+
+
     def destroy_building(self):
-        # remove all the workers from the building
-        self.selected_building.remove_all_workers()
+        building = self.selected_building
+        # disable the building if possible
+        if building.enabled and building.can_disable:
+            building.use_power_switch()
+        # cancel the construction if it is construction
+        if building.is_constructing:
+            building.cancel_upgrade()
         # remove the building from the building grid
         self.selected_building = None
 
