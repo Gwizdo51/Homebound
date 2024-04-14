@@ -15,9 +15,164 @@ from lib.game_data import GameData
 
 
 class BuildingWidget:
+    """
+    Represents each building tile on the building grid.
+    Can be clicked on to select a building tile.
+    If the tile is selected, displays a selector over the tile.
+    """
 
-    def __init__(self, game_data, building_grid_line, building_grid_column):
-        self.is_selected = False
+    def __init__(self, game_data: GameData, line_index: int, column_index: int, batch, groups):
+        self.game_data = game_data
+        self.line_index = line_index
+        self.colum_index = column_index
+        self.batch = batch
+        self.groups = groups
+        self.icon = None
+        # the area covered by the widget
+        self.tile_area = shapes.Rectangle(
+            x = self.game_data.window_width // 2 - 260 + self.colum_index * 75,
+            y = self.game_data.window_height // 2 + 190 - self.line_index * 75,
+            width = 70,
+            height = 70,
+            color = (0, 0, 0, 0),
+            batch=self.batch,
+            group=self.groups[2]
+        )
+        # selector sprite
+        self.selector_sprite = Sprite(
+            img = self.game_data.icon_selector,
+            x = self.game_data.window_width // 2 - 3 * 75 + self.colum_index * 75,
+            y = self.game_data.window_height // 2 + 3 * 75 - self.line_index * 75,
+            batch=self.batch,
+            group=self.groups[3]
+        )
+        self.selector_sprite.scale = 2.25
+        self.selector_sprite.opacity = 0
+        # building display parameters
+        # each building is represented by a color and an icon
+        self.building_display_parameters = {
+            "headquarters": {
+                # white
+                "color": (255, 255, 255, 255),
+                "icon_img": self.game_data.icon_house_black,
+                "icon_scale": .15
+            },
+            "solar_panels": {
+                # #C7C400
+                # yellow
+                "color": (199, 199, 0, 255),
+                "icon_img": self.game_data.icon_solar_panels_black,
+                "icon_scale": .15
+            },
+            "drilling_station": {
+                # blue
+                "color": (26, 63, 183, 255),
+                "icon_img": self.game_data.icon_drill_white,
+                "icon_scale": .15
+            },
+            "warehouse": {
+                # dark gray
+                "color": (85, 85, 85, 255),
+                "icon_img": self.game_data.icon_crate_white,
+                "icon_scale": .23
+            },
+            "liquid_tank": {
+                # dark gray
+                "color": (85, 85, 85, 255),
+                "icon_img": self.game_data.icon_barrel_white,
+                "icon_scale": .15
+            },
+            "electrolysis_station": {
+                # orange
+                # #C27818
+                "color": (194, 120, 24, 255),
+                "icon_img": self.game_data.icon_bubbles_black,
+                "icon_scale": .15
+            },
+            "furnace": {
+                # red
+                # #912A24
+                "color": (145, 41, 36, 255),
+                "icon_img": self.game_data.icon_flame_white,
+                "icon_scale": .15
+            },
+            "spaceport": {
+                # black
+                "color": (0, 0, 0, 255),
+                "icon_img": self.game_data.icon_spaceship_white,
+                "icon_scale": .18
+            },
+            "greenhouse": {
+                # green
+                # #367304
+                "color": (54, 115, 4, 255),
+                "icon_img": self.game_data.icon_tree_white,
+                "icon_scale": .15
+            },
+            "school": {
+                # bright cyan
+                # #69ADA8
+                "color": (105, 173, 168, 255),
+                "icon_img": self.game_data.icon_book_black,
+                "icon_scale": .15
+            },
+            "factory": {
+                # dark cyan
+                # #2A6179
+                "color": (42, 97, 121, 255),
+                "icon_img": self.game_data.icon_factory_white,
+                "icon_scale": .15
+            }
+        }
+
+    def on_draw(self):
+        # print(f"building widget ({self.colum_index}, {self.line_index}) on_draw() called")
+        # update the widget -> display the associated building, and whether or not it is selected
+        current_colony = self.game_data.colonies[self.game_data.active_colony]
+        # draw the building if it exists
+        associated_building = current_colony.building_grid[self.line_index][self.colum_index]
+        if associated_building is None:
+            # hide the tile
+            self.tile_area.color = (0, 0, 0, 0)
+            self.icon = None
+        else:
+            # color the tile area with the color of the building
+            self.tile_area.color = self.building_display_parameters[associated_building.name]["color"]
+            self.icon = Sprite(
+                img = self.building_display_parameters[associated_building.name]["icon_img"],
+                x = self.game_data.window_width // 2 - 3 * 75 + self.colum_index * 75,
+                y = self.game_data.window_height // 2 + 3 * 75 - self.line_index * 75,
+                batch = self.batch,
+                group = self.groups[3]
+            )
+            self.icon.scale = self.building_display_parameters[associated_building.name]["icon_scale"]
+        # if (selected_building_tile_coords is not None):
+        #     if current_colony.selected_building is not None:
+        #         self.tile_area.color = self.building_display_parameters[current_colony.selected_building.name]["color"]
+        #     # show the selector if the tile is selected
+        #     if (selected_building_tile_coords[1] == self.line_index) and (selected_building_tile_coords[0] == self.colum_index):
+        #         self.selector_sprite.opacity = 255
+        selected_building_tile_coords = current_colony.selected_building_tile_coords
+        if (selected_building_tile_coords is not None) and (selected_building_tile_coords[1] == self.line_index) and (selected_building_tile_coords[0] == self.colum_index):
+            self.selector_sprite.opacity = 255
+
+    def on_mouse_press(self, x, y):
+        # if (x, y) in the building tile, select it
+        if (x, y) in self.tile_area:
+            self.game_data.colonies[self.game_data.active_colony].selected_building_tile_coords = (self.colum_index, self.line_index)
+
+    def on_mouse_motion(self):
+        # if (mouse_x, mouse_y) in self.button_area, show a faded selector
+        # set mouse_clickable_area to True if in self.button_area and associated bulding is not selected
+        selected_building_tile_coords = self.game_data.colonies[self.game_data.active_colony].selected_building_tile_coords
+        building_selected = (selected_building_tile_coords is not None) and (selected_building_tile_coords[1] == self.line_index) and (selected_building_tile_coords[0] == self.colum_index)
+        if not building_selected:
+            if (self.game_data.mouse_x, self.game_data.mouse_y) in self.tile_area:
+                self.selector_sprite.opacity = 127
+                self.game_data.mouse_clickable_area = True
+            else:
+                self.selector_sprite.opacity = 0
+        # if (self.game_data.mouse_x, self.game_data.mouse_y) in self.button_area:
 
 
 class SceneColony(Scene):
@@ -35,10 +190,10 @@ class SceneColony(Scene):
         self.bulding_grid_lines_color = (30, 52, 82, 255)
         for horizontal_line_index in range(8):
             self.building_grid_lines.append(shapes.Line(
-                x = (self.game_data.window_width / 2) - (3.5 * self.building_tile_size),
-                y = (self.game_data.window_height / 2) - (3.5 * self.building_tile_size) + (horizontal_line_index * self.building_tile_size),
-                x2 = (self.game_data.window_width / 2) + (3.5 * self.building_tile_size),
-                y2 = (self.game_data.window_height / 2) - (3.5 * self.building_tile_size) + (horizontal_line_index * self.building_tile_size),
+                x = (self.game_data.window_width // 2) - (3.5 * self.building_tile_size),
+                y = (self.game_data.window_height // 2) - (3.5 * self.building_tile_size) + (horizontal_line_index * self.building_tile_size),
+                x2 = (self.game_data.window_width // 2) + (3.5 * self.building_tile_size),
+                y2 = (self.game_data.window_height // 2) - (3.5 * self.building_tile_size) + (horizontal_line_index * self.building_tile_size),
                 width=5,
                 color=self.bulding_grid_lines_color,
                 batch=self.batch,
@@ -47,10 +202,10 @@ class SceneColony(Scene):
         # 8 vertical lines
         for vertical_line_index in range(8):
             self.building_grid_lines.append(shapes.Line(
-                x = (self.game_data.window_width / 2) - (3.5 * self.building_tile_size) + (vertical_line_index * self.building_tile_size),
-                y = (self.game_data.window_height / 2) - (3.5 * self.building_tile_size) - 2,
-                x2 = (self.game_data.window_width / 2) - (3.5 * self.building_tile_size) + (vertical_line_index * self.building_tile_size),
-                y2 = (self.game_data.window_height / 2) + (3.5 * self.building_tile_size) + 3,
+                x = (self.game_data.window_width // 2) - (3.5 * self.building_tile_size) + (vertical_line_index * self.building_tile_size),
+                y = (self.game_data.window_height // 2) - (3.5 * self.building_tile_size) - 2,
+                x2 = (self.game_data.window_width // 2) - (3.5 * self.building_tile_size) + (vertical_line_index * self.building_tile_size),
+                y2 = (self.game_data.window_height // 2) + (3.5 * self.building_tile_size) + 3,
                 width=5,
                 color=self.bulding_grid_lines_color,
                 batch=self.batch,
@@ -87,6 +242,15 @@ class SceneColony(Scene):
         self.left_window.opacity = self.right_window.opacity = 170
         self.left_window.scale = self.right_window.scale = 2
         self.left_window.scale_y = self.right_window.scale_y = 1.5
+
+        # building tiles widgets
+        self.building_tiles_widgets: list[list[BuildingWidget]] = [[BuildingWidget(
+            self.game_data,
+            line_index,
+            column_index,
+            batch=self.batch,
+            groups=self.groups
+        ) for column_index in range(7)] for line_index in range(7)]
 
         # left window static content
         self.left_window_content = {}
@@ -685,6 +849,11 @@ class SceneColony(Scene):
         self.left_window_content["spaceship_medium_counter"].text = str(colony_items["spaceship_medium"])
         self.left_window_content["spaceship_large_counter"].text = str(colony_items["spaceship_large"])
 
+        # update the building widgets
+        for line_index in range(len(self.building_tiles_widgets)):
+            for column_index in range(len(self.building_tiles_widgets[line_index])):
+                self.building_tiles_widgets[line_index][column_index].on_draw()
+
         # test garbage collection
         # if self.test_circle is None:
         #     self.test_circle = shapes.Circle(
@@ -702,12 +871,23 @@ class SceneColony(Scene):
 
 
     def on_mouse_press(self, x, y, button, modifiers) -> str:
+        if button & mouse.LEFT:
+            # send the left click to every building widget to select a building
+            for line_index in range(len(self.building_tiles_widgets)):
+                for column_index in range(len(self.building_tiles_widgets[line_index])):
+                    self.building_tiles_widgets[line_index][column_index].on_mouse_press(x, y)
+        # unselect building on right click
+        if button & mouse.RIGHT:
+            self.game_data.colonies[self.game_data.active_colony].selected_building_tile_coords = None
         return "colony"
 
 
     def on_mouse_motion(self, x, y):
         self.game_data.mouse_x, self.game_data.mouse_y = x, y
         self.game_data.mouse_clickable_area = False
+        for line_index in range(len(self.building_tiles_widgets)):
+            for column_index in range(len(self.building_tiles_widgets[line_index])):
+                self.building_tiles_widgets[line_index][column_index].on_mouse_motion()
 
 
     def on_key_press(self, symbol, modifiers) -> str:

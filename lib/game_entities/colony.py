@@ -111,7 +111,38 @@ class Colony:
         # special init if colony is the starting colony
         self.starting_colony = starting_colony
         if self.starting_colony:
-            ...
+            # add starter buildings
+            self.building_grid[3][3] = BuildingHeadQuarters(self.data)
+            self.building_grid[0][0] = BuildingSolarPanels(self.data)
+            self.building_grid[0][0].level = 1
+            self.building_grid[0][0].is_constructing = False
+            self.building_grid[0][1] = BuildingDrillingStation(self.data)
+            self.building_grid[0][1].level = 1
+            self.building_grid[0][1].is_constructing = False
+            self.building_grid[0][2] = BuildingWarehouse(self.data)
+            self.building_grid[0][2].level = 1
+            self.building_grid[0][2].is_constructing = False
+            self.building_grid[0][3] = BuildingLiquidTank(self.data)
+            self.building_grid[0][3].level = 1
+            self.building_grid[0][3].is_constructing = False
+            self.building_grid[0][4] = BuildingElectrolysisStation(self.data)
+            self.building_grid[0][4].level = 1
+            self.building_grid[0][4].is_constructing = False
+            self.building_grid[0][5] = BuildingFurnace(self.data)
+            self.building_grid[0][5].level = 1
+            self.building_grid[0][5].is_constructing = False
+            self.building_grid[0][6] = BuildingSpaceport(self.data)
+            self.building_grid[0][6].level = 1
+            self.building_grid[0][6].is_constructing = False
+            self.building_grid[1][0] = BuildingGreenhouse(self.data)
+            self.building_grid[1][0].level = 1
+            self.building_grid[1][0].is_constructing = False
+            self.building_grid[1][1] = BuildingSchool(self.data)
+            self.building_grid[1][1].level = 1
+            self.building_grid[1][1].is_constructing = False
+            self.building_grid[1][2] = BuildingFactory(self.data)
+            self.building_grid[1][2].level = 1
+            self.building_grid[1][2].is_constructing = False
 
     @property
     def power(self) -> dict[str, int]:

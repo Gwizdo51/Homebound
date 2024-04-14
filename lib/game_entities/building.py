@@ -8,6 +8,7 @@ class Building:
     # - can enable/disable
     # - can build and upgrade
 
+    name: str
     parameters_per_level: dict[int, Any]
 
     def __init__(self, colony_data: dict[str]):
@@ -255,7 +256,7 @@ class BuildingSolarPanels(Building):
         1: {
             "power": {
                 "consumed": 0,
-                "produced": 0
+                "produced": 100
             },
             "construction_costs": {
                 "iron": 0,

@@ -171,3 +171,37 @@ class GameData:
         # https://www.svgrepo.com/svg/521755/minus
         self.icon_minus_white = resource.image("icon-minus-FFFFFF.png")
         center_image(self.icon_minus_white)
+        # https://bdragon1727.itch.io/basic-pixel-health-bar-and-scroll-bar
+        self.icon_selector = resource.image("icon-selector.png")
+        center_image(self.icon_selector)
+
+        # buildings
+        self.icon_house_black = resource.image("icon-house-000000.png")
+        center_image(self.icon_house_black)
+        # https://www.svgrepo.com/svg/158880/solar-panels
+        self.icon_solar_panels_black = resource.image("icon-solar-panels-000000.png")
+        center_image(self.icon_solar_panels_black)
+        # https://www.svgrepo.com/svg/412370/drill
+        self.icon_drill_white = resource.image("icon-drill-ffffff.png")
+        center_image(self.icon_drill_white)
+        self.icon_crate_white = resource.image("icon-crate-ffffff.png")
+        center_image(self.icon_crate_white)
+        self.icon_barrel_white = resource.image("icon-barrel-ffffff.png")
+        center_image(self.icon_barrel_white)
+        # https://www.svgrepo.com/svg/385034/bubble-bubbles-washing-cleaning-soap
+        self.icon_bubbles_black = resource.image("icon-bubbles-000000.png")
+        center_image(self.icon_bubbles_black)
+        # https://www.svgrepo.com/svg/112303/flame
+        self.icon_flame_white = resource.image("icon-flame-ffffff.png")
+        center_image(self.icon_flame_white)
+        self.icon_spaceship_white = resource.image("icon-spaceship-ffffff.png")
+        center_image(self.icon_spaceship_white)
+        # https://www.svgrepo.com/svg/513255/tree-decidious
+        self.icon_tree_white = resource.image("icon-tree-ffffff.png")
+        center_image(self.icon_tree_white)
+        # https://www.svgrepo.com/svg/485635/book
+        self.icon_book_black = resource.image("icon-book-000000.png")
+        center_image(self.icon_book_black)
+        # https://www.svgrepo.com/svg/220523/factory
+        self.icon_factory_white = resource.image("icon-factory-ffffff.png")
+        center_image(self.icon_factory_white)
