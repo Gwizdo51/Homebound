@@ -16,15 +16,15 @@ class Colony:
     building_types_dict: dict[str, type] = {
         "headquarters": BuildingHeadQuarters,
         "solar_panels": BuildingSolarPanels,
-        "drilling_station": BuildingDrillingStation,
         "warehouse": BuildingWarehouse,
         "liquid_tank": BuildingLiquidTank,
-        "electrolysis_station": BuildingElectrolysisStation,
+        "drilling_station": BuildingDrillingStation,
         "furnace": BuildingFurnace,
-        "spaceport": BuildingSpaceport,
+        "electrolysis_station": BuildingElectrolysisStation,
         "greenhouse": BuildingGreenhouse,
         "school": BuildingSchool,
-        "factory": BuildingFactory
+        "factory": BuildingFactory,
+        "spaceport": BuildingSpaceport
     }
 
     def __init__(self, production_factors = {}, starting_colony: bool = False):

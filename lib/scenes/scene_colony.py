@@ -27,7 +27,7 @@ class BuildingWidget:
         self.colum_index = column_index
         self.batch = batch
         self.groups = groups
-        self.icon = None
+        # self.icon = None
         # the area covered by the widget
         self.tile_area = shapes.Rectangle(
             x = self.game_data.window_width // 2 - 260 + self.colum_index * 75,
@@ -65,8 +65,9 @@ class BuildingWidget:
                 "icon_scale": .15
             },
             "drilling_station": {
-                # blue
-                "color": (26, 63, 183, 255),
+                # violet
+                # #44236E
+                "color": (68, 35, 110, 255),
                 "icon_img": self.game_data.icon_drill_white,
                 "icon_scale": .15
             },
@@ -74,7 +75,7 @@ class BuildingWidget:
                 # dark gray
                 "color": (85, 85, 85, 255),
                 "icon_img": self.game_data.icon_crate_white,
-                "icon_scale": .23
+                "icon_scale": .15
             },
             "liquid_tank": {
                 # dark gray
@@ -153,27 +154,229 @@ class BuildingWidget:
         #     if (selected_building_tile_coords[1] == self.line_index) and (selected_building_tile_coords[0] == self.colum_index):
         #         self.selector_sprite.opacity = 255
         selected_building_tile_coords = current_colony.selected_building_tile_coords
+        # if the current building tile is selected ...
         if (selected_building_tile_coords is not None) and (selected_building_tile_coords[1] == self.line_index) and (selected_building_tile_coords[0] == self.colum_index):
             self.selector_sprite.opacity = 255
+        else:
+            # if the mouse is over the tile ...
+            if (self.game_data.mouse_x, self.game_data.mouse_y) in self.tile_area:
+                self.selector_sprite.opacity = 127
+                self.game_data.mouse_clickable_area = True
+            else:
+                self.selector_sprite.opacity = 0
 
     def on_mouse_press(self, x, y):
         # if (x, y) in the building tile, select it
         if (x, y) in self.tile_area:
             self.game_data.colonies[self.game_data.active_colony].selected_building_tile_coords = (self.colum_index, self.line_index)
 
-    def on_mouse_motion(self):
-        # if (mouse_x, mouse_y) in self.button_area, show a faded selector
-        # set mouse_clickable_area to True if in self.button_area and associated bulding is not selected
-        selected_building_tile_coords = self.game_data.colonies[self.game_data.active_colony].selected_building_tile_coords
-        building_selected = (selected_building_tile_coords is not None) and (selected_building_tile_coords[1] == self.line_index) and (selected_building_tile_coords[0] == self.colum_index)
-        if not building_selected:
-            if (self.game_data.mouse_x, self.game_data.mouse_y) in self.tile_area:
-                self.selector_sprite.opacity = 127
-                self.game_data.mouse_clickable_area = True
-            else:
-                self.selector_sprite.opacity = 0
-        # if (self.game_data.mouse_x, self.game_data.mouse_y) in self.button_area:
+    # def on_mouse_motion(self):
+    #     # if (mouse_x, mouse_y) in self.button_area, show a faded selector
+    #     # set mouse_clickable_area to True if in self.button_area and associated bulding is not selected
+    #     selected_building_tile_coords = self.game_data.colonies[self.game_data.active_colony].selected_building_tile_coords
+    #     building_selected = (selected_building_tile_coords is not None) and (selected_building_tile_coords[1] == self.line_index) and (selected_building_tile_coords[0] == self.colum_index)
+    #     if not building_selected and (self.game_data.mouse_x, self.game_data.mouse_y) in self.tile_area:
+    #             self.game_data.mouse_clickable_area = True
 
+
+class RightWindowWidget:
+
+    name_translation_en2fr = {
+        "headquarters": "QG",
+        "solar_panels": "PANNEAUX SOLAIRES",
+        "drilling_station": "FOREUSE",
+        "warehouse": "ENTREPOT",
+        "liquid_tank": "RESERVOIR",
+        "electrolysis_station": "STATION D'ELECTROLYSE",
+        "furnace": "FOURNEAU",
+        "spaceport": "PORT SPACIAL",
+        "greenhouse": "SERRE",
+        "school": "ECOLE",
+        "factory": "USINE"
+    }
+
+    def __init__(self, game_data: GameData, batch, groups):
+        self.game_data = game_data
+        self.batch = batch
+        self.groups = groups
+        self.building_icons = {
+            "solar_panels": {
+                # dark gray
+                "icon_img_impossible": self.game_data.icon_solar_panels_dark_gray,
+                # white
+                "icon_img_possible": self.game_data.icon_solar_panels_white,
+                # light green
+                # #68B842
+                "icon_img_hovered": self.game_data.icon_solar_panels_green,
+                "icon_scale": .1
+            },
+            "drilling_station": {
+                "icon_img_impossible": self.game_data.icon_drill_dark_gray,
+                "icon_img_possible": self.game_data.icon_drill_white,
+                "icon_img_hovered": self.game_data.icon_drill_green,
+                "icon_scale": .1
+            },
+            "warehouse": {
+                "icon_img_impossible": self.game_data.icon_crate_dark_gray,
+                "icon_img_possible": self.game_data.icon_crate_white,
+                "icon_img_hovered": self.game_data.icon_crate_green,
+                "icon_scale": .1
+            },
+            "liquid_tank": {
+                "icon_img_impossible": self.game_data.icon_barrel_dark_gray,
+                "icon_img_possible": self.game_data.icon_barrel_white,
+                "icon_img_hovered": self.game_data.icon_barrel_green,
+                "icon_scale": .1
+            },
+            "electrolysis_station": {
+                "icon_img_impossible": self.game_data.icon_bubbles_dark_gray,
+                "icon_img_possible": self.game_data.icon_bubbles_white,
+                "icon_img_hovered": self.game_data.icon_bubbles_green,
+                "icon_scale": .1
+            },
+            "furnace": {
+                "icon_img_impossible": self.game_data.icon_flame_dark_gray,
+                "icon_img_possible": self.game_data.icon_flame_white,
+                "icon_img_hovered": self.game_data.icon_flame_green,
+                "icon_scale": .1
+            },
+            "spaceport": {
+                "icon_img_impossible": self.game_data.icon_spaceship_dark_gray,
+                "icon_img_possible": self.game_data.icon_spaceship_white,
+                "icon_img_hovered": self.game_data.icon_spaceship_green,
+                "icon_scale": .1
+            },
+            "greenhouse": {
+                "icon_img_impossible": self.game_data.icon_tree_dark_gray,
+                "icon_img_possible": self.game_data.icon_tree_white,
+                "icon_img_hovered": self.game_data.icon_tree_green,
+                "icon_scale": .1
+            },
+            "school": {
+                "icon_img_impossible": self.game_data.icon_book_dark_gray,
+                "icon_img_possible": self.game_data.icon_book_white,
+                "icon_img_hovered": self.game_data.icon_book_green,
+                "icon_scale": .1
+            },
+            "factory": {
+                "icon_img_impossible": self.game_data.icon_factory_dark_gray,
+                "icon_img_possible": self.game_data.icon_factory_white,
+                "icon_img_hovered": self.game_data.icon_factory_green,
+                "icon_scale": .1
+            }
+        }
+
+    def on_draw(self):
+        # if no building is selected, don't display anything
+        current_colony = self.game_data.colonies[self.game_data.active_colony]
+        # selected_building_tile_coords = current_colony.selected_building_tile_coords
+        # if current_colony.selected_building_tile_coords is None:
+        #     # clear the window
+        #     self.content = {}
+        # else:
+        # clear the window
+        self.content = {}
+        if current_colony.selected_building_tile_coords is not None:
+            # window sprite
+            self.content["window_sprite"] = Sprite(
+                img = self.game_data.side_window,
+                x = self.game_data.window_width - self.game_data.side_window.width*2 - 15,
+                y=self.game_data.window_height // 2,
+                batch=self.batch,
+                group=self.groups[1]
+            )
+            self.content["window_sprite"].opacity = 170
+            self.content["window_sprite"].scale = 2
+            self.content["window_sprite"].scale_y = 1.5
+            # test window size
+            # self.content["test_size_rect"] = shapes.Rectangle(
+            #     x = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 - 160,
+            #     y = 25,
+            #     width = 320,
+            #     height = 618,
+            #     color = (255, 255, 255, 255),
+            #     batch=self.batch,
+            #     group=self.groups[2]
+            # )
+            # window title
+            selected_building = current_colony.selected_building
+            if selected_building is None:
+                # self.content["title_label"] = "CONSTRUIRE"
+                self.content["title_label"] = Label("CONSTRUIRE", font_name=self.game_data.subtitle_font_name, font_size=15,
+                    x=self.game_data.window_width - 25 - 315, y=self.game_data.window_height - 43, width=315,
+                    align="center", anchor_y="center", batch=self.batch, group=self.groups[2])
+                # make a list of possible buildings to build
+                # self.content["building_options_list"] = []
+                building_options_dict = {}
+                for building_index, building_name in enumerate(list(current_colony.building_types_dict.keys())[1:]):
+                    # self.content["building_options_list"].append([])
+                    # print(building_name)
+                    building_option = {}
+                    if current_colony.can_add_building(building_name):
+                        # show white resources values
+                        # show green name if hovered
+                        building_sprite_img = self.building_icons[building_name]["icon_img_possible"]
+                        # self.content["building_list"][building_index].append()
+                    else:
+                        # show gray resources values
+                        # building icon
+                        building_sprite_img = self.building_icons[building_name]["icon_img_impossible"]
+                    # add an area to click on
+                    button_area = shapes.Rectangle(
+                        x = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 - 160,
+                        y = self.game_data.window_height - 135 - building_index * 62,
+                        width = 320,
+                        height = 55,
+                        color = (255, 0, 0, 127),
+                        batch=self.batch,
+                        group=self.groups[2]
+                    )
+                    building_option["button_area"] = button_area
+                    # add a building sprite
+                    building_icon = Sprite(
+                        img = building_sprite_img,
+                        x = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 - 130,
+                        y = self.game_data.window_height - 110 - int(building_index * 61.8),
+                        batch=self.batch,
+                        group=self.groups[3]
+                    )
+                    # print(self.content["window_sprite"].width)
+                    building_icon.scale = self.building_icons[building_name]["icon_scale"]
+                    # building_options_list.append(building_sprite)
+                    # building_options_list[building_name] = building_sprite
+                    building_option["building_icon"] = building_icon
+                    power_icon = Sprite(
+                        img = self.game_data.icon_bolt_light_gray,
+                        x = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 - 60,
+                        y = self.game_data.window_height - 110 - int(building_index * 61.8) + 15,
+                        batch=self.batch,
+                        group=self.groups[3]
+                    )
+                    power_icon.scale = .05
+                    building_option["power_icon"] = power_icon
+                    power_label = ...
+                    # "iron": 0,
+                    # iron_icon = Label()
+                    # "aluminium": 0,
+                    # aluminium_icon = Label()
+                    # "copper": 0,
+                    # copper_icon = Label()
+                    # "titanium": 0
+                    # titanium_icon = Label()
+                    building_options_dict[building_name] = building_option
+                self.content["building_options_dict"] = building_options_dict
+            else:
+                # self.content["title_label"] = self.name_translation_en2fr[selected_building.name]
+                self.content["title_label"] = Label(self.name_translation_en2fr[selected_building.name], font_name=self.game_data.subtitle_font_name, font_size=15,
+                    x=self.game_data.window_width - 25 - 315, y=self.game_data.window_height - 43, width=315,
+                    align="center", anchor_y="center", batch=self.batch, group=self.groups[2])
+
+    def on_mouse_press(self, x, y):
+        current_colony = self.game_data.colonies[self.game_data.active_colony]
+        ...
+
+    # def on_mouse_motion(self):
+    #     pass
 
 class SceneColony(Scene):
 
@@ -231,17 +434,9 @@ class SceneColony(Scene):
             batch=self.batch,
             group=self.groups[1]
         )
-        # right window
-        self.right_window = Sprite(
-            img=self.game_data.side_window,
-            x = self.game_data.window_width - self.game_data.side_window.width*2 - 15,
-            y=self.game_data.window_height // 2,
-            batch=self.batch,
-            group=self.groups[1]
-        )
-        self.left_window.opacity = self.right_window.opacity = 170
-        self.left_window.scale = self.right_window.scale = 2
-        self.left_window.scale_y = self.right_window.scale_y = 1.5
+        self.left_window.opacity = 170
+        self.left_window.scale = 2
+        self.left_window.scale_y = 1.5
 
         # building tiles widgets
         self.building_tiles_widgets: list[list[BuildingWidget]] = [[BuildingWidget(
@@ -251,6 +446,9 @@ class SceneColony(Scene):
             batch=self.batch,
             groups=self.groups
         ) for column_index in range(7)] for line_index in range(7)]
+
+        # right window widget
+        self.right_window_widget = RightWindowWidget(self.game_data, self.batch, self.groups)
 
         # left window static content
         self.left_window_content = {}
@@ -665,7 +863,7 @@ class SceneColony(Scene):
             batch = self.batch,
             group = self.groups[2]
         )
-        self.left_window_content["module_cargo_icon"].scale = .15
+        self.left_window_content["module_cargo_icon"].scale = .12
         # solid cargo module counter
         self.left_window_content["module_cargo_counter"] = Label("XX", font_name=self.game_data.default_font_name, font_size=14,
             x = self.left_window.width // 2 + 15 - 90,
@@ -849,10 +1047,16 @@ class SceneColony(Scene):
         self.left_window_content["spaceship_medium_counter"].text = str(colony_items["spaceship_medium"])
         self.left_window_content["spaceship_large_counter"].text = str(colony_items["spaceship_large"])
 
+        # reset the state of the mouse
+        self.game_data.mouse_clickable_area = False
+
         # update the building widgets
         for line_index in range(len(self.building_tiles_widgets)):
             for column_index in range(len(self.building_tiles_widgets[line_index])):
                 self.building_tiles_widgets[line_index][column_index].on_draw()
+
+        # update the right window widget
+        self.right_window_widget.on_draw()
 
         # test garbage collection
         # if self.test_circle is None:
@@ -876,6 +1080,8 @@ class SceneColony(Scene):
             for line_index in range(len(self.building_tiles_widgets)):
                 for column_index in range(len(self.building_tiles_widgets[line_index])):
                     self.building_tiles_widgets[line_index][column_index].on_mouse_press(x, y)
+            # send the left click to the right widget
+            self.right_window_widget.on_mouse_press(x, y)
         # unselect building on right click
         if button & mouse.RIGHT:
             self.game_data.colonies[self.game_data.active_colony].selected_building_tile_coords = None
@@ -884,10 +1090,13 @@ class SceneColony(Scene):
 
     def on_mouse_motion(self, x, y):
         self.game_data.mouse_x, self.game_data.mouse_y = x, y
-        self.game_data.mouse_clickable_area = False
-        for line_index in range(len(self.building_tiles_widgets)):
-            for column_index in range(len(self.building_tiles_widgets[line_index])):
-                self.building_tiles_widgets[line_index][column_index].on_mouse_motion()
+        # self.game_data.mouse_clickable_area = False
+        # send the mouse motion to the building widgets
+        # for line_index in range(len(self.building_tiles_widgets)):
+        #     for column_index in range(len(self.building_tiles_widgets[line_index])):
+        #         self.building_tiles_widgets[line_index][column_index].on_mouse_motion()
+        # send the mouse motion to the right window widget
+        # self.right_window_widget.on_mouse_motion()
 
 
     def on_key_press(self, symbol, modifiers) -> str:
