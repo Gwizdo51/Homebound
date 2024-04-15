@@ -249,6 +249,7 @@ class Colony:
         # if the building is at level 0, remove it from the building grid
         if self.selected_building.level == 0:
             self.selected_building = None
+            # self.destroy_building()
 
 
     def can_destroy_building(self) -> bool:
@@ -258,7 +259,10 @@ class Colony:
         power = self.power
         power_available = power["produced"] - power["consumed"]
         building = self.selected_building
-        power_produced = building.parameters["power"]["produced"] - building.parameters["power"]["consumed"]
+        if building.is_constructing:
+            power_produced = building.parameters["power"]["produced"] - building.parameters_per_level[building.level + 1]["power"]["consumed"]
+        else:
+            power_produced = building.parameters["power"]["produced"] - building.parameters["power"]["consumed"]
         if power_available - power_produced < 0:
             can_destroy_building = False
         # it also cannot be destroyed if it is the headquarters
@@ -266,13 +270,16 @@ class Colony:
 
 
     def destroy_building(self):
-        building = self.selected_building
+        # building = self.selected_building
         # disable the building if possible
-        if building.enabled and building.can_disable:
-            building.use_power_switch()
+        # if building.enabled and building.can_disable:
+        #     building.use_power_switch()
+        # prepare the building for destruction
+        # building.on_destruction()
+        self.selected_building.on_destruction()
         # cancel the construction if it is construction
-        if building.is_constructing:
-            building.cancel_upgrade()
+        # if building.is_constructing:
+        #     building.cancel_upgrade()
         # remove the building from the building grid
         self.selected_building = None
 

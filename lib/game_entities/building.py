@@ -34,8 +34,8 @@ class Building:
         self.is_constructing = True
         self.construction_workload_completed = 0
         # flags
-        self.enabled = True
-        self.can_disable = True
+        # self.enabled = True
+        # self.can_disable = True
 
     @property
     def parameters(self) -> dict[str, Any]:
@@ -80,12 +80,13 @@ class Building:
 
     def can_assign_worker(self, add: bool, job_type: str, worker_type: str) -> bool:
         assignment_possible = False
+        # can only add workers if:
+        # - there are vacant jobs in the building
+        # - there are available workers in the colony
         if add:
-            # if there are vacant jobs in the building ...
-            if self.assigned_workers[job_type][worker_type] < self.parameters["jobs"][job_type][worker_type]:
-                # if there are available workers ...
-                if self.colony_data["workers"][worker_type]["available"] > 0:
-                    assignment_possible = True
+            if (self.assigned_workers[job_type][worker_type] < self.parameters["jobs"][job_type][worker_type]) and \
+                (self.colony_data["workers"][worker_type]["available"] > 0):
+                assignment_possible = True
         else:
             # if there are assigned workers ...
             if self.assigned_workers[job_type][worker_type] > 0:
@@ -133,13 +134,20 @@ class Building:
     #     # whether the building can be turned on/off
     #     return False
 
-    def use_power_switch(self):
-        # only used if building can be turned on/off
-        if self.enabled:
-            # fire every worker from the production jobs
-            self.assign_worker(add=False, job_type="engineers", work_type="production", all=True)
-            self.assign_worker(add=False, job_type="scientists", work_type="production", all=True)
-        self.enabled = not self.enabled
+    # def use_power_switch(self):
+    #     # only used if building can be turned on/off
+    #     if self.enabled:
+    #         # fire every worker from the production jobs
+    #         self.assign_worker(add=False, job_type="engineers", work_type="production", all=True)
+    #         self.assign_worker(add=False, job_type="scientists", work_type="production", all=True)
+    #     self.enabled = not self.enabled
+
+    def on_destruction(self):
+        # remove all workers
+        self.remove_all_workers()
+        # if the building is upgrading, cancel the upgrade
+        if self.is_constructing:
+            self.cancel_upgrade()
 
     def update(self, dt):
         # update construction status
@@ -150,16 +158,16 @@ class Building:
             if self.construction_workload_completed >= self.parameters["construction_workload"]:
                 # stop the construction
                 self.is_constructing = False
+                self.construction_workload_completed = 0
                 # upgrade the building
                 self.level += 1
-                # fire every worker at the construction jobs
+                # free every worker at the construction jobs
                 self.assign_worker(add=False, job_type="engineers", work_type="construction", all=True)
 
 
 class BuildingHeadQuarters(Building):
 
     name = "headquarters"
-
     parameters_per_level = {
         1: {
             "power": {
@@ -199,7 +207,7 @@ class BuildingHeadQuarters(Building):
         self.level = 1
         self.level_max = 1
         self.is_constructing = False
-        self.can_disable = False
+        # self.can_disable = False
         # assigned workers
         # self.assigned_jobs = {
         #     "engineers": 0,
@@ -320,9 +328,9 @@ class BuildingSolarPanels(Building):
         }
     }
 
-    def __init__(self, colony_data):
-        super().__init__(colony_data)
-        self.can_disable = False
+    # def __init__(self, colony_data):
+    #     super().__init__(colony_data)
+    #     self.can_disable = False
 
     # @property
     # def can_construct(self):
@@ -349,7 +357,6 @@ class BuildingSolarPanels(Building):
 class BuildingDrillingStation(Building):
 
     name = "drilling_station"
-
     parameters_per_level = {
         0: {
             "power": {
@@ -456,8 +463,8 @@ class BuildingDrillingStation(Building):
     def update(self, dt):
         super().update(dt)
         # dump the produced resources into the colony resource buffer
-        # only produce if enabled, at least level 1, and a resource to produce has been selected
-        if self.enabled and (self.level > 0) and (self.resource_produced is not None):
+        # only produce if at least level 1 and a resource to produce has been selected
+        if (self.level > 0) and (self.resource_produced is not None):
             self.colony_data["resources_buffer"][self.resource_produced] += dt \
                 * (self.assigned_workers["production"]["engineers"] + self.assigned_workers["production"]["scientists"]) \
                 * self.parameters["production_speed"] * self.colony_data["production_factors"][self.resource_produced]
@@ -466,7 +473,6 @@ class BuildingDrillingStation(Building):
 class BuildingWarehouse(Building):
 
     name = "warehouse"
-
     parameters_per_level = {
         0: {
             "power": {
@@ -589,15 +595,14 @@ class BuildingWarehouse(Building):
         }
     }
 
-    def __init__(self, colony_data):
-        super().__init__(colony_data)
-        self.can_disable = False
+    # def __init__(self, colony_data):
+    #     super().__init__(colony_data)
+    #     self.can_disable = False
 
 
 class BuildingLiquidTank(Building):
 
     name = "liquid_tank"
-
     parameters_per_level = {
         0: {
             "power": {
@@ -702,15 +707,14 @@ class BuildingLiquidTank(Building):
         }
     }
 
-    def __init__(self, colony_data):
-        super().__init__(colony_data)
-        self.can_disable = False
+    # def __init__(self, colony_data):
+    #     super().__init__(colony_data)
+    #     self.can_disable = False
 
 
 class BuildingElectrolysisStation(Building):
 
     name = "electrolysis_station"
-
     parameters_per_level = {
         0: {
             "power": {
@@ -809,8 +813,8 @@ class BuildingElectrolysisStation(Building):
     def update(self, dt):
         super().update(dt)
         # dump the produced resources into the colony resource buffer
-        # only produce if enabled and at least level 1
-        if self.enabled and (self.level > 0):
+        # only produce if at least level 1
+        if self.level > 0:
             # consume water
             water_required_from_storage = dt * self.parameters["production_speed"] \
                 * (self.assigned_workers["production"]["engineers"] + self.assigned_workers["production"]["scientists"])
@@ -825,7 +829,6 @@ class BuildingElectrolysisStation(Building):
 class BuildingFurnace(Building):
 
     name = "furnace"
-
     parameters_per_level = {
         0: {
             "power": {
@@ -924,7 +927,6 @@ class BuildingFurnace(Building):
         }
     }
 
-    # TODO: consume ore !
     # ore to ingot ratio : 2/1
 
     def __init__(self, colony_data):
@@ -942,12 +944,12 @@ class BuildingFurnace(Building):
             self.ore_consumed = False
         self.resource_produced = resource_type
 
-    def use_power_switch(self):
-        # reset the smelting cycle if the building is turned off
-        if self.enabled:
-            self.smelting_completed_percent = 0
-            self.ore_consumed = False
-        super().use_power_switch()
+    # def use_power_switch(self):
+    #     # reset the smelting cycle if the building is turned off
+    #     if self.enabled:
+    #         self.smelting_completed_percent = 0
+    #         self.ore_consumed = False
+    #     super().use_power_switch()
 
     def _try_start_cycle(self):
         ore_to_consume = self.resource_produced + "_ore"
@@ -960,8 +962,8 @@ class BuildingFurnace(Building):
     def update(self, dt):
         super().update(dt)
         # dump the produced resources into the colony resource buffer
-        # only produce if enabled, at least level 1, and a resource to produce has been selected
-        if self.enabled and (self.level > 0) and (self.resource_produced is not None):
+        # only produce if at least level 1 and a resource to produce has been selected
+        if (self.level > 0) and (self.resource_produced is not None):
             if not self.ore_consumed:
                 # try to consume ore for the next production cycle
                 self._try_start_cycle()
@@ -980,7 +982,6 @@ class BuildingFurnace(Building):
 class BuildingSpaceport(Building):
 
     name = "spaceport"
-
     parameters_per_level = {
         0: {
             "power": {
@@ -1025,15 +1026,14 @@ class BuildingSpaceport(Building):
         }
     }
 
-    def __init__(self, colony_data):
-        super().__init__(colony_data)
-        self.can_disable = False
+    # def __init__(self, colony_data):
+    #     super().__init__(colony_data)
+    #     self.can_disable = False
 
 
 class BuildingGreenhouse(Building):
 
     name = "greenhouse"
-
     parameters_per_level = {
         0: {
             "power": {
@@ -1132,8 +1132,8 @@ class BuildingGreenhouse(Building):
     def update(self, dt):
         super().update(dt)
         # dump the produced resources into the colony resource buffer
-        # only produce if enabled and at least level 1
-        if self.enabled and (self.level > 0):
+        # only produce if at least level 1
+        if self.level > 0:
             # consume water
             water_required_from_storage = dt * self.parameters["production_speed"] \
                 * (self.assigned_workers["production"]["engineers"] + self.assigned_workers["production"]["scientists"])
@@ -1148,7 +1148,6 @@ class BuildingGreenhouse(Building):
 class BuildingSchool(Building):
 
     name = "school"
-
     items_workload = {
         "engineers": 0,
         "scientists": 0,
@@ -1286,19 +1285,19 @@ class BuildingSchool(Building):
             # clear the queue (everything but the current training worker)
             self.training_queue = [self.training_queue[0]]
 
-    def use_power_switch(self):
-        # clear the queue and reset the training cycle if the building is turned off
-        if self.enabled:
-            # self.training_queue = []
-            # self.training_workload_completed = 0
-            while self.can_cancel_training():
-                self.can_cancel_training()
-        super().use_power_switch()
+    # def use_power_switch(self):
+    #     # clear the queue and reset the training cycle if the building is turned off
+    #     if self.enabled:
+    #         # self.training_queue = []
+    #         # self.training_workload_completed = 0
+    #         while self.can_cancel_training():
+    #             self.can_cancel_training()
+    #     super().use_power_switch()
 
     def update(self, dt):
         super().update(dt)
-        # only train if enabled, at least level 1 and the training queue is not empty
-        if self.enabled and (self.level > 0) and (len(self.training_queue) > 0):
+        # only train if at least level 1 and the training queue is not empty
+        if (self.level > 0) and (len(self.training_queue) > 0):
             self.training_workload_completed += dt * self.parameters["production_speed"] \
                 * (self.assigned_workers["production"]["engineers"] + self.assigned_workers["production"]["scientists"])
             # if the cycle is completed ...
@@ -1314,7 +1313,6 @@ class BuildingSchool(Building):
 class BuildingFactory(Building):
 
     name = "factory"
-
     items_price = {
         "spaceship_small": {
             "resources": {
@@ -1535,19 +1533,25 @@ class BuildingFactory(Building):
             for resource_name in item_resources_required.keys():
                 self.colony_data["resources_buffer"][resource_name] += item_resources_required[resource_name]
 
-    def use_power_switch(self):
-        # clear the queue and reset the workload completed if the building is turned off
-        if self.enabled:
-            # self.items_queue = []
-            # self.item_workload_completed = 0
-            while self.can_cancel_item():
-                self.cancel_item()
-        super().use_power_switch()
+    # def use_power_switch(self):
+    #     # clear the queue and reset the workload completed if the building is turned off
+    #     if self.enabled:
+    #         # self.items_queue = []
+    #         # self.item_workload_completed = 0
+    #         while self.can_cancel_item():
+    #             self.cancel_item()
+    #     super().use_power_switch()
+
+    def on_destruction(self):
+        super().on_destruction()
+        # cancel every queued item
+        while self.can_cancel_item():
+            self.cancel_item()
 
     def update(self, dt):
         super().update(dt)
-        # only make item if enabled, at least level 1 and the training queue is not empty
-        if self.enabled and (self.level > 0) and (len(self.items_queue) > 0):
+        # only make item if at least level 1 and the training queue is not empty
+        if (self.level > 0) and (len(self.items_queue) > 0):
             self.item_workload_completed += dt * self.parameters["production_speed"] \
                 * (self.assigned_workers["production"]["engineers"] + self.assigned_workers["production"]["scientists"])
             # if the cycle is completed ...
