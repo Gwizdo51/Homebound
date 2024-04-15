@@ -19,6 +19,8 @@ class GameWindow(pyglet.window.Window):
         }
         # window icon
         self.set_icon(self.game_manager.game_data.game_logo)
+        # FPS
+        self.fps_counter = pyglet.window.FPSDisplay(window=self, color=(255, 0, 0, 255))
 
         # self.counter = 0
 
@@ -112,6 +114,8 @@ class GameWindow(pyglet.window.Window):
         self.game_manager.scenes[self.game_manager.current_scene].draw()
         # update the cursor shape
         self.dispatch_event("on_mouse_motion", self.game_manager.game_data.mouse_x, self.game_manager.game_data.mouse_y, 0, 0)
+        # FPS
+        self.fps_counter.draw()
 
     # only useful for stuff that needs to know how much time passed between each frames
     def update(self, dt):

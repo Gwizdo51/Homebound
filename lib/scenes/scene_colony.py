@@ -208,61 +208,61 @@ class RightWindowWidget:
                 # light green
                 # #68B842
                 "icon_img_hovered": self.game_data.icon_solar_panels_green,
-                "icon_scale": .1
+                "icon_scale": .15
             },
             "drilling_station": {
                 "icon_img_impossible": self.game_data.icon_drill_dark_gray,
                 "icon_img_possible": self.game_data.icon_drill_white,
                 "icon_img_hovered": self.game_data.icon_drill_green,
-                "icon_scale": .1
+                "icon_scale": .15
             },
             "warehouse": {
                 "icon_img_impossible": self.game_data.icon_crate_dark_gray,
                 "icon_img_possible": self.game_data.icon_crate_white,
                 "icon_img_hovered": self.game_data.icon_crate_green,
-                "icon_scale": .1
+                "icon_scale": .15
             },
             "liquid_tank": {
                 "icon_img_impossible": self.game_data.icon_barrel_dark_gray,
                 "icon_img_possible": self.game_data.icon_barrel_white,
                 "icon_img_hovered": self.game_data.icon_barrel_green,
-                "icon_scale": .1
+                "icon_scale": .15
             },
             "electrolysis_station": {
                 "icon_img_impossible": self.game_data.icon_bubbles_dark_gray,
                 "icon_img_possible": self.game_data.icon_bubbles_white,
                 "icon_img_hovered": self.game_data.icon_bubbles_green,
-                "icon_scale": .1
+                "icon_scale": .15
             },
             "furnace": {
                 "icon_img_impossible": self.game_data.icon_flame_dark_gray,
                 "icon_img_possible": self.game_data.icon_flame_white,
                 "icon_img_hovered": self.game_data.icon_flame_green,
-                "icon_scale": .1
+                "icon_scale": .15
             },
             "spaceport": {
                 "icon_img_impossible": self.game_data.icon_spaceship_dark_gray,
                 "icon_img_possible": self.game_data.icon_spaceship_white,
                 "icon_img_hovered": self.game_data.icon_spaceship_green,
-                "icon_scale": .1
+                "icon_scale": .15
             },
             "greenhouse": {
                 "icon_img_impossible": self.game_data.icon_tree_dark_gray,
                 "icon_img_possible": self.game_data.icon_tree_white,
                 "icon_img_hovered": self.game_data.icon_tree_green,
-                "icon_scale": .1
+                "icon_scale": .15
             },
             "school": {
                 "icon_img_impossible": self.game_data.icon_book_dark_gray,
                 "icon_img_possible": self.game_data.icon_book_white,
                 "icon_img_hovered": self.game_data.icon_book_green,
-                "icon_scale": .1
+                "icon_scale": .15
             },
             "factory": {
                 "icon_img_impossible": self.game_data.icon_factory_dark_gray,
                 "icon_img_possible": self.game_data.icon_factory_white,
                 "icon_img_hovered": self.game_data.icon_factory_green,
-                "icon_scale": .1
+                "icon_scale": .15
             }
         }
 
@@ -285,6 +285,7 @@ class RightWindowWidget:
                 batch=self.batch,
                 group=self.groups[1]
             )
+
             self.content["window_sprite"].opacity = 170
             self.content["window_sprite"].scale = 2
             self.content["window_sprite"].scale_y = 1.5
@@ -312,27 +313,33 @@ class RightWindowWidget:
                     # self.content["building_options_list"].append([])
                     # print(building_name)
                     building_option = {}
-                    if current_colony.can_add_building(building_name):
-                        # show white resources values
-                        # show green name if hovered
-                        building_sprite_img = self.building_icons[building_name]["icon_img_possible"]
-                        # self.content["building_list"][building_index].append()
-                    else:
-                        # show gray resources values
-                        # building icon
-                        building_sprite_img = self.building_icons[building_name]["icon_img_impossible"]
-                    # add an area to click on
+                    # area to click on
                     button_area = shapes.Rectangle(
                         x = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 - 160,
                         y = self.game_data.window_height - 135 - building_index * 62,
                         width = 320,
                         height = 55,
-                        color = (255, 0, 0, 127),
+                        # color = (255, 0, 0, 127),
                         batch=self.batch,
                         group=self.groups[2]
                     )
+                    if current_colony.can_add_building(building_name):
+                        # show white resources values
+                        # show green name if hovered
+                        # building_sprite_img = self.building_icons[building_name]["icon_img_possible"]
+                        if (self.game_data.mouse_x, self.game_data.mouse_y) in button_area:
+                            button_area.color = (192, 192, 192, 63)
+                            building_sprite_img = self.building_icons[building_name]["icon_img_hovered"]
+                            self.game_data.mouse_clickable_area = True
+                        else:
+                            button_area.color = (0, 0, 0, 0)
+                            building_sprite_img = self.building_icons[building_name]["icon_img_possible"]
+                    else:
+                        # show gray resources values
+                        button_area.color = (0, 0, 0, 0)
+                        building_sprite_img = self.building_icons[building_name]["icon_img_impossible"]
                     building_option["button_area"] = button_area
-                    # add a building sprite
+                    # building sprite
                     building_icon = Sprite(
                         img = building_sprite_img,
                         x = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 - 130,
@@ -345,24 +352,82 @@ class RightWindowWidget:
                     # building_options_list.append(building_sprite)
                     # building_options_list[building_name] = building_sprite
                     building_option["building_icon"] = building_icon
+                    # power icon
                     power_icon = Sprite(
                         img = self.game_data.icon_bolt_light_gray,
                         x = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 - 60,
-                        y = self.game_data.window_height - 110 - int(building_index * 61.8) + 15,
+                        y = self.game_data.window_height - 110 - int(building_index * 61.8) + 13,
                         batch=self.batch,
                         group=self.groups[3]
                     )
                     power_icon.scale = .05
                     building_option["power_icon"] = power_icon
-                    power_label = ...
-                    # "iron": 0,
-                    # iron_icon = Label()
-                    # "aluminium": 0,
-                    # aluminium_icon = Label()
-                    # "copper": 0,
-                    # copper_icon = Label()
+                    building_parameters_per_level = current_colony.building_types_dict[building_name].parameters_per_level
+                    # power label
+                    power_label_string = "{:+}".format(building_parameters_per_level[1]["power"]["produced"] -
+                                                       building_parameters_per_level[1]["power"]["consumed"])
+                    power_label = Label(power_label_string, font_name=self.game_data.default_font_name, font_size=14,
+                        x = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 - 60,
+                        y = self.game_data.window_height - 110 - int(building_index * 61.8) - 20,
+                        anchor_x="center", batch=self.batch, group=self.groups[3])
+                    building_option["power_label"] = power_label
+                    # iron icon
+                    iron_icon = Label("Fe", font_name=self.game_data.subtitle_font_name, font_size=15,
+                        color = (192, 192, 192, 255),
+                        x = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 - 15,
+                        y = self.game_data.window_height - 110 - int(building_index * 61.8) + 15,
+                        anchor_x="center", anchor_y="center", batch=self.batch, group=self.groups[3])
+                    building_option["iron_icon"] = iron_icon
+                    # iron label
+                    iron_label_string = str(building_parameters_per_level[0]["construction_costs"]["iron"])
+                    iron_label = Label(iron_label_string, font_name=self.game_data.default_font_name, font_size=14,
+                        x = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 - 15,
+                        y = self.game_data.window_height - 110 - int(building_index * 61.8) - 20,
+                        anchor_x="center", batch=self.batch, group=self.groups[3])
+                    building_option["iron_label"] = iron_label
+                    # aluminium icon
+                    aluminium_icon = Label("Al", font_name=self.game_data.subtitle_font_name, font_size=15,
+                        color = (192, 192, 192, 255),
+                        x = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 + 30,
+                        y = self.game_data.window_height - 110 - int(building_index * 61.8) + 15,
+                        anchor_x="center", anchor_y="center", batch=self.batch, group=self.groups[3])
+                    building_option["aluminium_icon"] = aluminium_icon
+                    # aluminium label
+                    aluminium_label_string = str(building_parameters_per_level[0]["construction_costs"]["aluminium"])
+                    aluminium_label = Label(aluminium_label_string, font_name=self.game_data.default_font_name, font_size=14,
+                        x = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 + 30,
+                        y = self.game_data.window_height - 110 - int(building_index * 61.8) - 20,
+                        anchor_x="center", batch=self.batch, group=self.groups[3])
+                    building_option["aluminium_label"] = aluminium_label
+                    # copper icon
+                    copper_icon = Label("Cu", font_name=self.game_data.subtitle_font_name, font_size=15,
+                        color = (192, 192, 192, 255),
+                        x = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 + 75,
+                        y = self.game_data.window_height - 110 - int(building_index * 61.8) + 15,
+                        anchor_x="center", anchor_y="center", batch=self.batch, group=self.groups[3])
+                    building_option["copper_icon"] = copper_icon
+                    # copper label
+                    copper_label_string = str(building_parameters_per_level[0]["construction_costs"]["copper"])
+                    copper_label = Label(copper_label_string, font_name=self.game_data.default_font_name, font_size=14,
+                        x = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 + 75,
+                        y = self.game_data.window_height - 110 - int(building_index * 61.8) - 20,
+                        anchor_x="center", batch=self.batch, group=self.groups[3])
+                    building_option["copper_label"] = copper_label
                     # "titanium": 0
-                    # titanium_icon = Label()
+                    # titanium icon
+                    titanium_icon = Label("Ti", font_name=self.game_data.subtitle_font_name, font_size=15,
+                        color = (192, 192, 192, 255),
+                        x = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 + 120,
+                        y = self.game_data.window_height - 110 - int(building_index * 61.8) + 15,
+                        anchor_x="center", anchor_y="center", batch=self.batch, group=self.groups[3])
+                    building_option["titanium_icon"] = titanium_icon
+                    # copper label
+                    titanium_label_string = str(building_parameters_per_level[0]["construction_costs"]["titanium"])
+                    titanium_label = Label(titanium_label_string, font_name=self.game_data.default_font_name, font_size=14,
+                        x = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 + 120,
+                        y = self.game_data.window_height - 110 - int(building_index * 61.8) - 20,
+                        anchor_x="center", batch=self.batch, group=self.groups[3])
+                    building_option["titanium_label"] = titanium_label
                     building_options_dict[building_name] = building_option
                 self.content["building_options_dict"] = building_options_dict
             else:
@@ -377,6 +442,7 @@ class RightWindowWidget:
 
     # def on_mouse_motion(self):
     #     pass
+
 
 class SceneColony(Scene):
 
