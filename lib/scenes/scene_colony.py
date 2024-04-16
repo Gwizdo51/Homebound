@@ -179,7 +179,27 @@ class BuildingWidget:
     #             self.game_data.mouse_clickable_area = True
 
 
+class RigthWindowWidgetContent:
+
+    def __init__(self, game_data: GameData, batch, groups):
+        # only called when the content of the right window has to be redrawn
+        pass
+
+
 class RightWindowWidget:
+
+    # right window ideas:
+    # right window state = (current_colony, current_building_coords, current_building)
+    # at each on_draw():
+    # - if any value in the state has changed:
+    #     - redraw the entire window (create a new RightWindowWidgetContent object)
+    #     - update the window state (self.current_state)
+    # - redraw the colors and opacity of items in the window according to the game state (update the RightWindowWidgetContent object)
+    # at each on_mouse_press():
+    # - if no value in the state has changed:
+    #     - send the click to the RightWindowWidgetContent object
+
+    # -> create a RightWindowWidgetContent class
 
     name_translation_en2fr = {
         "headquarters": "QG",
@@ -438,7 +458,19 @@ class RightWindowWidget:
 
     def on_mouse_press(self, x, y):
         current_colony = self.game_data.colonies[self.game_data.active_colony]
-        ...
+        # check if a building tile is selected
+        if current_colony.selected_building_tile_coords is not None:
+            # check which building is on the tile
+            if current_colony.selected_building is None:
+                # check if the options are displayed
+                if not ("building_options_dict" in self.content.keys()):
+                    return
+                # check which option has been clicked on
+                for building_name in self.content["building_options_dict"].keys():
+                    if (x, y) in self.content["building_options_dict"][building_name]["button_area"]:
+                        # print(building_name)
+                        # add the building to the colony if possible
+                        current_colony.add_building(building_name)
 
     # def on_mouse_motion(self):
     #     pass
