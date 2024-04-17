@@ -31,7 +31,7 @@ class Colony:
         # buildings (matrix of Building objects, 7x7)
         self.building_grid: list[list[Optional[Building]]] = [[None for column_index in range(7)] for line_index in range(7)]
         # self.selected_building_tile_coords = (x, y) = (column index, line index)
-        self.selected_building_tile_coords = None
+        self.selected_building_tile_coords: Optional[tuple[int, int]] = None
         # colony data
         self.data = {}
         # resources

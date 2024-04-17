@@ -181,27 +181,7 @@ class BuildingWidget:
 
 class RigthWindowWidgetContent:
 
-    def __init__(self, game_data: GameData, batch, groups):
-        # only called when the content of the right window has to be redrawn
-        pass
-
-
-class RightWindowWidget:
-
-    # right window ideas:
-    # right window state = (current_colony, current_building_coords, current_building)
-    # at each on_draw():
-    # - if any value in the state has changed:
-    #     - redraw the entire window (create a new RightWindowWidgetContent object)
-    #     - update the window state (self.current_state)
-    # - redraw the colors and opacity of items in the window according to the game state (update the RightWindowWidgetContent object)
-    # at each on_mouse_press():
-    # - if no value in the state has changed:
-    #     - send the click to the RightWindowWidgetContent object
-
-    # -> create a RightWindowWidgetContent class
-
-    name_translation_en2fr = {
+    building_name_translation_en2fr = {
         "headquarters": "QG",
         "solar_panels": "PANNEAUX SOLAIRES",
         "drilling_station": "FOREUSE",
@@ -215,88 +195,17 @@ class RightWindowWidget:
         "factory": "USINE"
     }
 
-    def __init__(self, game_data: GameData, batch, groups):
+    def __init__(self, game_data: GameData, building_icons_dict: dict[str, dict[str]], batch, groups):
+        # only called when the content of the right window has to be redrawn
+        # contains the sprites and labels of the right window, according to the game state
         self.game_data = game_data
+        self.building_icons_dict = building_icons_dict
         self.batch = batch
         self.groups = groups
-        self.building_icons = {
-            "solar_panels": {
-                # dark gray
-                "icon_img_impossible": self.game_data.icon_solar_panels_dark_gray,
-                # white
-                "icon_img_possible": self.game_data.icon_solar_panels_white,
-                # light green
-                # #68B842
-                "icon_img_hovered": self.game_data.icon_solar_panels_green,
-                "icon_scale": .15
-            },
-            "drilling_station": {
-                "icon_img_impossible": self.game_data.icon_drill_dark_gray,
-                "icon_img_possible": self.game_data.icon_drill_white,
-                "icon_img_hovered": self.game_data.icon_drill_green,
-                "icon_scale": .15
-            },
-            "warehouse": {
-                "icon_img_impossible": self.game_data.icon_crate_dark_gray,
-                "icon_img_possible": self.game_data.icon_crate_white,
-                "icon_img_hovered": self.game_data.icon_crate_green,
-                "icon_scale": .15
-            },
-            "liquid_tank": {
-                "icon_img_impossible": self.game_data.icon_barrel_dark_gray,
-                "icon_img_possible": self.game_data.icon_barrel_white,
-                "icon_img_hovered": self.game_data.icon_barrel_green,
-                "icon_scale": .15
-            },
-            "electrolysis_station": {
-                "icon_img_impossible": self.game_data.icon_bubbles_dark_gray,
-                "icon_img_possible": self.game_data.icon_bubbles_white,
-                "icon_img_hovered": self.game_data.icon_bubbles_green,
-                "icon_scale": .15
-            },
-            "furnace": {
-                "icon_img_impossible": self.game_data.icon_flame_dark_gray,
-                "icon_img_possible": self.game_data.icon_flame_white,
-                "icon_img_hovered": self.game_data.icon_flame_green,
-                "icon_scale": .15
-            },
-            "spaceport": {
-                "icon_img_impossible": self.game_data.icon_spaceship_dark_gray,
-                "icon_img_possible": self.game_data.icon_spaceship_white,
-                "icon_img_hovered": self.game_data.icon_spaceship_green,
-                "icon_scale": .15
-            },
-            "greenhouse": {
-                "icon_img_impossible": self.game_data.icon_tree_dark_gray,
-                "icon_img_possible": self.game_data.icon_tree_white,
-                "icon_img_hovered": self.game_data.icon_tree_green,
-                "icon_scale": .15
-            },
-            "school": {
-                "icon_img_impossible": self.game_data.icon_book_dark_gray,
-                "icon_img_possible": self.game_data.icon_book_white,
-                "icon_img_hovered": self.game_data.icon_book_green,
-                "icon_scale": .15
-            },
-            "factory": {
-                "icon_img_impossible": self.game_data.icon_factory_dark_gray,
-                "icon_img_possible": self.game_data.icon_factory_white,
-                "icon_img_hovered": self.game_data.icon_factory_green,
-                "icon_scale": .15
-            }
-        }
-
-    def on_draw(self):
-        # if no building is selected, don't display anything
-        current_colony = self.game_data.colonies[self.game_data.active_colony]
-        # selected_building_tile_coords = current_colony.selected_building_tile_coords
-        # if current_colony.selected_building_tile_coords is None:
-        #     # clear the window
-        #     self.content = {}
-        # else:
-        # clear the window
+        self.current_colony = self.game_data.colonies[self.game_data.active_colony]
+        # the content of the right window
         self.content = {}
-        if current_colony.selected_building_tile_coords is not None:
+        if self.current_colony.selected_building_tile_coords is not None:
             # window sprite
             self.content["window_sprite"] = Sprite(
                 img = self.game_data.side_window,
@@ -305,73 +214,57 @@ class RightWindowWidget:
                 batch=self.batch,
                 group=self.groups[1]
             )
-
             self.content["window_sprite"].opacity = 170
             self.content["window_sprite"].scale = 2
             self.content["window_sprite"].scale_y = 1.5
-            # test window size
-            # self.content["test_size_rect"] = shapes.Rectangle(
-            #     x = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 - 160,
-            #     y = 25,
-            #     width = 320,
-            #     height = 618,
-            #     color = (255, 255, 255, 255),
-            #     batch=self.batch,
-            #     group=self.groups[2]
-            # )
-            # window title
-            selected_building = current_colony.selected_building
-            if selected_building is None:
-                # self.content["title_label"] = "CONSTRUIRE"
+            self.selected_building = self.current_colony.selected_building
+            if self.selected_building is None:
+                # window title
                 self.content["title_label"] = Label("CONSTRUIRE", font_name=self.game_data.subtitle_font_name, font_size=15,
                     x=self.game_data.window_width - 25 - 315, y=self.game_data.window_height - 43, width=315,
                     align="center", anchor_y="center", batch=self.batch, group=self.groups[2])
-                # make a list of possible buildings to build
-                # self.content["building_options_list"] = []
+                # make a list of possible buildings to build (without the headquarters)
                 building_options_dict = {}
-                for building_index, building_name in enumerate(list(current_colony.building_types_dict.keys())[1:]):
-                    # self.content["building_options_list"].append([])
-                    # print(building_name)
+                for building_index, building_name in enumerate(list(self.current_colony.building_types_dict.keys())[1:]):
                     building_option = {}
-                    # area to click on
-                    button_area = shapes.Rectangle(
+                    building_option["button_area"] = shapes.Rectangle(
                         x = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 - 160,
                         y = self.game_data.window_height - 135 - building_index * 62,
                         width = 320,
                         height = 55,
-                        # color = (255, 0, 0, 127),
                         batch=self.batch,
                         group=self.groups[2]
                     )
-                    if current_colony.can_add_building(building_name):
-                        # show white resources values
-                        # show green name if hovered
-                        # building_sprite_img = self.building_icons[building_name]["icon_img_possible"]
-                        if (self.game_data.mouse_x, self.game_data.mouse_y) in button_area:
-                            button_area.color = (192, 192, 192, 63)
-                            building_sprite_img = self.building_icons[building_name]["icon_img_hovered"]
-                            self.game_data.mouse_clickable_area = True
-                        else:
-                            button_area.color = (0, 0, 0, 0)
-                            building_sprite_img = self.building_icons[building_name]["icon_img_possible"]
-                    else:
-                        # show gray resources values
-                        button_area.color = (0, 0, 0, 0)
-                        building_sprite_img = self.building_icons[building_name]["icon_img_impossible"]
-                    building_option["button_area"] = button_area
-                    # building sprite
-                    building_icon = Sprite(
-                        img = building_sprite_img,
+                    # building_option["button_area"] = button_area
+                    # building icons
+                    building_icon_impossible = Sprite(
+                        img = self.building_icons_dict[building_name]["icon_img_impossible"],
                         x = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 - 130,
                         y = self.game_data.window_height - 110 - int(building_index * 61.8),
                         batch=self.batch,
                         group=self.groups[3]
                     )
-                    # print(self.content["window_sprite"].width)
-                    building_icon.scale = self.building_icons[building_name]["icon_scale"]
-                    # building_options_list.append(building_sprite)
-                    # building_options_list[building_name] = building_sprite
-                    building_option["building_icon"] = building_icon
+                    # building_icon_impossible.scale = self.building_icons_dict[building_name]["icon_scale"]
+                    building_icon_impossible.scale = .15
+                    building_option["building_icon_impossible"] = building_icon_impossible
+                    building_icon_possible = Sprite(
+                        img = self.building_icons_dict[building_name]["icon_img_possible"],
+                        x = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 - 130,
+                        y = self.game_data.window_height - 110 - int(building_index * 61.8),
+                        batch=self.batch,
+                        group=self.groups[3]
+                    )
+                    building_icon_possible.scale = .15
+                    building_option["building_icon_possible"] = building_icon_possible
+                    building_icon_hovered = Sprite(
+                        img = self.building_icons_dict[building_name]["icon_img_hovered"],
+                        x = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 - 130,
+                        y = self.game_data.window_height - 110 - int(building_index * 61.8),
+                        batch=self.batch,
+                        group=self.groups[3]
+                    )
+                    building_icon_hovered.scale = .15
+                    building_option["building_icon_hovered"] = building_icon_hovered
                     # power icon
                     power_icon = Sprite(
                         img = self.game_data.icon_bolt_light_gray,
@@ -382,7 +275,7 @@ class RightWindowWidget:
                     )
                     power_icon.scale = .05
                     building_option["power_icon"] = power_icon
-                    building_parameters_per_level = current_colony.building_types_dict[building_name].parameters_per_level
+                    building_parameters_per_level = self.current_colony.building_types_dict[building_name].parameters_per_level
                     # power label
                     power_label_string = "{:+}".format(building_parameters_per_level[1]["power"]["produced"] -
                                                        building_parameters_per_level[1]["power"]["consumed"])
@@ -451,29 +344,154 @@ class RightWindowWidget:
                     building_options_dict[building_name] = building_option
                 self.content["building_options_dict"] = building_options_dict
             else:
-                # self.content["title_label"] = self.name_translation_en2fr[selected_building.name]
-                self.content["title_label"] = Label(self.name_translation_en2fr[selected_building.name], font_name=self.game_data.subtitle_font_name, font_size=15,
+                # window title
+                self.content["title_label"] = Label(self.building_name_translation_en2fr[self.selected_building.name], font_name=self.game_data.subtitle_font_name, font_size=15,
                     x=self.game_data.window_width - 25 - 315, y=self.game_data.window_height - 43, width=315,
                     align="center", anchor_y="center", batch=self.batch, group=self.groups[2])
 
+    def on_draw(self):
+        # redraw the colors and opacity of items in the window according to the game state
+        if self.current_colony.selected_building_tile_coords is not None:
+            # selected_building = self.current_colony.selected_building
+            if self.current_colony.selected_building is None:
+                for building_name in self.content["building_options_dict"].keys():
+                    building_option = self.content["building_options_dict"][building_name]
+                    # set all building icons to transparent
+                    building_option["building_icon_impossible"].opacity = 0
+                    building_option["building_icon_possible"].opacity = 0
+                    building_option["building_icon_hovered"].opacity = 0
+                    if self.current_colony.can_add_building(building_name):
+                        if (self.game_data.mouse_x, self.game_data.mouse_y) in building_option["button_area"]:
+                            building_option["button_area"].color = (192, 192, 192, 63)
+                            # building_sprite_img = self.building_icons[building_name]["icon_img_hovered"]
+                            building_option["building_icon_hovered"].opacity = 255
+                            self.game_data.mouse_clickable_area = True
+                        else:
+                            building_option["button_area"].color = (0, 0, 0, 0)
+                            # building_sprite_img = self.building_icons[building_name]["icon_img_possible"]
+                            building_option["building_icon_possible"].opacity = 255
+                    else:
+                        # show gray resources values
+                        building_option["button_area"].color = (0, 0, 0, 0)
+                        # building_sprite_img = self.building_icons[building_name]["icon_img_impossible"]
+                        building_option["building_icon_impossible"].opacity = 255
+
     def on_mouse_press(self, x, y):
-        current_colony = self.game_data.colonies[self.game_data.active_colony]
         # check if a building tile is selected
-        if current_colony.selected_building_tile_coords is not None:
+        if self.current_colony.selected_building_tile_coords is not None:
             # check which building is on the tile
-            if current_colony.selected_building is None:
-                # check if the options are displayed
-                if not ("building_options_dict" in self.content.keys()):
-                    return
+            if self.current_colony.selected_building is None:
                 # check which option has been clicked on
                 for building_name in self.content["building_options_dict"].keys():
                     if (x, y) in self.content["building_options_dict"][building_name]["button_area"]:
                         # print(building_name)
                         # add the building to the colony if possible
-                        current_colony.add_building(building_name)
+                        self.current_colony.add_building(building_name)
 
-    # def on_mouse_motion(self):
-    #     pass
+
+class RightWindowWidget:
+
+    def __init__(self, game_data: GameData, batch, groups):
+        self.game_data = game_data
+        self.batch = batch
+        self.groups = groups
+        # right window state = (current_colony, current_building_coords, current_building)
+        self.displayed_state = (self.game_data.active_colony, None, None)
+        # building icons
+        self.building_icons = {
+            "solar_panels": {
+                # dark gray
+                "icon_img_impossible": self.game_data.icon_solar_panels_dark_gray,
+                # white
+                "icon_img_possible": self.game_data.icon_solar_panels_white,
+                # light green
+                # #68B842
+                "icon_img_hovered": self.game_data.icon_solar_panels_green,
+                "icon_scale": .15
+            },
+            "drilling_station": {
+                "icon_img_impossible": self.game_data.icon_drill_dark_gray,
+                "icon_img_possible": self.game_data.icon_drill_white,
+                "icon_img_hovered": self.game_data.icon_drill_green,
+                "icon_scale": .15
+            },
+            "warehouse": {
+                "icon_img_impossible": self.game_data.icon_crate_dark_gray,
+                "icon_img_possible": self.game_data.icon_crate_white,
+                "icon_img_hovered": self.game_data.icon_crate_green,
+                "icon_scale": .15
+            },
+            "liquid_tank": {
+                "icon_img_impossible": self.game_data.icon_barrel_dark_gray,
+                "icon_img_possible": self.game_data.icon_barrel_white,
+                "icon_img_hovered": self.game_data.icon_barrel_green,
+                "icon_scale": .15
+            },
+            "electrolysis_station": {
+                "icon_img_impossible": self.game_data.icon_bubbles_dark_gray,
+                "icon_img_possible": self.game_data.icon_bubbles_white,
+                "icon_img_hovered": self.game_data.icon_bubbles_green,
+                "icon_scale": .15
+            },
+            "furnace": {
+                "icon_img_impossible": self.game_data.icon_flame_dark_gray,
+                "icon_img_possible": self.game_data.icon_flame_white,
+                "icon_img_hovered": self.game_data.icon_flame_green,
+                "icon_scale": .15
+            },
+            "spaceport": {
+                "icon_img_impossible": self.game_data.icon_spaceship_dark_gray,
+                "icon_img_possible": self.game_data.icon_spaceship_white,
+                "icon_img_hovered": self.game_data.icon_spaceship_green,
+                "icon_scale": .15
+            },
+            "greenhouse": {
+                "icon_img_impossible": self.game_data.icon_tree_dark_gray,
+                "icon_img_possible": self.game_data.icon_tree_white,
+                "icon_img_hovered": self.game_data.icon_tree_green,
+                "icon_scale": .15
+            },
+            "school": {
+                "icon_img_impossible": self.game_data.icon_book_dark_gray,
+                "icon_img_possible": self.game_data.icon_book_white,
+                "icon_img_hovered": self.game_data.icon_book_green,
+                "icon_scale": .15
+            },
+            "factory": {
+                "icon_img_impossible": self.game_data.icon_factory_dark_gray,
+                "icon_img_possible": self.game_data.icon_factory_white,
+                "icon_img_hovered": self.game_data.icon_factory_green,
+                "icon_scale": .15
+            }
+        }
+        self.widget_content = RigthWindowWidgetContent(self.game_data, self.building_icons, self.batch, self.groups)
+
+    @property
+    def current_state(self):
+        active_colony = self.game_data.active_colony
+        current_colony = self.game_data.colonies[active_colony]
+        if (current_colony.selected_building_tile_coords is not None) and (current_colony.selected_building is not None):
+            current_building = current_colony.selected_building.name
+        else:
+            current_building = None
+        return self.game_data.active_colony, current_colony.selected_building_tile_coords, current_building
+
+    def on_draw(self):
+        # if any value in the state has changed:
+        # - redraw the entire window (create a new RightWindowWidgetContent object)
+        # - update the window state (self.current_state)
+        current_state = self.current_state
+        if current_state != self.displayed_state:
+            # print("right window state changed")
+            self.widget_content = RigthWindowWidgetContent(self.game_data, self.building_icons, self.batch, self.groups)
+            self.displayed_state = current_state
+        # update the RightWindowWidgetContent object
+        self.widget_content.on_draw()
+
+    def on_mouse_press(self, x, y):
+        # only send the mouse press if the current state is the one displayed
+        if self.current_state == self.displayed_state:
+            self.widget_content.on_mouse_press(x, y)
 
 
 class SceneColony(Scene):
