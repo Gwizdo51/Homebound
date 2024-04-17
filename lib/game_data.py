@@ -68,7 +68,8 @@ class GameData:
     def update(self, dt):
         # update every colony
         # update every flying spaceships
-        pass
+        for colony_name in self.colonies.keys():
+            self.colonies[colony_name].update(dt)
 
 
     def load_resources(self):

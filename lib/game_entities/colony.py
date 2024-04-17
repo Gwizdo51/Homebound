@@ -143,6 +143,9 @@ class Colony:
             self.building_grid[1][2] = BuildingFactory(self.data)
             self.building_grid[1][2].level = 1
             self.building_grid[1][2].is_constructing = False
+            # add people
+            self.data["workers"]["engineers"]["available"] = self.data["workers"]["engineers"]["total"] = 20
+            self.data["workers"]["scientists"]["available"] = self.data["workers"]["scientists"]["total"] = 20
 
     @property
     def power(self) -> dict[str, int]:
@@ -270,18 +273,11 @@ class Colony:
 
 
     def destroy_building(self):
-        # building = self.selected_building
-        # disable the building if possible
-        # if building.enabled and building.can_disable:
-        #     building.use_power_switch()
-        # prepare the building for destruction
-        # building.on_destruction()
-        self.selected_building.on_destruction()
-        # cancel the construction if it is construction
-        # if building.is_constructing:
-        #     building.cancel_upgrade()
-        # remove the building from the building grid
-        self.selected_building = None
+        if self.can_destroy_building():
+            # prepare the building for destruction
+            self.selected_building.on_destruction()
+            # remove the building from the building grid
+            self.selected_building = None
 
 
     def land_ship(self):

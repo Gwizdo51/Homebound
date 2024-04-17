@@ -217,6 +217,16 @@ class RigthWindowWidgetContent:
             self.content["window_sprite"].opacity = 170
             self.content["window_sprite"].scale = 2
             self.content["window_sprite"].scale_y = 1.5
+            # test window size
+            # self.content["test_size_rect"] = shapes.Rectangle(
+            #     x = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 - 160,
+            #     y = 25,
+            #     width = 320,
+            #     height = 618,
+            #     color = (255, 255, 255, 255),
+            #     batch=self.batch,
+            #     group=self.groups[2]
+            # )
             self.selected_building = self.current_colony.selected_building
             if self.selected_building is None:
                 # window title
@@ -348,12 +358,307 @@ class RigthWindowWidgetContent:
                 self.content["title_label"] = Label(self.building_name_translation_en2fr[self.selected_building.name], font_name=self.game_data.subtitle_font_name, font_size=15,
                     x=self.game_data.window_width - 25 - 315, y=self.game_data.window_height - 43, width=315,
                     align="center", anchor_y="center", batch=self.batch, group=self.groups[2])
+                # display for each building:
+                # - building level
+                # - workers:
+                #     - production jobs: engineers + scientists
+                #     - if constructing: engineers jobs
+                #     - for each (grayed if not possible):
+                #         - + button
+                #         - - button
+                #         - fill button
+                #         - empty button
+                # - upgrade button (grayed if impossible), that becomes a "cancel upgrade" button when constructing
+                # - construction percentage when constructing
+                # - destroy button (grayed when impossible, that transforms into a "sure?" button when pressed once
+                # building level
+                self.content["building_level_label"] = Label("NIVEAU", font_name=self.game_data.subtitle_font_name, font_size=15,
+                    color = (192, 192, 192, 255),
+                    x = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 - 100,
+                    y = self.game_data.window_height - 110,
+                    anchor_x="center", batch=self.batch, group=self.groups[2])
+                self.content["building_level_value"] = Label("X", font_name=self.game_data.subtitle_font_name, font_size=22,
+                    color = (255, 255, 255, 255),
+                    x = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 - 30,
+                    y = self.game_data.window_height - 110,
+                    anchor_x="center", batch=self.batch, group=self.groups[2])
+                # building power
+                self.content["building_power_icon"] = Sprite(
+                    img = self.game_data.icon_bolt_light_gray,
+                    x = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 + 60,
+                    y = self.game_data.window_height - 105,
+                    batch=self.batch,
+                    group=self.groups[2]
+                )
+                self.content["building_power_icon"].scale = .08
+                self.content["building_power_value"] = Label("-XX", font_name=self.game_data.subtitle_font_name, font_size=15,
+                    x = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 + 110,
+                    y = self.game_data.window_height - 110,
+                    anchor_x="center", batch=self.batch, group=self.groups[2])
+                # production jobs
+                self.content["production_jobs_title"] = Label("PRODUCTION", font_name=self.game_data.subtitle_font_name, font_size=15,
+                    color = (192, 192, 192, 255),
+                    x = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15,
+                    y = self.game_data.window_height - 140,
+                    anchor_x="center", anchor_y="center", batch=self.batch, group=self.groups[2])
+                # engineers
+                self.content["production_jobs_engineers_icon"] = Sprite(
+                    img = self.game_data.icon_wrench_light_gray,
+                    x = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 - 120,
+                    y = self.game_data.window_height - 180,
+                    batch=self.batch,
+                    group=self.groups[2]
+                )
+                self.content["production_jobs_engineers_icon"].scale = .18
+                self.content["production_jobs_engineers_value"] = Label("XX/XX", font_name=self.game_data.default_font_name, font_size=14,
+                    color = (255, 255, 255, 255),
+                    x = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 - 60,
+                    y = self.game_data.window_height - 180,
+                    anchor_x="center", anchor_y="center", batch=self.batch, group=self.groups[2])
+                # +1 button
+                self.content["production_jobs_engineers_add_button_area"] = shapes.Rectangle(
+                    x = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 - 10,
+                    y = self.game_data.window_height - 180,
+                    width = 22,
+                    height = 20,
+                    color = (192, 192, 192, 0),
+                    batch=self.batch,
+                    group=self.groups[2]
+                )
+                self.content["production_jobs_engineers_add_button_label"] = Label("+1", font_name=self.game_data.subtitle_font_name, font_size=13,
+                    x = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15,
+                    y = self.game_data.window_height - 175,
+                    anchor_x="center", batch=self.batch, group=self.groups[3])
+                # -1 button
+                self.content["production_jobs_engineers_remove_button_area"] = shapes.Rectangle(
+                    x = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 - 10,
+                    y = self.game_data.window_height - 205,
+                    width = 22,
+                    height = 20,
+                    color = (192, 192, 192, 0),
+                    batch=self.batch,
+                    group=self.groups[2]
+                )
+                self.content["production_jobs_engineers_remove_button_label"] = Label("-1", font_name=self.game_data.subtitle_font_name, font_size=13,
+                    x = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15,
+                    y = self.game_data.window_height - 200,
+                    anchor_x="center", batch=self.batch, group=self.groups[3])
+                # fill button
+                self.content["production_jobs_engineers_fill_button_area"] = shapes.Rectangle(
+                    x = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 + 25,
+                    y = self.game_data.window_height - 180,
+                    width = 100,
+                    height = 20,
+                    color = (192, 192, 192, 0),
+                    batch=self.batch,
+                    group=self.groups[2]
+                )
+                self.content["production_jobs_engineers_fill_button_label"] = Label("REMPLIR", font_name=self.game_data.subtitle_font_name, font_size=13,
+                    x = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 + 75,
+                    y = self.game_data.window_height - 175,
+                    anchor_x="center", batch=self.batch, group=self.groups[3])
+                # empty button
+                self.content["production_jobs_engineers_empty_button_area"] = shapes.Rectangle(
+                    x = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 + 25,
+                    y = self.game_data.window_height - 205,
+                    width = 100,
+                    height = 20,
+                    color = (192, 192, 192, 0),
+                    batch=self.batch,
+                    group=self.groups[2]
+                )
+                self.content["production_jobs_engineers_empty_button_label"] = Label("VIDER", font_name=self.game_data.subtitle_font_name, font_size=13,
+                    x = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 + 75,
+                    y = self.game_data.window_height - 200,
+                    anchor_x="center", batch=self.batch, group=self.groups[3])
+                # scientists
+                self.content["production_jobs_scientists_icon"] = Sprite(
+                    img = self.game_data.icon_vial_light_gray,
+                    x = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 - 120,
+                    y = self.game_data.window_height - 230,
+                    batch=self.batch,
+                    group=self.groups[2]
+                )
+                self.content["production_jobs_scientists_icon"].scale = .15
+                self.content["production_jobs_scientists_value"] = Label("XX/XX", font_name=self.game_data.default_font_name, font_size=14,
+                    color = (255, 255, 255, 255),
+                    x = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 - 60,
+                    y = self.game_data.window_height - 230,
+                    anchor_x="center", anchor_y="center", batch=self.batch, group=self.groups[2])
+                # +1 button
+                self.content["production_jobs_scientists_add_button_area"] = shapes.Rectangle(
+                    x = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 - 10,
+                    y = self.game_data.window_height - 230,
+                    width = 22,
+                    height = 20,
+                    color = (192, 192, 192, 0),
+                    batch=self.batch,
+                    group=self.groups[2]
+                )
+                self.content["production_jobs_scientists_add_button_label"] = Label("+1", font_name=self.game_data.subtitle_font_name, font_size=13,
+                    x = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15,
+                    y = self.game_data.window_height - 225,
+                    anchor_x="center", batch=self.batch, group=self.groups[3])
+                # -1 button
+                self.content["production_jobs_scientists_remove_button_area"] = shapes.Rectangle(
+                    x = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 - 10,
+                    y = self.game_data.window_height - 255,
+                    width = 22,
+                    height = 20,
+                    color = (192, 192, 192, 0),
+                    batch=self.batch,
+                    group=self.groups[2]
+                )
+                self.content["production_jobs_scientists_remove_button_label"] = Label("-1", font_name=self.game_data.subtitle_font_name, font_size=13,
+                    x = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15,
+                    y = self.game_data.window_height - 250,
+                    anchor_x="center", batch=self.batch, group=self.groups[3])
+                # fill button
+                self.content["production_jobs_scientists_fill_button_area"] = shapes.Rectangle(
+                    x = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 + 25,
+                    y = self.game_data.window_height - 230,
+                    width = 100,
+                    height = 20,
+                    color = (192, 192, 192, 0),
+                    batch=self.batch,
+                    group=self.groups[2]
+                )
+                self.content["production_jobs_scientists_fill_button_label"] = Label("REMPLIR", font_name=self.game_data.subtitle_font_name, font_size=13,
+                    x = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 + 75,
+                    y = self.game_data.window_height - 225,
+                    anchor_x="center", batch=self.batch, group=self.groups[3])
+                # empty button
+                self.content["production_jobs_scientists_empty_button_area"] = shapes.Rectangle(
+                    x = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 + 25,
+                    y = self.game_data.window_height - 255,
+                    width = 100,
+                    height = 20,
+                    color = (192, 192, 192, 0),
+                    batch=self.batch,
+                    group=self.groups[2]
+                )
+                self.content["production_jobs_scientists_empty_button_label"] = Label("VIDER", font_name=self.game_data.subtitle_font_name, font_size=13,
+                    x = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 + 75,
+                    y = self.game_data.window_height - 250,
+                    anchor_x="center", batch=self.batch, group=self.groups[3])
+                # construction jobs
+                self.content["construction_jobs_title"] = Label("CONSTRUCTION", font_name=self.game_data.subtitle_font_name, font_size=15,
+                    color = (192, 192, 192, 255),
+                    x = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15,
+                    y = self.game_data.window_height - 275,
+                    anchor_x="center", anchor_y="center", batch=self.batch, group=self.groups[2])
+                # engineers
+                self.content["construction_jobs_engineers_icon"] = Sprite(
+                    img = self.game_data.icon_wrench_light_gray,
+                    x = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 - 120,
+                    y = self.game_data.window_height - 315,
+                    batch=self.batch,
+                    group=self.groups[2]
+                )
+                self.content["construction_jobs_engineers_icon"].scale = .18
+                self.content["construction_jobs_value"] = Label("XX/XX", font_name=self.game_data.default_font_name, font_size=14,
+                    color = (255, 255, 255, 255),
+                    x = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 - 60,
+                    y = self.game_data.window_height - 315,
+                    anchor_x="center", anchor_y="center", batch=self.batch, group=self.groups[2])
+                # +1 button
+                self.content["construction_jobs_add_button_area"] = shapes.Rectangle(
+                    x = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 - 10,
+                    y = self.game_data.window_height - 315,
+                    width = 22,
+                    height = 20,
+                    color = (192, 192, 192, 0),
+                    batch=self.batch,
+                    group=self.groups[2]
+                )
+                self.content["construction_jobs_add_button_label"] = Label("+1", font_name=self.game_data.subtitle_font_name, font_size=13,
+                    x = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15,
+                    y = self.game_data.window_height - 310,
+                    anchor_x="center", batch=self.batch, group=self.groups[3])
+                # -1 button
+                self.content["construction_jobs_remove_button_area"] = shapes.Rectangle(
+                    x = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 - 10,
+                    y = self.game_data.window_height - 340,
+                    width = 22,
+                    height = 20,
+                    color = (192, 192, 192, 0),
+                    batch=self.batch,
+                    group=self.groups[2]
+                )
+                self.content["construction_jobs_remove_button_label"] = Label("-1", font_name=self.game_data.subtitle_font_name, font_size=13,
+                    x = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15,
+                    y = self.game_data.window_height - 335,
+                    anchor_x="center", batch=self.batch, group=self.groups[3])
+                # fill button
+                self.content["construction_jobs_fill_button_area"] = shapes.Rectangle(
+                    x = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 + 25,
+                    y = self.game_data.window_height - 315,
+                    width = 100,
+                    height = 20,
+                    color = (192, 192, 192, 0),
+                    batch=self.batch,
+                    group=self.groups[2]
+                )
+                self.content["construction_jobs_fill_button_label"] = Label("REMPLIR", font_name=self.game_data.subtitle_font_name, font_size=13,
+                    x = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 + 75,
+                    y = self.game_data.window_height - 310,
+                    anchor_x="center", batch=self.batch, group=self.groups[3])
+                # empty button
+                self.content["construction_jobs_empty_button_area"] = shapes.Rectangle(
+                    x = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 + 25,
+                    y = self.game_data.window_height - 340,
+                    width = 100,
+                    height = 20,
+                    color = (192, 192, 192, 0),
+                    batch=self.batch,
+                    group=self.groups[2]
+                )
+                self.content["construction_jobs_empty_button_label"] = Label("VIDER", font_name=self.game_data.subtitle_font_name, font_size=13,
+                    x = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 + 75,
+                    y = self.game_data.window_height - 335,
+                    anchor_x="center", batch=self.batch, group=self.groups[3])
+                # upgrade button
+                self.content["upgrade_button_area"] = shapes.Rectangle(
+                    x = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 - 150,
+                    y = 35,
+                    width = 142,
+                    height = 23,
+                    color = (192, 192, 192, 0),
+                    batch=self.batch,
+                    group=self.groups[2]
+                )
+                self.content["upgrade_button_label"] = Label("AMELIORER", font_name=self.game_data.subtitle_font_name, font_size=15,
+                    x = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 - 80,
+                    y = 40,
+                    anchor_x="center", batch=self.batch, group=self.groups[3])
+                # upgrade percent
+                self.content["upgrade_percent_label"] = Label("XX%", font_name=self.game_data.subtitle_font_name, font_size=12,
+                    color = (192, 192, 192, 255),
+                    x = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 - 80,
+                    y = 70,
+                    anchor_x="center", batch=self.batch, group=self.groups[3])
+                # destroy button
+                self.content["destroy_button_area"] = shapes.Rectangle(
+                    x = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 + 20,
+                    y = 35,
+                    width = 120,
+                    height = 23,
+                    color = (192, 192, 192, 0),
+                    batch=self.batch,
+                    group=self.groups[2]
+                )
+                self.content["destroy_button_label"] = Label("DETRUIRE", font_name=self.game_data.subtitle_font_name, font_size=15,
+                    x = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 + 80,
+                    y = 40,
+                    anchor_x="center", batch=self.batch, group=self.groups[3])
+                # building specific stuff
+                ...
 
     def on_draw(self):
         # redraw the colors and opacity of items in the window according to the game state
         if self.current_colony.selected_building_tile_coords is not None:
             # selected_building = self.current_colony.selected_building
-            if self.current_colony.selected_building is None:
+            if self.selected_building is None:
                 for building_name in self.content["building_options_dict"].keys():
                     building_option = self.content["building_options_dict"][building_name]
                     # set all building icons to transparent
@@ -363,18 +668,137 @@ class RigthWindowWidgetContent:
                     if self.current_colony.can_add_building(building_name):
                         if (self.game_data.mouse_x, self.game_data.mouse_y) in building_option["button_area"]:
                             building_option["button_area"].color = (192, 192, 192, 63)
-                            # building_sprite_img = self.building_icons[building_name]["icon_img_hovered"]
                             building_option["building_icon_hovered"].opacity = 255
                             self.game_data.mouse_clickable_area = True
                         else:
                             building_option["button_area"].color = (0, 0, 0, 0)
-                            # building_sprite_img = self.building_icons[building_name]["icon_img_possible"]
                             building_option["building_icon_possible"].opacity = 255
                     else:
                         # show gray resources values
                         building_option["button_area"].color = (0, 0, 0, 0)
-                        # building_sprite_img = self.building_icons[building_name]["icon_img_impossible"]
                         building_option["building_icon_impossible"].opacity = 255
+            else:
+                self.content["building_level_value"].text = str(self.selected_building.level)
+                # "{:+}".format(building_parameters_per_level[1]["power"]["produced"] -
+                #               building_parameters_per_level[1]["power"]["consumed"])
+                self.content["building_power_value"].text = "{:+}".format(self.selected_building.parameters["power"]["produced"] -
+                                                                          self.selected_building.parameters["power"]["consumed"])
+                self.content["production_jobs_engineers_value"].text = f"{self.selected_building.assigned_workers["production"]["engineers"]}/{self.selected_building.parameters["jobs"]["production"]["engineers"]}"
+                self.content["production_jobs_scientists_value"].text = f"{self.selected_building.assigned_workers["production"]["scientists"]}/{self.selected_building.parameters["jobs"]["production"]["scientists"]}"
+                if self.selected_building.is_constructing:
+                    self.content["construction_jobs_value"].text = f"{self.selected_building.assigned_workers["construction"]["engineers"]}/{self.selected_building.parameters["jobs"]["construction"]["engineers"]}"
+                else:
+                    self.content["construction_jobs_value"].text = f"{self.selected_building.assigned_workers["construction"]["engineers"]}/0"
+                # production job engineers buttons
+                if self.selected_building.can_assign_worker(True, "production", "engineers"):
+                    self.content["production_jobs_engineers_add_button_label"].color = (255, 255, 255, 255)
+                    self.content["production_jobs_engineers_fill_button_label"].color = (255, 255, 255, 255)
+                    if (self.game_data.mouse_x, self.game_data.mouse_y) in self.content["production_jobs_engineers_add_button_area"]:
+                        self.content["production_jobs_engineers_add_button_label"].color = (0, 255, 0, 255)
+                        self.game_data.mouse_clickable_area = True
+                    elif (self.game_data.mouse_x, self.game_data.mouse_y) in self.content["production_jobs_engineers_fill_button_area"]:
+                        self.content["production_jobs_engineers_fill_button_label"].color = (0, 255, 0, 255)
+                        self.game_data.mouse_clickable_area = True
+                else:
+                    self.content["production_jobs_engineers_add_button_label"].color = (255, 255, 255, 64)
+                    self.content["production_jobs_engineers_fill_button_label"].color = (255, 255, 255, 64)
+                if self.selected_building.can_assign_worker(False, "production", "engineers"):
+                    self.content["production_jobs_engineers_remove_button_label"].color = (255, 255, 255, 255)
+                    self.content["production_jobs_engineers_empty_button_label"].color = (255, 255, 255, 255)
+                    if (self.game_data.mouse_x, self.game_data.mouse_y) in self.content["production_jobs_engineers_remove_button_area"]:
+                        self.content["production_jobs_engineers_remove_button_label"].color = (255, 0, 0, 255)
+                        self.game_data.mouse_clickable_area = True
+                    elif (self.game_data.mouse_x, self.game_data.mouse_y) in self.content["production_jobs_engineers_empty_button_area"]:
+                        self.content["production_jobs_engineers_empty_button_label"].color = (255, 0, 0, 255)
+                        self.game_data.mouse_clickable_area = True
+                else:
+                    self.content["production_jobs_engineers_remove_button_label"].color = (255, 255, 255, 64)
+                    self.content["production_jobs_engineers_empty_button_label"].color = (255, 255, 255, 64)
+                # production job scientists buttons
+                if self.selected_building.can_assign_worker(True, "production", "scientists"):
+                    self.content["production_jobs_scientists_add_button_label"].color = (255, 255, 255, 255)
+                    self.content["production_jobs_scientists_fill_button_label"].color = (255, 255, 255, 255)
+                    if (self.game_data.mouse_x, self.game_data.mouse_y) in self.content["production_jobs_scientists_add_button_area"]:
+                        self.content["production_jobs_scientists_add_button_label"].color = (0, 255, 0, 255)
+                        self.game_data.mouse_clickable_area = True
+                    elif (self.game_data.mouse_x, self.game_data.mouse_y) in self.content["production_jobs_scientists_fill_button_area"]:
+                        self.content["production_jobs_scientists_fill_button_label"].color = (0, 255, 0, 255)
+                        self.game_data.mouse_clickable_area = True
+                else:
+                    self.content["production_jobs_scientists_add_button_label"].color = (255, 255, 255, 64)
+                    self.content["production_jobs_scientists_fill_button_label"].color = (255, 255, 255, 64)
+                if self.selected_building.can_assign_worker(False, "production", "scientists"):
+                    self.content["production_jobs_scientists_remove_button_label"].color = (255, 255, 255, 255)
+                    self.content["production_jobs_scientists_empty_button_label"].color = (255, 255, 255, 255)
+                    if (self.game_data.mouse_x, self.game_data.mouse_y) in self.content["production_jobs_scientists_remove_button_area"]:
+                        self.content["production_jobs_scientists_remove_button_label"].color = (255, 0, 0, 255)
+                        self.game_data.mouse_clickable_area = True
+                    elif (self.game_data.mouse_x, self.game_data.mouse_y) in self.content["production_jobs_scientists_empty_button_area"]:
+                        self.content["production_jobs_scientists_empty_button_label"].color = (255, 0, 0, 255)
+                        self.game_data.mouse_clickable_area = True
+                else:
+                    self.content["production_jobs_scientists_remove_button_label"].color = (255, 255, 255, 64)
+                    self.content["production_jobs_scientists_empty_button_label"].color = (255, 255, 255, 64)
+                # construction job buttons
+                if self.selected_building.can_assign_worker(True, "construction", "engineers"):
+                    self.content["construction_jobs_add_button_label"].color = (255, 255, 255, 255)
+                    self.content["construction_jobs_fill_button_label"].color = (255, 255, 255, 255)
+                    if (self.game_data.mouse_x, self.game_data.mouse_y) in self.content["construction_jobs_add_button_area"]:
+                        self.content["construction_jobs_add_button_label"].color = (0, 255, 0, 255)
+                        self.game_data.mouse_clickable_area = True
+                    elif (self.game_data.mouse_x, self.game_data.mouse_y) in self.content["construction_jobs_fill_button_area"]:
+                        self.content["construction_jobs_fill_button_label"].color = (0, 255, 0, 255)
+                        self.game_data.mouse_clickable_area = True
+                else:
+                    self.content["construction_jobs_add_button_label"].color = (255, 255, 255, 64)
+                    self.content["construction_jobs_fill_button_label"].color = (255, 255, 255, 64)
+                if self.selected_building.can_assign_worker(False, "construction", "engineers"):
+                    self.content["construction_jobs_remove_button_label"].color = (255, 255, 255, 255)
+                    self.content["construction_jobs_empty_button_label"].color = (255, 255, 255, 255)
+                    if (self.game_data.mouse_x, self.game_data.mouse_y) in self.content["construction_jobs_remove_button_area"]:
+                        self.content["construction_jobs_remove_button_label"].color = (255, 0, 0, 255)
+                        self.game_data.mouse_clickable_area = True
+                    elif (self.game_data.mouse_x, self.game_data.mouse_y) in self.content["construction_jobs_empty_button_area"]:
+                        self.content["construction_jobs_empty_button_label"].color = (255, 0, 0, 255)
+                        self.game_data.mouse_clickable_area = True
+                else:
+                    self.content["construction_jobs_remove_button_label"].color = (255, 255, 255, 64)
+                    self.content["construction_jobs_empty_button_label"].color = (255, 255, 255, 64)
+                # upgrade button
+                if self.selected_building.is_constructing:
+                    self.content["upgrade_button_label"].text = "ANNULER"
+                    # upgrade percent
+                    self.content["upgrade_percent_label"].color = (192, 192, 192, 255)
+                    self.content["upgrade_percent_label"].text = f"{round(self.selected_building.construction_workload_completed * 100 / self.selected_building.parameters["construction_workload"])} %"
+                    if (self.game_data.mouse_x, self.game_data.mouse_y) in self.content["upgrade_button_area"]:
+                        self.content["upgrade_button_label"].color = (255, 127, 0, 255)
+                        self.game_data.mouse_clickable_area = True
+                    else:
+                        self.content["upgrade_button_label"].color = (255, 255, 255, 255)
+                else:
+                    self.content["upgrade_button_label"].text = "AMELIORER"
+                    # upgrade percent
+                    self.content["upgrade_percent_label"].color = (192, 192, 192, 0)
+                    if self.current_colony.can_upgrade_building():
+                        if (self.game_data.mouse_x, self.game_data.mouse_y) in self.content["upgrade_button_area"]:
+                            self.content["upgrade_button_label"].color = (0, 255, 0, 255)
+                            self.game_data.mouse_clickable_area = True
+                        else:
+                            self.content["upgrade_button_label"].color = (255, 255, 255, 255)
+                    else:
+                        self.content["upgrade_button_label"].color = (255, 255, 255, 64)
+                # destroy button
+                if self.current_colony.can_destroy_building():
+                    if (self.game_data.mouse_x, self.game_data.mouse_y) in self.content["destroy_button_area"]:
+                        self.content["destroy_button_label"].color = (255, 0, 0, 255)
+                        self.game_data.mouse_clickable_area = True
+                    else:
+                        self.content["destroy_button_label"].color = (255, 255, 255, 255)
+                else:
+                    self.content["destroy_button_label"].color = (255, 255, 255, 64)
+                # building specific stuff
+                ...
+
 
     def on_mouse_press(self, x, y):
         # check if a building tile is selected
@@ -387,6 +811,54 @@ class RigthWindowWidgetContent:
                         # print(building_name)
                         # add the building to the colony if possible
                         self.current_colony.add_building(building_name)
+            else:
+                if (x, y) in self.content["production_jobs_engineers_add_button_area"]:
+                    # print("+1 engineer production")
+                    self.selected_building.assign_worker(True, "production", "engineers")
+                elif (x, y) in self.content["production_jobs_engineers_fill_button_area"]:
+                    # print("fill engineer production")
+                    self.selected_building.assign_worker(True, "production", "engineers", True)
+                elif (x, y) in self.content["production_jobs_engineers_remove_button_area"]:
+                    # print("-1 engineer production")
+                    self.selected_building.assign_worker(False, "production", "engineers")
+                elif (x, y) in self.content["production_jobs_engineers_empty_button_area"]:
+                    # print("empty engineer production")
+                    self.selected_building.assign_worker(False, "production", "engineers", True)
+                elif (x, y) in self.content["production_jobs_scientists_add_button_area"]:
+                    # print("+1 scientist production")
+                    self.selected_building.assign_worker(True, "production", "scientists")
+                elif (x, y) in self.content["production_jobs_scientists_fill_button_area"]:
+                    # print("fill scientist production")
+                    self.selected_building.assign_worker(True, "production", "scientists", True)
+                elif (x, y) in self.content["production_jobs_scientists_remove_button_area"]:
+                    # print("-1 scientist production")
+                    self.selected_building.assign_worker(False, "production", "scientists")
+                elif (x, y) in self.content["production_jobs_scientists_empty_button_area"]:
+                    # print("empty scientist production")
+                    self.selected_building.assign_worker(False, "production", "scientists", True)
+                elif (x, y) in self.content["construction_jobs_add_button_area"]:
+                    # print("+1 construction")
+                    self.selected_building.assign_worker(True, "construction", "engineers")
+                elif (x, y) in self.content["construction_jobs_fill_button_area"]:
+                    # print("fill construction")
+                    self.selected_building.assign_worker(True, "construction", "engineers", True)
+                elif (x, y) in self.content["construction_jobs_remove_button_area"]:
+                    # print("-1 construction")
+                    self.selected_building.assign_worker(False, "construction", "engineers")
+                elif (x, y) in self.content["construction_jobs_empty_button_area"]:
+                    # print("empty construction")
+                    self.selected_building.assign_worker(False, "construction", "engineers", True)
+                elif (x, y) in self.content["upgrade_button_area"]:
+                    if self.selected_building.is_constructing:
+                        self.current_colony.cancel_building_construction()
+                    else:
+                        if self.current_colony.can_upgrade_building():
+                            self.selected_building.upgrade()
+                elif (x, y) in self.content["destroy_button_area"]:
+                    self.current_colony.destroy_building()
+                else:
+                    # building specific stuff
+                    ...
 
 
 class RightWindowWidget:
@@ -1122,7 +1594,7 @@ class SceneColony(Scene):
         colony_resources = self.game_data.colonies[self.game_data.active_colony].data["resources"]
         colony_storage_space = self.game_data.colonies[self.game_data.active_colony].max_storage
         # water
-        self.left_window_content["water_available"].text = str(colony_resources["water"])
+        self.left_window_content["water_available"].text = str(round(colony_resources["water"], 1))
         self.left_window_content["water_total"].text = str(colony_storage_space["water"])
         # food
         self.left_window_content["food_available"].text = str(colony_resources["food"])

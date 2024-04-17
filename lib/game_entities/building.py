@@ -53,7 +53,7 @@ class Building:
         else:
             can_upgrade = True
             for resource_name in self.parameters["construction_costs"].keys():
-                if self.colony_data["resources"][resource_name] < self.parameters["constuction_costs"][resource_name]:
+                if self.colony_data["resources"][resource_name] < self.parameters["construction_costs"][resource_name]:
                     can_upgrade = False
                     break
         return can_upgrade
@@ -65,12 +65,12 @@ class Building:
         self.construction_workload_completed = 0
         # remove every required construction resources from the colony resources
         for resource_name in self.parameters["construction_costs"].keys():
-            self.colony_data["resources"][resource_name] -= self.parameters["constuction_costs"][resource_name]
+            self.colony_data["resources"][resource_name] -= self.parameters["construction_costs"][resource_name]
 
     def cancel_upgrade(self):
         # cancel the current upgrade
         # remove all workers at the construction jobs
-        self.assign_worker(add=False, job_type="engineers", work_type="construction", all=True)
+        self.assign_worker(add=False, job_type="construction", worker_type="engineers", all=True)
         # refund the resources to the colony
         for resource_name in self.parameters["construction_costs"].keys():
             self.colony_data["resources_buffer"][resource_name] += self.parameters["construction_costs"][resource_name]
@@ -84,7 +84,9 @@ class Building:
         # - there are vacant jobs in the building
         # - there are available workers in the colony
         if add:
-            if (self.assigned_workers[job_type][worker_type] < self.parameters["jobs"][job_type][worker_type]) and \
+            if job_type == "construction" and (not self.is_constructing):
+                assignment_possible = False
+            elif (self.assigned_workers[job_type][worker_type] < self.parameters["jobs"][job_type][worker_type]) and \
                 (self.colony_data["workers"][worker_type]["available"] > 0):
                 assignment_possible = True
         else:
@@ -96,39 +98,38 @@ class Building:
     def assign_worker(self, add: bool, job_type: str, worker_type: str, all: bool = False):
         # assign / unassign a job to a worker in this building
         # assign / unassign all of them if "all" is True
-        # only called when assignment / unassignment is possible
         # work_type = "construction" or "production"
         # job_type = "engineers" or "scientists"
-        if add:
-            if all:
-                # fill as many vacant jobs as possible
-                available_jobs = self.parameters["jobs"][job_type][worker_type] - self.assigned_workers[job_type][worker_type]
-                workers_to_assign = min(available_jobs, self.colony_data["workers"][worker_type]["available"])
-                self.colony_data["workers"][worker_type]["available"] -= workers_to_assign
-                self.assigned_workers[job_type][worker_type] += workers_to_assign
+        if self.can_assign_worker(add, job_type, worker_type):
+            if add:
+                if all:
+                    # fill as many vacant jobs as possible
+                    available_jobs = self.parameters["jobs"][job_type][worker_type] - self.assigned_workers[job_type][worker_type]
+                    workers_to_assign = min(available_jobs, self.colony_data["workers"][worker_type]["available"])
+                    self.colony_data["workers"][worker_type]["available"] -= workers_to_assign
+                    self.assigned_workers[job_type][worker_type] += workers_to_assign
+                else:
+                    # assign a worker to the job
+                    # remove an available worker from the colony
+                    self.colony_data["workers"][worker_type]["available"] -= 1
+                    # add the worker to the job
+                    self.assigned_workers[job_type][worker_type] += 1
             else:
-                # assign a worker to the job
-                # remove an available worker from the colony
-                self.colony_data["workers"][worker_type]["available"] -= 1
-                # add the worker to the job
-                self.assigned_workers[job_type][worker_type] += 1
-        else:
-            if all:
-                # remove all workers
-                self.colony_data["workers"][worker_type]["available"] += self.assigned_workers[job_type][worker_type]
-                self.assigned_workers[job_type][worker_type] = 0
-            else:
-                # add an available worker to the colony
-                self.colony_data["workers"][worker_type]["available"] += 1
-                # remove a worker from the job
-                self.assigned_workers[job_type][worker_type] -= 1
+                if all:
+                    # remove all workers
+                    self.colony_data["workers"][worker_type]["available"] += self.assigned_workers[job_type][worker_type]
+                    self.assigned_workers[job_type][worker_type] = 0
+                else:
+                    # add an available worker to the colony
+                    self.colony_data["workers"][worker_type]["available"] += 1
+                    # remove a worker from the job
+                    self.assigned_workers[job_type][worker_type] -= 1
 
     def remove_all_workers(self):
-        self.assign_worker(add=False, job_type="engineers", work_type="construction", all=True)
-        self.assign_worker(add=False, job_type="engineers", work_type="production", all=True)
+        self.assign_worker(add=False, job_type="production", worker_type="engineers", all=True)
+        self.assign_worker(add=False, job_type="production", worker_type="scientists", all=True)
         # no scientists can work in a construction job
-        # self.assign_worker(add=False, job_type="scientists", work_type="construction", all=True)
-        self.assign_worker(add=False, job_type="scientists", work_type="production", all=True)
+        self.assign_worker(add=False, job_type="construction", worker_type="engineers", all=True)
 
     # def can_use_power_switch(self) -> bool:
     #     # whether the building can be turned on/off
@@ -162,7 +163,9 @@ class Building:
                 # upgrade the building
                 self.level += 1
                 # free every worker at the construction jobs
-                self.assign_worker(add=False, job_type="engineers", work_type="construction", all=True)
+                # self.assign_worker(add=False, job_type="engineers", work_type="construction", all=True)
+                self.assign_worker(add=False, job_type="construction", worker_type="engineers", all=True)
+
 
 
 class BuildingHeadQuarters(Building):
@@ -171,8 +174,8 @@ class BuildingHeadQuarters(Building):
     parameters_per_level = {
         1: {
             "power": {
-                "consumed": 100,
-                "produced": 100
+                "consumed": 0,
+                "produced": 0
             },
             "storage": {
                 "food": 50,
@@ -248,11 +251,11 @@ class BuildingSolarPanels(Building):
                 "copper": 0,
                 "titanium": 0
             },
-            "construction_workload": 0,
+            "construction_workload": 100,
             "storage": None,
             "jobs": {
                 "construction": {
-                    "engineers": 0,
+                    "engineers": 5,
                     "scientists": 0
                 },
                 "production": {
@@ -272,11 +275,11 @@ class BuildingSolarPanels(Building):
                 "copper": 0,
                 "titanium": 0
             },
-            "construction_workload": 0,
+            "construction_workload": 100,
             "storage": None,
             "jobs": {
                 "construction": {
-                    "engineers": 0,
+                    "engineers": 5,
                     "scientists": 0
                 },
                 "production": {
@@ -296,7 +299,7 @@ class BuildingSolarPanels(Building):
                 "copper": 0,
                 "titanium": 0
             },
-            "construction_workload": 0,
+            "construction_workload": 100,
             "storage": None,
             "jobs": {
                 "construction": {
@@ -369,7 +372,7 @@ class BuildingDrillingStation(Building):
                 "copper": 0,
                 "titanium": 0
             },
-            "construction_workload": 0,
+            "construction_workload": 100,
             "storage": None,
             "jobs": {
                 "construction": {
@@ -393,7 +396,7 @@ class BuildingDrillingStation(Building):
                 "copper": 0,
                 "titanium": 0
             },
-            "construction_workload": 0,
+            "construction_workload": 100,
             "storage": None,
             "jobs": {
                 "construction": {
@@ -401,7 +404,7 @@ class BuildingDrillingStation(Building):
                     "scientists": 0
                 },
                 "production": {
-                    "engineers": 0,
+                    "engineers": 5,
                     "scientists": 0
                 }
             },
@@ -418,7 +421,7 @@ class BuildingDrillingStation(Building):
                 "copper": 0,
                 "titanium": 0
             },
-            "construction_workload": 0,
+            "construction_workload": 100,
             "storage": None,
             "jobs": {
                 "construction": {
@@ -485,7 +488,7 @@ class BuildingWarehouse(Building):
                 "copper": 0,
                 "titanium": 0
             },
-            "construction_workload": 0,
+            "construction_workload": 100,
             "storage": None,
             "jobs": {
                 "construction": {
@@ -509,7 +512,7 @@ class BuildingWarehouse(Building):
                 "copper": 0,
                 "titanium": 0
             },
-            "construction_workload": 0,
+            "construction_workload": 100,
             "storage": {
                 "food": 0,
                 "iron_ore": 0,
@@ -543,7 +546,7 @@ class BuildingWarehouse(Building):
                 "copper": 0,
                 "titanium": 0
             },
-            "construction_workload": 0,
+            "construction_workload": 100,
             "storage": {
                 "food": 0,
                 "iron_ore": 0,
@@ -615,7 +618,7 @@ class BuildingLiquidTank(Building):
                 "copper": 0,
                 "titanium": 0
             },
-            "construction_workload": 0,
+            "construction_workload": 100,
             "storage": None,
             "jobs": {
                 "construction": {
@@ -639,7 +642,7 @@ class BuildingLiquidTank(Building):
                 "copper": 0,
                 "titanium": 0
             },
-            "construction_workload": 0,
+            "construction_workload": 100,
             "storage": {
                 "water": 0,
                 "oxygen": 0,
@@ -667,7 +670,7 @@ class BuildingLiquidTank(Building):
                 "copper": 0,
                 "titanium": 0
             },
-            "construction_workload": 0,
+            "construction_workload": 100,
             "storage": {
                 "water": 0,
                 "oxygen": 0,
@@ -727,7 +730,7 @@ class BuildingElectrolysisStation(Building):
                 "copper": 0,
                 "titanium": 0
             },
-            "construction_workload": 0,
+            "construction_workload": 100,
             "storage": None,
             "jobs": {
                 "construction": {
@@ -751,7 +754,7 @@ class BuildingElectrolysisStation(Building):
                 "copper": 0,
                 "titanium": 0
             },
-            "construction_workload": 0,
+            "construction_workload": 100,
             "storage": None,
             "jobs": {
                 "construction": {
@@ -776,7 +779,7 @@ class BuildingElectrolysisStation(Building):
                 "copper": 0,
                 "titanium": 0
             },
-            "construction_workload": 0,
+            "construction_workload": 100,
             "storage": None,
             "jobs": {
                 "construction": {
@@ -841,7 +844,7 @@ class BuildingFurnace(Building):
                 "copper": 0,
                 "titanium": 0
             },
-            "construction_workload": 0,
+            "construction_workload": 100,
             "storage": None,
             "jobs": {
                 "construction": {
@@ -865,7 +868,7 @@ class BuildingFurnace(Building):
                 "copper": 0,
                 "titanium": 0
             },
-            "construction_workload": 0,
+            "construction_workload": 100,
             "storage": None,
             "jobs": {
                 "construction": {
@@ -891,7 +894,7 @@ class BuildingFurnace(Building):
                 "copper": 0,
                 "titanium": 0
             },
-            "construction_workload": 0,
+            "construction_workload": 100,
             "storage": None,
             "jobs": {
                 "construction": {
@@ -994,7 +997,7 @@ class BuildingSpaceport(Building):
                 "copper": 0,
                 "titanium": 0
             },
-            "construction_workload": 0,
+            "construction_workload": 100,
             "storage": None,
             "jobs": {
                 "construction": {
@@ -1026,9 +1029,9 @@ class BuildingSpaceport(Building):
         }
     }
 
-    # def __init__(self, colony_data):
-    #     super().__init__(colony_data)
-    #     self.can_disable = False
+    def __init__(self, colony_data):
+        super().__init__(colony_data)
+        self.level_max = 1
 
 
 class BuildingGreenhouse(Building):
@@ -1046,7 +1049,7 @@ class BuildingGreenhouse(Building):
                 "copper": 0,
                 "titanium": 0
             },
-            "construction_workload": 0,
+            "construction_workload": 100,
             "storage": None,
             "jobs": {
                 "construction": {
@@ -1070,7 +1073,7 @@ class BuildingGreenhouse(Building):
                 "copper": 0,
                 "titanium": 0
             },
-            "construction_workload": 0,
+            "construction_workload": 100,
             "storage": None,
             "jobs": {
                 "construction": {
@@ -1095,7 +1098,7 @@ class BuildingGreenhouse(Building):
                 "copper": 0,
                 "titanium": 0
             },
-            "construction_workload": 0,
+            "construction_workload": 100,
             "storage": None,
             "jobs": {
                 "construction": {
@@ -1166,7 +1169,7 @@ class BuildingSchool(Building):
                 "copper": 0,
                 "titanium": 0
             },
-            "construction_workload": 0,
+            "construction_workload": 100,
             "storage": None,
             "jobs": {
                 "construction": {
@@ -1190,7 +1193,7 @@ class BuildingSchool(Building):
                 "copper": 0,
                 "titanium": 0
             },
-            "construction_workload": 0,
+            "construction_workload": 100,
             "storage": None,
             "jobs": {
                 "construction": {
@@ -1199,7 +1202,7 @@ class BuildingSchool(Building):
                 },
                 "production": {
                     "engineers": 0,
-                    "scientists": 0
+                    "scientists": 5
                 }
             },
             "production_speed": 1,
@@ -1216,7 +1219,7 @@ class BuildingSchool(Building):
                 "copper": 0,
                 "titanium": 0
             },
-            "construction_workload": 0,
+            "construction_workload": 100,
             "storage": None,
             "jobs": {
                 "construction": {
@@ -1391,7 +1394,7 @@ class BuildingFactory(Building):
                 "copper": 0,
                 "titanium": 0
             },
-            "construction_workload": 0,
+            "construction_workload": 100,
             "storage": None,
             "jobs": {
                 "construction": {
@@ -1415,7 +1418,7 @@ class BuildingFactory(Building):
                 "copper": 0,
                 "titanium": 0
             },
-            "construction_workload": 0,
+            "construction_workload": 100,
             "storage": None,
             "jobs": {
                 "construction": {
@@ -1441,7 +1444,7 @@ class BuildingFactory(Building):
                 "copper": 0,
                 "titanium": 0
             },
-            "construction_workload": 0,
+            "construction_workload": 100,
             "storage": None,
             "jobs": {
                 "construction": {
