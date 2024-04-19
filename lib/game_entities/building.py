@@ -163,9 +163,7 @@ class Building:
                 # upgrade the building
                 self.level += 1
                 # free every worker at the construction jobs
-                # self.assign_worker(add=False, job_type="engineers", work_type="construction", all=True)
                 self.assign_worker(add=False, job_type="construction", worker_type="engineers", all=True)
-
 
 
 class BuildingHeadQuarters(Building):
@@ -291,7 +289,7 @@ class BuildingSolarPanels(Building):
         2: {
             "power": {
                 "consumed": 0,
-                "produced": 0
+                "produced": 200
             },
             "construction_costs": {
                 "iron": 0,

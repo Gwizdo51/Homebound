@@ -215,6 +215,7 @@ class Colony:
             for resource_name in construction_costs.keys():
                 if self.data["resources"][resource_name] < construction_costs[resource_name]:
                     can_add_building = False
+                    break
         return can_add_building
 
 
