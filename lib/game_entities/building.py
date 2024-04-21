@@ -381,7 +381,8 @@ class BuildingDrillingStation(Building):
                     "engineers": 0,
                     "scientists": 0
                 }
-            }
+            },
+            "production_speed": 0
         },
         1: {
             "power": {
@@ -487,7 +488,17 @@ class BuildingWarehouse(Building):
                 "titanium": 0
             },
             "construction_workload": 100,
-            "storage": None,
+            "storage": {
+                "food": 0,
+                "iron_ore": 0,
+                "iron": 0,
+                "aluminium_ore": 0,
+                "aluminium": 0,
+                "copper_ore": 0,
+                "copper": 0,
+                "titanium_ore": 0,
+                "titanium": 0
+            },
             "jobs": {
                 "construction": {
                     "engineers": 0,
@@ -617,7 +628,11 @@ class BuildingLiquidTank(Building):
                 "titanium": 0
             },
             "construction_workload": 100,
-            "storage": None,
+            "storage": {
+                "water": 0,
+                "oxygen": 0,
+                "hydrogen": 0
+            },
             "jobs": {
                 "construction": {
                     "engineers": 0,
@@ -739,7 +754,8 @@ class BuildingElectrolysisStation(Building):
                     "engineers": 0,
                     "scientists": 0
                 }
-            }
+            },
+            "production_speed": 0
         },
         1: {
             "power": {
@@ -761,7 +777,7 @@ class BuildingElectrolysisStation(Building):
                 },
                 "production": {
                     "engineers": 0,
-                    "scientists": 0
+                    "scientists": 5
                 }
             },
             "production_speed": 1
@@ -853,7 +869,8 @@ class BuildingFurnace(Building):
                     "engineers": 0,
                     "scientists": 0
                 }
-            }
+            },
+            "production_speed": 0
         },
         1: {
             "power": {
@@ -874,12 +891,12 @@ class BuildingFurnace(Building):
                     "scientists": 0
                 },
                 "production": {
-                    "engineers": 0,
+                    "engineers": 5,
                     "scientists": 0
                 }
             },
             "production_speed": 1,
-            "production_per_cycle": 1
+            # "production_per_cycle": 1
         },
         2: {
             "power": {
@@ -905,7 +922,7 @@ class BuildingFurnace(Building):
                 }
             },
             "production_speed": 1,
-            "production_per_cycle": 1
+            # "production_per_cycle": 1
         },
         3: {
             "power": {
@@ -924,11 +941,11 @@ class BuildingFurnace(Building):
                 }
             },
             "production_speed": 1,
-            "production_per_cycle": 1
+            # "production_per_cycle": 1
         }
     }
 
-    # ore to ingot ratio : 2/1
+    # ore to ingot ratio : 5/1
 
     def __init__(self, colony_data):
         super().__init__(colony_data)
@@ -955,9 +972,11 @@ class BuildingFurnace(Building):
     def _try_start_cycle(self):
         ore_to_consume = self.resource_produced + "_ore"
         # if the colony has enough ore to start a cycle ...
-        if self.colony_data["resources"][ore_to_consume] >= 2 * self.parameters["production_per_cycle"]:
+        # if self.colony_data["resources"][ore_to_consume] >= 2 * self.parameters["production_per_cycle"]:
+        if self.colony_data["resources"][ore_to_consume] >= 5:
             # consume the ore
-            self.colony_data["resources"][ore_to_consume] -= 2 * self.parameters["production_per_cycle"]
+            # self.colony_data["resources"][ore_to_consume] -= 2 * self.parameters["production_per_cycle"]
+            self.colony_data["resources"][ore_to_consume] -= 5
             self.ore_consumed = True
 
     def update(self, dt):
@@ -974,7 +993,8 @@ class BuildingFurnace(Building):
                 # if the cycle is completed ...
                 if self.smelting_completed_percent >= 100:
                     # add the resource to the buffer
-                    self.colony_data["resources_buffer"][self.resource_produced] += self.parameters["production_per_cycle"]
+                    # self.colony_data["resources_buffer"][self.resource_produced] += self.parameters["production_per_cycle"]
+                    self.colony_data["resources_buffer"][self.resource_produced] += 1
                     # reset the cycle
                     self.smelting_completed_percent = 0
                     self.ore_consumed = False
@@ -1058,7 +1078,8 @@ class BuildingGreenhouse(Building):
                     "engineers": 0,
                     "scientists": 0
                 }
-            }
+            },
+            "production_speed": 0
         },
         1: {
             "power": {
@@ -1150,11 +1171,10 @@ class BuildingSchool(Building):
 
     name = "school"
     items_workload = {
-        "engineers": 0,
-        "scientists": 0,
-        "pilots": 0
+        "engineers": 100,
+        "scientists": 200,
+        "pilots": 300
     }
-
     parameters_per_level = {
         0: {
             "power": {
@@ -1261,7 +1281,7 @@ class BuildingSchool(Building):
     def can_add_worker(self) -> bool:
         return len(self.training_queue) < self.parameters["queue_max_size"]
 
-    def add_worker_to_queue(self, worker_type):
+    def add_worker_to_queue(self, worker_type: str):
         # worker_type = "engineers", "scientists" or "pilots"
         # add a worker to the queue only if it isn't full
         if self.can_add_worker():
@@ -1379,7 +1399,6 @@ class BuildingFactory(Building):
             "workload": 0
         },
     }
-
     parameters_per_level = {
         0: {
             "power": {

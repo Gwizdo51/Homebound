@@ -127,12 +127,18 @@ class GameData:
         # https://www.svgrepo.com/svg/334853/plane-alt
         self.icon_plane_light_gray = resource.image("icon-plane-c0c0c0.png")
         center_image(self.icon_plane_light_gray)
+        self.icon_plane_white = resource.image("icon-plane-ffffff.png")
+        center_image(self.icon_plane_white)
         # https://www.svgrepo.com/svg/385283/wrench-tool-options
         self.icon_wrench_light_gray = resource.image("icon-wrench-c0c0c0.png")
         center_image(self.icon_wrench_light_gray)
+        self.icon_wrench_white = resource.image("icon-wrench-ffffff.png")
+        center_image(self.icon_wrench_white)
         # https://www.svgrepo.com/svg/152182/chemistry-lab-instrument
         self.icon_vial_light_gray = resource.image("icon-vial-c0c0c0.png")
         center_image(self.icon_vial_light_gray)
+        self.icon_vial_white = resource.image("icon-vial-ffffff.png")
+        center_image(self.icon_vial_white)
 
         # resources
         # https://www.svgrepo.com/svg/390846/lightning-bolt-weather-storm-energy-electricity
@@ -141,6 +147,8 @@ class GameData:
         # https://www.svgrepo.com/svg/499449/water-drop
         self.icon_water_light_gray = resource.image("icon-water-c0c0c0.png")
         center_image(self.icon_water_light_gray)
+        self.icon_water_green = resource.image("icon-water-68B842.png")
+        center_image(self.icon_water_green)
         # https://www.svgrepo.com/svg/244783/apple
         self.icon_apple_light_gray = resource.image("icon-apple-c0c0c0.png")
         center_image(self.icon_apple_light_gray)
@@ -175,6 +183,21 @@ class GameData:
         # https://bdragon1727.itch.io/basic-pixel-health-bar-and-scroll-bar
         self.icon_selector = resource.image("icon-selector.png")
         center_image(self.icon_selector)
+        # https://www.svgrepo.com/svg/353023/chevron-thin-left
+        self.icon_left_chevron_white = resource.image("icon-chevron-left-ffffff.png")
+        center_image(self.icon_left_chevron_white)
+        self.icon_left_chevron_green = resource.image("icon-chevron-left-68B842.png")
+        center_image(self.icon_left_chevron_green)
+        # https://www.svgrepo.com/svg/353030/chevron-thin-right
+        self.icon_right_chevron_white = resource.image("icon-chevron-right-ffffff.png")
+        center_image(self.icon_right_chevron_white)
+        self.icon_right_chevron_green = resource.image("icon-chevron-right-68B842.png")
+        center_image(self.icon_right_chevron_green)
+        # https://www.svgrepo.com/svg/532098/clock
+        self.icon_clock_light_gray = resource.image("icon-clock-c0c0c0.png")
+        center_image(self.icon_clock_light_gray)
+        # self.icon_clock_white = resource.image("icon-clock-ffffff.png")
+        # center_image(self.icon_clock_white)
 
         # buildings
         self.icon_house_black = resource.image("icon-house-000000.png")

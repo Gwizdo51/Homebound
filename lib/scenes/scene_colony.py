@@ -719,8 +719,6 @@ class RigthWindowWidgetContent:
                     # print(self.content["building_description_document"].text)
                     # the text layout object needs to be manually deleted
                     self.content["building_description_layout"] = TextLayout(
-                        # document=self.content["building_description_document"],
-                        # document=decode_attributed(""),
                         document = decode_attributed(self.content["building_description_string"]),
                         x = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 - 150,
                         y = self.game_data.window_height - 370,
@@ -731,16 +729,8 @@ class RigthWindowWidgetContent:
                         batch=self.batch,
                         group=self.groups[2]
                     )
-                    # self.content["building_description_layout"].document = decode_attributed("{color (255, 0, 0, 255)}lol")
-                    # print(type(self.content["building_description_layout"].document))
                 elif self.selected_building.name in ["warehouse", "liquid_tank", "solar_panels", "electrolysis_station", "greenhouse", "spaceport"]:
-                    # print("warehouse")
-                    # self.content["building_description_string"] = self.style_description
-                    # self.content["building_description_string"] += "Les entrepôts permettent de stocker des matières solides : nourriture, minéraux et métaux.\n\n\n"
-                    # self.content["building_description_string"] += ""
                     self.content["building_description_layout"] = TextLayout(
-                        # document=self.content["building_description_document"],
-                        # document=decode_attributed(""),
                         document = decode_attributed(""),
                         x = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 - 150,
                         y = self.game_data.window_height - 370,
@@ -752,11 +742,214 @@ class RigthWindowWidgetContent:
                         group=self.groups[2]
                     )
                 elif self.selected_building.name == "drilling_station":
-                    print("drilling_station")
+                    self.content["building_description_layout"] = TextLayout(
+                        document = decode_attributed(""),
+                        x = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 - 150,
+                        y = self.game_data.window_height - 370,
+                        width = 300,
+                        # height=0,
+                        anchor_y="baseline",
+                        multiline=True,
+                        batch=self.batch,
+                        group=self.groups[2]
+                    )
+                    # water button
+                    self.content["building_water_button_area"] = shapes.Rectangle(
+                        x = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 - 140,
+                        y = self.game_data.window_height - 490,
+                        width = 40,
+                        height = 40,
+                        color = (192, 192, 192, 0),
+                        batch=self.batch,
+                        group=self.groups[2]
+                    )
+                    self.content["building_water_button_icon_light_gray"] = Sprite(
+                        img = self.game_data.icon_water_light_gray,
+                        x = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 - 120,
+                        y = self.game_data.window_height - 470,
+                        batch=self.batch,
+                        group=self.groups[3]
+                    )
+                    self.content["building_water_button_icon_light_gray"].scale = .15
+                    self.content["building_water_button_icon_green"] = Sprite(
+                        img = self.game_data.icon_water_green,
+                        x = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 - 120,
+                        y = self.game_data.window_height - 470,
+                        batch=self.batch,
+                        group=self.groups[3]
+                    )
+                    self.content["building_water_button_icon_green"].scale = .15
+                    # ores buttons
+                    building_ore_production_options = {}
+                    ore_name_to_icon_dict = {
+                        "iron_ore": "Fe",
+                        "aluminium_ore": "Al",
+                        "copper_ore": "Cu",
+                        "titanium_ore": "Ti"
+                    }
+                    for index_resource, resource in enumerate(ore_name_to_icon_dict.keys()):
+                        production_option = {}
+                        production_option["button_area"] = shapes.Rectangle(
+                            x = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 - 80 + index_resource * 60,
+                            y = self.game_data.window_height - 490,
+                            width = 40,
+                            height = 40,
+                            color = (192, 192, 192, 0),
+                            batch=self.batch,
+                            group=self.groups[2]
+                        )
+                        production_option["icon"] = Label(ore_name_to_icon_dict[resource], font_name=self.game_data.subtitle_font_name, font_size=20,
+                            # color = (192, 192, 192, 255),
+                            x = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 - 60 + index_resource * 60,
+                            y = self.game_data.window_height - 470,
+                            anchor_x="center", anchor_y="center", batch=self.batch, group=self.groups[3])
+                        building_ore_production_options[resource] = production_option
+                    self.content["building_ore_production_options"] = building_ore_production_options
                 elif self.selected_building.name == "furnace":
-                    print("furnace")
+                    self.content["building_description_layout"] = TextLayout(
+                        document = decode_attributed(""),
+                        x = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 - 150,
+                        y = self.game_data.window_height - 370,
+                        width = 300,
+                        # height=0,
+                        anchor_y="baseline",
+                        multiline=True,
+                        batch=self.batch,
+                        group=self.groups[2]
+                    )
+                    # metals buttons
+                    building_metal_production_options = {}
+                    metal_name_to_icon_dict = {
+                        "iron": "Fe",
+                        "aluminium": "Al",
+                        "copper": "Cu",
+                        "titanium": "Ti"
+                    }
+                    for index_resource, resource in enumerate(metal_name_to_icon_dict.keys()):
+                        production_option = {}
+                        production_option["button_area"] = shapes.Rectangle(
+                            x = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 - 150 + index_resource * 50,
+                            y = self.game_data.window_height - 510,
+                            width = 40,
+                            height = 40,
+                            color = (192, 192, 192, 0),
+                            batch=self.batch,
+                            group=self.groups[2]
+                        )
+                        production_option["icon"] = Label(metal_name_to_icon_dict[resource], font_name=self.game_data.subtitle_font_name, font_size=20,
+                            # color = (192, 192, 192, 255),
+                            x = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 - 130 + index_resource * 50,
+                            y = self.game_data.window_height - 490,
+                            anchor_x="center", anchor_y="center", batch=self.batch, group=self.groups[3])
+                        building_metal_production_options[resource] = production_option
+                    self.content["building_metal_production_options"] = building_metal_production_options
                 elif self.selected_building.name == "school":
-                    print("school")
+                    # 0: engineers
+                    # 1: scientists
+                    # 2: pilots
+                    self.workers_options_list = list(self.selected_building.items_workload.keys())
+                    self.current_option_index = 0
+                    self.content["building_description_layout"] = TextLayout(
+                        document = decode_attributed(""),
+                        x = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 - 150,
+                        y = self.game_data.window_height - 370,
+                        width = 300,
+                        # height=0,
+                        anchor_y="baseline",
+                        multiline=True,
+                        batch=self.batch,
+                        group=self.groups[2]
+                    )
+                    # selection buttons
+                    self.content["building_left_arrow_button_area"] = shapes.Rectangle(
+                        x = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 - 150,
+                        y = self.game_data.window_height - 470,
+                        width = 40,
+                        height = 60,
+                        color = (192, 192, 192, 63),
+                        batch=self.batch,
+                        group=self.groups[2]
+                    )
+                    self.content["building_left_arrow_button_icon_white"] = Sprite(
+                        img = self.game_data.icon_left_chevron_white,
+                        x = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 - 130,
+                        y = self.game_data.window_height - 440,
+                        batch=self.batch,
+                        group=self.groups[3]
+                    )
+                    self.content["building_left_arrow_button_icon_white"].scale = .2
+                    self.content["building_left_arrow_button_icon_green"] = Sprite(
+                        img = self.game_data.icon_left_chevron_green,
+                        x = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 - 130,
+                        y = self.game_data.window_height - 440,
+                        batch=self.batch,
+                        group=self.groups[3]
+                    )
+                    self.content["building_left_arrow_button_icon_green"].scale = .2
+                    self.content["building_right_arrow_button_area"] = shapes.Rectangle(
+                        x = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 + 110,
+                        y = self.game_data.window_height - 470,
+                        width = 40,
+                        height = 60,
+                        color = (192, 192, 192, 63),
+                        batch=self.batch,
+                        group=self.groups[2]
+                    )
+                    self.content["building_right_arrow_button_icon_white"] = Sprite(
+                        img = self.game_data.icon_right_chevron_white,
+                        x = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 + 130,
+                        y = self.game_data.window_height - 440,
+                        batch=self.batch,
+                        group=self.groups[3]
+                    )
+                    self.content["building_right_arrow_button_icon_white"].scale = .2
+                    self.content["building_right_arrow_button_icon_green"] = Sprite(
+                        img = self.game_data.icon_right_chevron_green,
+                        x = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 + 130,
+                        y = self.game_data.window_height - 440,
+                        batch=self.batch,
+                        group=self.groups[3]
+                    )
+                    self.content["building_right_arrow_button_icon_green"].scale = .2
+                    # workers icons
+                    self.content["building_engineers_icon_white"] = Sprite(
+                        img = self.game_data.icon_wrench_white,
+                        x = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 - 70,
+                        y = self.game_data.window_height - 440,
+                        batch=self.batch,
+                        group=self.groups[2]
+                    )
+                    self.content["building_engineers_icon_white"].scale = .18
+                    self.content["building_scientists_icon_white"] = Sprite(
+                        img = self.game_data.icon_vial_white,
+                        x = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 - 70,
+                        y = self.game_data.window_height - 440,
+                        batch=self.batch,
+                        group=self.groups[2]
+                    )
+                    self.content["building_scientists_icon_white"].scale = .15
+                    self.content["building_pilots_icon_white"] = Sprite(
+                        img = self.game_data.icon_plane_white,
+                        x = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 - 70,
+                        y = self.game_data.window_height - 440,
+                        batch=self.batch,
+                        group=self.groups[2]
+                    )
+                    self.content["building_pilots_icon_white"].scale = .15
+                    # clock icon
+                    self.content["building_clock_icon_light_gray"] = Sprite(
+                        img = self.game_data.icon_clock_light_gray,
+                        x = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 + 40,
+                        y = self.game_data.window_height - 430,
+                        batch=self.batch,
+                        group=self.groups[2]
+                    )
+                    self.content["building_clock_icon_light_gray"].scale = .1
+                    # workload label
+                    self.content["building_item_workload_label"] = Label("XXXX", font_name=self.game_data.default_font_name, font_size=13, bold=True,
+                        x = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 + 40,
+                        y = self.game_data.window_height - 460,
+                        anchor_x="center", batch=self.batch, group=self.groups[2])
                 elif self.selected_building.name == "factory":
                     print("factory")
 
@@ -946,70 +1139,177 @@ class RigthWindowWidgetContent:
                 else:
                     self.content["destroy_button_label"].color = (255, 255, 255, 100)
                 # building specific stuff
+                building_description_string = self.style_description
                 if self.selected_building.name == "warehouse":
-                    self.content["building_description_string"] = self.style_description
-                    self.content["building_description_string"] += "Les entrepôts permettent de stocker des matières solides : nourriture, minéraux et métaux raffinés.\n\n\n"
-                    self.content["building_description_string"] += "Espace de stockage :\n\n"
+                    # building_description_string = self.style_description
+                    building_description_string += "Les entrepôts permettent de stocker des matières solides : nourriture, minéraux et métaux raffinés.\n\n\n"
+                    building_description_string += "Espace de stockage :\n\n"
                     if self.selected_building.level == self.selected_building.level_max:
-                        self.content["building_description_string"] += "- Nourriture : {bold True}" + str(self.selected_building.parameters["storage"]["food"]) + "{bold False}\n\n"
-                        self.content["building_description_string"] += "- Minerai et métaux : {bold True}" + str(self.selected_building.parameters["storage"]["iron"])
+                        building_description_string += "- Nourriture : {bold True}" + str(self.selected_building.parameters["storage"]["food"]) + "{bold False}\n\n"
+                        building_description_string += "- Minerai et métaux : {bold True}" + str(self.selected_building.parameters["storage"]["iron"])
                     else:
-                        # self.content["building_description_string"] += "{italic True}Niveau actuel :{italic False}\n\n"
-                        self.content["building_description_string"] += "- Nourriture : {bold True}" + str(self.selected_building.parameters["storage"]["food"]) + "{bold False}\n\n"
-                        self.content["building_description_string"] += "- Minerai et métaux : {bold True}" + str(self.selected_building.parameters["storage"]["iron"]) + "{bold False}\n\n"
-                        self.content["building_description_string"] += "{italic True}Prochain niveau :{italic False}\n\n"
-                        self.content["building_description_string"] += "- Nourriture : {bold True}" + str(self.selected_building.parameters_per_level[self.selected_building.level + 1]["storage"]["food"]) + "{bold False}\n\n"
-                        self.content["building_description_string"] += "- Minerai et métaux : {bold True}" + str(self.selected_building.parameters_per_level[self.selected_building.level + 1]["storage"]["iron"])
-                    self.content["building_description_layout"].document = decode_attributed(self.content["building_description_string"])
+                        # building_description_string += "{italic True}Niveau actuel :{italic False}\n\n"
+                        building_description_string += "- Nourriture : {bold True}" + str(self.selected_building.parameters["storage"]["food"]) + "{bold False}\n\n"
+                        building_description_string += "- Minerai et métaux : {bold True}" + str(self.selected_building.parameters["storage"]["iron"]) + "{bold False}\n\n"
+                        building_description_string += "{italic True}Prochain niveau :{italic False}\n\n"
+                        building_description_string += "- Nourriture : {bold True}" + str(self.selected_building.parameters_per_level[self.selected_building.level + 1]["storage"]["food"]) + "{bold False}\n\n"
+                        building_description_string += "- Minerai et métaux : {bold True}" + str(self.selected_building.parameters_per_level[self.selected_building.level + 1]["storage"]["iron"])
+                    self.content["building_description_layout"].document = decode_attributed(building_description_string)
                 elif self.selected_building.name == "liquid_tank":
-                    self.content["building_description_string"] = self.style_description
-                    self.content["building_description_string"] += "Les réservoirs permettent de stocker des substances liquides : eau, oxygène et hydrogène.\n\n\n"
-                    self.content["building_description_string"] += "Espace de stockage :\n\n"
+                    # building_description_string = self.style_description
+                    building_description_string += "Les réservoirs permettent de stocker des substances liquides : eau, oxygène et hydrogène.\n\n\n"
+                    building_description_string += "Espace de stockage :\n\n"
                     # if self.selected_building.level == self.selected_building.level_max:
-                    self.content["building_description_string"] += "{bold True}" + str(self.selected_building.parameters["storage"]["water"]) + "{bold False}\n\n"
+                    building_description_string += "{bold True}" + str(self.selected_building.parameters["storage"]["water"]) + "{bold False}\n\n"
                     if self.selected_building.level != self.selected_building.level_max:
-                        # self.content["building_description_string"] += "{italic True}Niveau actuel :{italic False} {bold True}" + str(self.selected_building.parameters["storage"]["water"]) + "{bold False}\n\n"
-                        # self.content["building_description_string"] += "{bold True}" + str(self.selected_building.parameters["storage"]["water"]) + "{bold False}\n\n"
-                        self.content["building_description_string"] += "{italic True}Prochain niveau :{italic False} {bold True}"+ str(self.selected_building.parameters_per_level[self.selected_building.level + 1]["storage"]["water"])
-                    self.content["building_description_layout"].document = decode_attributed(self.content["building_description_string"])
+                        # building_description_string += "{italic True}Niveau actuel :{italic False} {bold True}" + str(self.selected_building.parameters["storage"]["water"]) + "{bold False}\n\n"
+                        # building_description_string += "{bold True}" + str(self.selected_building.parameters["storage"]["water"]) + "{bold False}\n\n"
+                        building_description_string += "{italic True}Prochain niveau :{italic False} {bold True}"+ str(self.selected_building.parameters_per_level[self.selected_building.level + 1]["storage"]["water"])
+                    self.content["building_description_layout"].document = decode_attributed(building_description_string)
                 elif self.selected_building.name == "solar_panels":
-                    self.content["building_description_string"] = self.style_description
-                    self.content["building_description_string"] += "Les panneaux solaires permettent de produire de l'énergie électrique.\n\n\n"
-                    self.content["building_description_string"] += "Energie produite :\n\n"
-                    self.content["building_description_string"] += "{bold True}" + str(self.selected_building.parameters["power"]["produced"]) + "{bold False}\n\n"
+                    # building_description_string = self.style_description
+                    building_description_string += "Les panneaux solaires permettent de produire de l'énergie électrique.\n\n\n"
+                    building_description_string += "Energie produite :\n\n"
+                    building_description_string += "{bold True}" + str(self.selected_building.parameters["power"]["produced"]) + "{bold False}\n\n"
                     if self.selected_building.level != self.selected_building.level_max:
-                        self.content["building_description_string"] += "{italic True}Prochain niveau :{italic False} {bold True}"+ str(self.selected_building.parameters_per_level[self.selected_building.level + 1]["power"]["produced"])
-                    self.content["building_description_layout"].document = decode_attributed(self.content["building_description_string"])
+                        building_description_string += "{italic True}Prochain niveau :{italic False} {bold True}"+ str(self.selected_building.parameters_per_level[self.selected_building.level + 1]["power"]["produced"])
+                    self.content["building_description_layout"].document = decode_attributed(building_description_string)
                 elif self.selected_building.name == "electrolysis_station":
-                    self.content["building_description_string"] = self.style_description
-                    self.content["building_description_string"] += "Les stations d'électrolyses transforment l'eau en oxygène et hydrogène liquide.\n\n\n"
-                    self.content["building_description_string"] += "Ratio de transformation:\n\n{bold True}1 H2O -> 1/2 O2 + 1 H2{bold False}\n\n\n"
-                    self.content["building_description_string"] += "Vitesse de production :\n\n"
-                    self.content["building_description_string"] += "{bold True}" + str(self.selected_building.parameters["production_speed"]) + "x{bold False}\n\n"
+                    # building_description_string = self.style_description
+                    building_description_string += "Les stations d'électrolyses transforment l'eau en oxygène et hydrogène liquide.\n\n\n"
+                    building_description_string += "Ratio de transformation:\n\n{bold True}1 H2O -> 1/2 O2 + 1 H2{bold False}\n\n\n"
+                    building_description_string += "Vitesse de production par poste :\n\n"
+                    building_description_string += "{bold True}" + str(self.selected_building.parameters["production_speed"]) + "x{bold False}\n\n"
                     if self.selected_building.level != self.selected_building.level_max:
-                        self.content["building_description_string"] += "{italic True}Prochain niveau :{italic False} {bold True}" + \
+                        building_description_string += "{italic True}Prochain niveau :{italic False} {bold True}" + \
                             str(self.selected_building.parameters_per_level[self.selected_building.level + 1]["production_speed"]) + "x{bold False}\n\n"
-                    self.content["building_description_layout"].document = decode_attributed(self.content["building_description_string"])
+                    self.content["building_description_layout"].document = decode_attributed(building_description_string)
                 elif self.selected_building.name == "greenhouse":
-                    self.content["building_description_string"] = self.style_description
-                    self.content["building_description_string"] += "Les Serres utilisent de l'eau pour produire de la nourriture et de l'oxygène.\n\n\n"
-                    self.content["building_description_string"] += "Ratio de transformation:\n\n{bold True}1 H2O -> 5 nourriture + 1 02{bold False}\n\n\n"
-                    self.content["building_description_string"] += "Vitesse de production :\n\n"
-                    self.content["building_description_string"] += "{bold True}" + str(self.selected_building.parameters["production_speed"]) + "x{bold False}\n\n"
+                    # building_description_string = self.style_description
+                    building_description_string += "Les Serres utilisent de l'eau pour produire de la nourriture et de l'oxygène.\n\n\n"
+                    building_description_string += "Ratio de transformation:\n\n{bold True}1 H2O -> 5 nourriture + 1 02{bold False}\n\n\n"
+                    building_description_string += "Vitesse de production par poste :\n\n"
+                    building_description_string += "{bold True}" + str(self.selected_building.parameters["production_speed"]) + "x{bold False}\n\n"
                     if self.selected_building.level != self.selected_building.level_max:
-                        self.content["building_description_string"] += "{italic True}Prochain niveau :{italic False} {bold True}" + \
+                        building_description_string += "{italic True}Prochain niveau :{italic False} {bold True}" + \
                             str(self.selected_building.parameters_per_level[self.selected_building.level + 1]["production_speed"]) + "x{bold False}\n\n"
-                    self.content["building_description_layout"].document = decode_attributed(self.content["building_description_string"])
+                    self.content["building_description_layout"].document = decode_attributed(building_description_string)
                 elif self.selected_building.name == "spaceport":
-                    self.content["building_description_string"] = self.style_description
-                    self.content["building_description_string"] += "Les ports spaciaux permettent de lancer des missions de transport."
-                    self.content["building_description_layout"].document = decode_attributed(self.content["building_description_string"])
+                    # building_description_string = self.style_description
+                    building_description_string += "Les ports spaciaux permettent de lancer des missions de transport."
+                    self.content["building_description_layout"].document = decode_attributed(building_description_string)
                 elif self.selected_building.name == "drilling_station":
-                    ...
+                    # building_description_string = self.style_description
+                    building_description_string += "Les foreuses permettent d'extraire des matières premières du sol.\n\n\n"
+                    building_description_string += "PRODUCTION :\n\n\n\n\n\n"
+                    building_description_string += "Vitesse de production par poste :\n\n"
+                    building_description_string += "{bold True}" + str(self.selected_building.parameters["production_speed"]) + "x{bold False}\n\n"
+                    if self.selected_building.level != self.selected_building.level_max:
+                        building_description_string += "{italic True}Prochain niveau :{italic False} {bold True}" + \
+                            str(self.selected_building.parameters_per_level[self.selected_building.level + 1]["production_speed"]) + "x{bold False}\n\n"
+                    self.content["building_description_layout"].document = decode_attributed(building_description_string)
+                    # water button
+                    if self.selected_building.resource_produced == "water":
+                        # cannot select water, draw icon green
+                        self.content["building_water_button_icon_light_gray"].opacity = 0
+                        self.content["building_water_button_icon_green"].opacity = 255
+                        self.content["building_water_button_area"].color = (192, 192, 192, 0)
+                    else:
+                        # can select water, draw icon gray
+                        self.content["building_water_button_icon_light_gray"].opacity = 255
+                        self.content["building_water_button_icon_green"].opacity = 0
+                        if (self.game_data.mouse_x, self.game_data.mouse_y) in self.content["building_water_button_area"]:
+                            self.content["building_water_button_area"].color = (192, 192, 192, 63)
+                            self.game_data.mouse_clickable_area = True
+                        else:
+                            self.content["building_water_button_area"].color = (192, 192, 192, 0)
+                    # ore buttons
+                    for resource in self.content["building_ore_production_options"].keys():
+                        if self.selected_building.resource_produced == resource:
+                            # cannot select resource, draw icon green
+                            self.content["building_ore_production_options"][resource]["icon"].color = (104, 184, 66, 255)
+                            self.content["building_ore_production_options"][resource]["button_area"].color = (192, 192, 192, 0)
+                        else:
+                            # can select resource, draw icon gray
+                            self.content["building_ore_production_options"][resource]["icon"].color = (192, 192, 192, 255)
+                            if (self.game_data.mouse_x, self.game_data.mouse_y) in self.content["building_ore_production_options"][resource]["button_area"]:
+                                self.content["building_ore_production_options"][resource]["button_area"].color = (192, 192, 192, 63)
+                                self.game_data.mouse_clickable_area = True
+                            else:
+                                self.content["building_ore_production_options"][resource]["button_area"].color = (192, 192, 192, 0)
                 elif self.selected_building.name == "furnace":
-                    ...
+                    # building_description_string = self.style_description
+                    building_description_string += "Les fourneaux permettent de transformer les minerais en lingots de métal raffiné. {bold True}(5 minerais -> 1 lingot){bold False}\n\n\n"
+                    building_description_string += "PRODUCTION :\t\t    CYCLE :\n\n\n"
+                    building_description_string += "\t\t\t\t        " + str(round(self.selected_building.smelting_completed_percent)) + "%\n\n\n\n"
+                    building_description_string += "Vitesse de production par poste :\n\n"
+                    building_description_string += "{bold True}" + str(self.selected_building.parameters["production_speed"]) + "x{bold False}\n\n"
+                    if self.selected_building.level != self.selected_building.level_max:
+                        building_description_string += "{italic True}Prochain niveau :{italic False} {bold True}" + \
+                            str(self.selected_building.parameters_per_level[self.selected_building.level + 1]["production_speed"]) + "x{bold False}\n\n"
+                    self.content["building_description_layout"].document = decode_attributed(building_description_string)
+                    # production buttons
+                    for resource in self.content["building_metal_production_options"].keys():
+                        if self.selected_building.resource_produced == resource:
+                            # cannot select resource, draw icon green
+                            self.content["building_metal_production_options"][resource]["icon"].color = (104, 184, 66, 255)
+                            self.content["building_metal_production_options"][resource]["button_area"].color = (192, 192, 192, 0)
+                        else:
+                            # can select resource, draw icon gray
+                            self.content["building_metal_production_options"][resource]["icon"].color = (192, 192, 192, 255)
+                            if (self.game_data.mouse_x, self.game_data.mouse_y) in self.content["building_metal_production_options"][resource]["button_area"]:
+                                self.content["building_metal_production_options"][resource]["button_area"].color = (192, 192, 192, 63)
+                                self.game_data.mouse_clickable_area = True
+                            else:
+                                self.content["building_metal_production_options"][resource]["button_area"].color = (192, 192, 192, 0)
                 elif self.selected_building.name == "school":
-                    ...
+                    # building_description_string = self.style_description
+                    building_description_string += "Les écoles permettent d'entrainer de nouveaux colons.\n\n\n"
+                    # building_description_string += "\t\t    charge de travail :\n\n"
+                    # building_description_string += "\t\t    {bold True}" + str(self.selected_building.items_workload[self.workers_options_list[self.current_option_index]]) + "{bold False}\n\n"
+                    self.content["building_description_layout"].document = decode_attributed(building_description_string)
+                    # left arrow
+                    if self.current_option_index == 0:
+                        # show grayed out icon
+                        self.content["building_left_arrow_button_icon_white"].opacity = 100
+                        self.content["building_left_arrow_button_icon_green"].opacity = 0
+                    else:
+                        if (self.game_data.mouse_x, self.game_data.mouse_y) in self.content["building_left_arrow_button_area"]:
+                            # show green icon
+                            self.content["building_left_arrow_button_icon_white"].opacity = 0
+                            self.content["building_left_arrow_button_icon_green"].opacity = 255
+                            self.game_data.mouse_clickable_area = True
+                        else:
+                            # show white icon
+                            self.content["building_left_arrow_button_icon_white"].opacity = 255
+                            self.content["building_left_arrow_button_icon_green"].opacity = 0
+                    # right arrow
+                    if self.current_option_index == len(self.workers_options_list) - 1:
+                        # show grayed out icon
+                        self.content["building_right_arrow_button_icon_white"].opacity = 100
+                        self.content["building_right_arrow_button_icon_green"].opacity = 0
+                    else:
+                        if (self.game_data.mouse_x, self.game_data.mouse_y) in self.content["building_right_arrow_button_area"]:
+                            # show green icon
+                            self.content["building_right_arrow_button_icon_white"].opacity = 0
+                            self.content["building_right_arrow_button_icon_green"].opacity = 255
+                            self.game_data.mouse_clickable_area = True
+                        else:
+                            # show white icon
+                            self.content["building_right_arrow_button_icon_white"].opacity = 255
+                            self.content["building_right_arrow_button_icon_green"].opacity = 0
+                    # worker icon
+                    self.content["building_engineers_icon_white"].opacity = 0
+                    self.content["building_scientists_icon_white"].opacity = 0
+                    self.content["building_pilots_icon_white"].opacity = 0
+                    if self.workers_options_list[self.current_option_index] == "engineers":
+                        self.content["building_engineers_icon_white"].opacity = 255
+                    elif self.workers_options_list[self.current_option_index] == "scientists":
+                        self.content["building_scientists_icon_white"].opacity = 255
+                    else:
+                        self.content["building_pilots_icon_white"].opacity = 255
+                    # worker training workload label
+                    self.content["building_item_workload_label"].text = str(self.selected_building.items_workload[self.workers_options_list[self.current_option_index]])
                 elif self.selected_building.name == "factory":
                     ...
 
@@ -1018,7 +1318,7 @@ class RigthWindowWidgetContent:
         # check if a building tile is selected
         if self.current_colony.selected_building_tile_coords is not None:
             # check which building is on the tile
-            if self.current_colony.selected_building is None:
+            if self.selected_building is None:
                 # check which option has been clicked on
                 for building_name in self.content["building_options_dict"].keys():
                     if (x, y) in self.content["building_options_dict"][building_name]["button_area"]:
@@ -1072,7 +1372,26 @@ class RigthWindowWidgetContent:
                     self.current_colony.destroy_building()
                 else:
                     # building specific stuff
-                    ...
+                    if self.selected_building.name == "drilling_station":
+                        # click on water
+                        if (x, y) in self.content["building_water_button_area"]:
+                            self.selected_building.produce("water")
+                        # click on ore
+                        else:
+                            for resource in self.content["building_ore_production_options"].keys():
+                                if (x, y) in self.content["building_ore_production_options"][resource]["button_area"]:
+                                    self.selected_building.produce(resource)
+                    elif self.selected_building.name == "furnace":
+                        for resource in self.content["building_metal_production_options"].keys():
+                            if (x, y) in self.content["building_metal_production_options"][resource]["button_area"]:
+                                self.selected_building.switch_production(resource)
+                    elif self.selected_building.name == "school":
+                        # click on left arrow
+                        if (x, y) in self.content["building_left_arrow_button_area"]:
+                            self.current_option_index = max(0, self.current_option_index - 1)
+                        elif (x, y) in self.content["building_right_arrow_button_area"]:
+                            self.current_option_index = min(len(self.workers_options_list) - 1, self.current_option_index + 1)
+                        # click on right arrow
 
     def on_delete(self):
         # manually delete text layout objects
@@ -1332,7 +1651,7 @@ class SceneColony(Scene):
             batch = self.batch,
             group = self.groups[2]
         )
-        self.left_window_content["water_icon"].scale = .07
+        self.left_window_content["water_icon"].scale = .14
         # water counter labels
         self.left_window_content["water_available"] = Label("XXX", font_name=self.game_data.default_font_name, font_size=14,
             x = self.left_window.width // 2 + 15 - 120,
@@ -1817,31 +2136,31 @@ class SceneColony(Scene):
         self.left_window_content["water_available"].text = str(round(colony_resources["water"], 1))
         self.left_window_content["water_total"].text = str(colony_storage_space["water"])
         # food
-        self.left_window_content["food_available"].text = str(colony_resources["food"])
+        self.left_window_content["food_available"].text = str(round(colony_resources["food"], 1))
         self.left_window_content["food_total"].text = str(colony_storage_space["food"])
         # O2
-        self.left_window_content["O2_available"].text = str(colony_resources["oxygen"])
+        self.left_window_content["O2_available"].text = str(round(colony_resources["oxygen"], 1))
         self.left_window_content["O2_total"].text = str(colony_storage_space["oxygen"])
         # H2
-        self.left_window_content["H2_available"].text = str(colony_resources["hydrogen"])
+        self.left_window_content["H2_available"].text = str(round(colony_resources["hydrogen"], 1))
         self.left_window_content["H2_total"].text = str(colony_storage_space["hydrogen"])
         # iron
-        self.left_window_content["iron_ore_available"].text = str(colony_resources["iron_ore"])
+        self.left_window_content["iron_ore_available"].text = str(round(colony_resources["iron_ore"], 1))
         self.left_window_content["iron_ore_total"].text = str(colony_storage_space["iron_ore"])
         self.left_window_content["iron_available"].text = str(colony_resources["iron"])
         self.left_window_content["iron_total"].text = str(colony_storage_space["iron"])
         # aluminium
-        self.left_window_content["aluminium_ore_available"].text = str(colony_resources["aluminium_ore"])
+        self.left_window_content["aluminium_ore_available"].text = str(round(colony_resources["aluminium_ore"], 1))
         self.left_window_content["aluminium_ore_total"].text = str(colony_storage_space["aluminium_ore"])
         self.left_window_content["aluminium_available"].text = str(colony_resources["aluminium"])
         self.left_window_content["aluminium_total"].text = str(colony_storage_space["aluminium"])
         # copper
-        self.left_window_content["copper_ore_available"].text = str(colony_resources["copper_ore"])
+        self.left_window_content["copper_ore_available"].text = str(round(colony_resources["copper_ore"], 1))
         self.left_window_content["copper_ore_total"].text = str(colony_storage_space["copper_ore"])
         self.left_window_content["copper_available"].text = str(colony_resources["copper"])
         self.left_window_content["copper_total"].text = str(colony_storage_space["copper"])
         # titanium
-        self.left_window_content["titanium_ore_available"].text = str(colony_resources["titanium_ore"])
+        self.left_window_content["titanium_ore_available"].text = str(round(colony_resources["titanium_ore"], 1))
         self.left_window_content["titanium_ore_total"].text = str(colony_storage_space["titanium_ore"])
         self.left_window_content["titanium_available"].text = str(colony_resources["titanium"])
         self.left_window_content["titanium_total"].text = str(colony_storage_space["titanium"])
