@@ -203,3 +203,9 @@ types of buildings (can be upgraded):
 - normal / fast time scale
 
 ### Game over
+
+# Bundle with PyInstaller
+
+```bat
+pyinstaller --onefile --add-data assets:assets --windowed --icon .\assets\game-logo-32.ico .\homebound.py
+```

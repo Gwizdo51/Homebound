@@ -866,7 +866,7 @@ class RigthWindowWidgetContent:
                         y = self.game_data.window_height - 470,
                         width = 40,
                         height = 60,
-                        color = (192, 192, 192, 63),
+                        color = (192, 192, 192, 0),
                         batch=self.batch,
                         group=self.groups[2]
                     )
@@ -891,7 +891,7 @@ class RigthWindowWidgetContent:
                         y = self.game_data.window_height - 470,
                         width = 40,
                         height = 60,
-                        color = (192, 192, 192, 63),
+                        color = (192, 192, 192, 0),
                         batch=self.batch,
                         group=self.groups[2]
                     )
@@ -917,7 +917,7 @@ class RigthWindowWidgetContent:
                         x = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 - 70,
                         y = self.game_data.window_height - 440,
                         batch=self.batch,
-                        group=self.groups[2]
+                        group=self.groups[3]
                     )
                     self.content["building_engineers_icon_white"].scale = .18
                     self.content["building_scientists_icon_white"] = Sprite(
@@ -925,7 +925,7 @@ class RigthWindowWidgetContent:
                         x = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 - 70,
                         y = self.game_data.window_height - 440,
                         batch=self.batch,
-                        group=self.groups[2]
+                        group=self.groups[3]
                     )
                     self.content["building_scientists_icon_white"].scale = .15
                     self.content["building_pilots_icon_white"] = Sprite(
@@ -933,7 +933,7 @@ class RigthWindowWidgetContent:
                         x = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 - 70,
                         y = self.game_data.window_height - 440,
                         batch=self.batch,
-                        group=self.groups[2]
+                        group=self.groups[3]
                     )
                     self.content["building_pilots_icon_white"].scale = .15
                     # clock icon
@@ -942,14 +942,73 @@ class RigthWindowWidgetContent:
                         x = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 + 40,
                         y = self.game_data.window_height - 430,
                         batch=self.batch,
-                        group=self.groups[2]
+                        group=self.groups[3]
                     )
                     self.content["building_clock_icon_light_gray"].scale = .1
                     # workload label
                     self.content["building_item_workload_label"] = Label("XXXX", font_name=self.game_data.default_font_name, font_size=13, bold=True,
                         x = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 + 40,
                         y = self.game_data.window_height - 460,
-                        anchor_x="center", batch=self.batch, group=self.groups[2])
+                        anchor_x="center", batch=self.batch, group=self.groups[3])
+                    # add worker button
+                    self.content["building_add_item_button_area"] = shapes.Rectangle(
+                        x = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 - 100,
+                        y = self.game_data.window_height - 470,
+                        width = 200,
+                        height = 60,
+                        color = (192, 192, 192, 0),
+                        batch=self.batch,
+                        group=self.groups[2]
+                    )
+                    # lines for training queue
+                    self.content["building_training_queue_lines"] = []
+                    self.content["building_training_queue_lines"].append(shapes.Line(
+                        x = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 - 140,
+                        y = self.game_data.window_height - 500,
+                        x2 = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 + 140,
+                        y2 = self.game_data.window_height - 500,
+                        width = 3,
+                        color = (192, 192, 192, 255),
+                        batch=self.batch, group=self.groups[2]
+                    ))
+                    self.content["building_training_queue_lines"].append(shapes.Line(
+                        x = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 - 140,
+                        y = self.game_data.window_height - 550,
+                        x2 = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 + 140,
+                        y2 = self.game_data.window_height - 550,
+                        width = 3,
+                        color = (192, 192, 192, 255),
+                        batch=self.batch, group=self.groups[2]
+                    ))
+                    self.content["building_training_queue_lines"].append(shapes.Line(
+                        x = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 - 140,
+                        y = self.game_data.window_height - 500 + 2,
+                        x2 = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 - 140,
+                        y2 = self.game_data.window_height - 550 - 1,
+                        width = 3,
+                        color = (192, 192, 192, 255),
+                        batch=self.batch, group=self.groups[2]
+                    ))
+                    self.content["building_training_queue_lines"].append(shapes.Line(
+                        x = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 - 84,
+                        y = self.game_data.window_height - 500 + 2,
+                        x2 = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 - 84,
+                        y2 = self.game_data.window_height - 550 - 1,
+                        width = 3,
+                        color = (192, 192, 192, 255),
+                        batch=self.batch, group=self.groups[2]
+                    ))
+                    self.content["building_training_queue_lines"].append(shapes.Line(
+                        x = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 + 140,
+                        y = self.game_data.window_height - 500 + 2,
+                        x2 = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 + 140,
+                        y2 = self.game_data.window_height - 550 - 1,
+                        width = 3,
+                        color = (192, 192, 192, 255),
+                        batch=self.batch, group=self.groups[2]
+                    ))
+                    # queue icons
+                    self.content["building_training_queue_icons"] = []
                 elif self.selected_building.name == "factory":
                     print("factory")
 
@@ -1310,6 +1369,12 @@ class RigthWindowWidgetContent:
                         self.content["building_pilots_icon_white"].opacity = 255
                     # worker training workload label
                     self.content["building_item_workload_label"].text = str(self.selected_building.items_workload[self.workers_options_list[self.current_option_index]])
+                    # add worker button
+                    if (self.game_data.mouse_x, self.game_data.mouse_y) in self.content["building_add_item_button_area"]:
+                        self.content["building_add_item_button_area"].color = (192, 192, 192, 63)
+                        self.game_data.mouse_clickable_area = True
+                    else:
+                        self.content["building_add_item_button_area"].color = (192, 192, 192, 0)
                 elif self.selected_building.name == "factory":
                     ...
 

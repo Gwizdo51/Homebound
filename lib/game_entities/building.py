@@ -523,15 +523,15 @@ class BuildingWarehouse(Building):
             },
             "construction_workload": 100,
             "storage": {
-                "food": 0,
-                "iron_ore": 0,
-                "iron": 0,
-                "aluminium_ore": 0,
-                "aluminium": 0,
-                "copper_ore": 0,
-                "copper": 0,
-                "titanium_ore": 0,
-                "titanium": 0
+                "food": 500,
+                "iron_ore": 500,
+                "iron": 500,
+                "aluminium_ore": 500,
+                "aluminium": 500,
+                "copper_ore": 500,
+                "copper": 500,
+                "titanium_ore": 500,
+                "titanium": 500
             },
             "jobs": {
                 "construction": {

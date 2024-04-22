@@ -119,7 +119,8 @@ class GameData:
 
         # game icon
         # https://www.pngegg.com/en/png-nocyw
-        self.game_logo = resource.image("game-logo-32.png")
+        # self.game_logo = resource.image("game-logo-32.png")
+        self.game_logo = resource.image("game-logo-32.ico")
 
         # icons
 

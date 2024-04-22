@@ -1,1 +1,2 @@
 pyglet==2.0.15
+pyinstaller==6.6.0

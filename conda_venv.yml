@@ -7,3 +7,4 @@ dependencies:
   - pip=24.0.*
   - pip:
     - pyglet==2.0.15
+    - pyinstaller==6.6.0
