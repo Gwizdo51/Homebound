@@ -162,8 +162,10 @@ class GameData:
 
         # items
         # https://www.svgrepo.com/svg/161941/spaceship
-        self.icon_spaceship_light_gray = resource.image("icon-spaceship-c0c0c0.png")
-        center_image(self.icon_spaceship_light_gray)
+        self.icon_spaceship_slanted_light_gray = resource.image("icon-spaceship-slanted-c0c0c0.png")
+        center_image(self.icon_spaceship_slanted_light_gray)
+        self.icon_spaceship_slanted_white = resource.image("icon-spaceship-slanted-ffffff.png")
+        center_image(self.icon_spaceship_slanted_white)
         # https://www.svgrepo.com/svg/445050/container-optimize-solid
         self.icon_crate_light_gray = resource.image("icon-crate-c0c0c0.png")
         center_image(self.icon_crate_light_gray)
@@ -173,9 +175,13 @@ class GameData:
         # https://www.svgrepo.com/svg/122440/car-seat
         self.icon_seat_light_gray = resource.image("icon-seat-c0c0c0.png")
         center_image(self.icon_seat_light_gray)
+        self.icon_seat_white = resource.image("icon-seat-ffffff.png")
+        center_image(self.icon_seat_white)
         # https://www.svgrepo.com/svg/436792/house-fill
         self.icon_house_light_gray = resource.image("icon-house-c0c0c0.png")
         center_image(self.icon_house_light_gray)
+        self.icon_house_white = resource.image("icon-house-ffffff.png")
+        center_image(self.icon_house_white)
 
         # misc
         # https://www.svgrepo.com/svg/521755/minus

@@ -1198,7 +1198,8 @@ class BuildingSchool(Building):
                     "engineers": 0,
                     "scientists": 0
                 }
-            }
+            },
+            "production_speed": 0
         },
         1: {
             "power": {
@@ -1223,8 +1224,7 @@ class BuildingSchool(Building):
                     "scientists": 5
                 }
             },
-            "production_speed": 1,
-            "queue_max_size": 5
+            "production_speed": 1
         },
         2: {
             "power": {
@@ -1249,8 +1249,7 @@ class BuildingSchool(Building):
                     "scientists": 0
                 }
             },
-            "production_speed": 1,
-            "queue_max_size": 5
+            "production_speed": 1
         },
         3: {
             "power": {
@@ -1268,10 +1267,11 @@ class BuildingSchool(Building):
                     "scientists": 0
                 }
             },
-            "production_speed": 1,
-            "queue_max_size": 5
+            "production_speed": 1
         }
     }
+
+    # queue max size: 5
 
     def __init__(self, colony_data):
         super().__init__(colony_data)
@@ -1279,7 +1279,7 @@ class BuildingSchool(Building):
         self.training_workload_completed = 0
 
     def can_add_worker(self) -> bool:
-        return len(self.training_queue) < self.parameters["queue_max_size"]
+        return len(self.training_queue) < 5
 
     def add_worker_to_queue(self, worker_type: str):
         # worker_type = "engineers", "scientists" or "pilots"
@@ -1324,8 +1324,11 @@ class BuildingSchool(Building):
             # if the cycle is completed ...
             if self.training_workload_completed >= self.items_workload[self.training_queue[0]]:
                 # add the worker to the colony
-                self.colony_data["workers"][self.training_queue[0]]["available"] += 1
-                self.colony_data["workers"][self.training_queue[0]]["total"] += 1
+                if self.training_queue[0] == "pilots":
+                    self.colony_data["workers"]["pilots"] += 1
+                else:
+                    self.colony_data["workers"][self.training_queue[0]]["available"] += 1
+                    self.colony_data["workers"][self.training_queue[0]]["total"] += 1
                 # remove the first element from the queue and reset the cycle
                 self.training_queue.pop(0)
                 self.training_workload_completed = 0
@@ -1342,7 +1345,7 @@ class BuildingFactory(Building):
                 "copper": 0,
                 "titanium": 0
             },
-            "workload": 0
+            "workload": 100
         },
         "spaceship_medium": {
             "resources": {
@@ -1351,7 +1354,7 @@ class BuildingFactory(Building):
                 "copper": 0,
                 "titanium": 0
             },
-            "workload": 0
+            "workload": 100
         },
         "spaceship_large": {
             "resources": {
@@ -1360,7 +1363,7 @@ class BuildingFactory(Building):
                 "copper": 0,
                 "titanium": 0
             },
-            "workload": 0
+            "workload": 100
         },
         "module_cargo_hold": {
             "resources": {
@@ -1369,7 +1372,7 @@ class BuildingFactory(Building):
                 "copper": 0,
                 "titanium": 0
             },
-            "workload": 0
+            "workload": 100
         },
         "module_liquid_tanks": {
             "resources": {
@@ -1378,7 +1381,7 @@ class BuildingFactory(Building):
                 "copper": 0,
                 "titanium": 0
             },
-            "workload": 0
+            "workload": 100
         },
         "module_passengers": {
             "resources": {
@@ -1387,7 +1390,7 @@ class BuildingFactory(Building):
                 "copper": 0,
                 "titanium": 0
             },
-            "workload": 0
+            "workload": 100
         },
         "module_headquarters": {
             "resources": {
@@ -1396,7 +1399,7 @@ class BuildingFactory(Building):
                 "copper": 0,
                 "titanium": 0
             },
-            "workload": 0
+            "workload": 100
         },
     }
     parameters_per_level = {
@@ -1422,7 +1425,8 @@ class BuildingFactory(Building):
                     "engineers": 0,
                     "scientists": 0
                 }
-            }
+            },
+            "production_speed": 0
         },
         1: {
             "power": {
@@ -1443,12 +1447,11 @@ class BuildingFactory(Building):
                     "scientists": 0
                 },
                 "production": {
-                    "engineers": 0,
+                    "engineers": 5,
                     "scientists": 0
                 }
             },
-            "production_speed": 1,
-            "queue_max_size": 5
+            "production_speed": 1
         },
         2: {
             "power": {
@@ -1473,8 +1476,7 @@ class BuildingFactory(Building):
                     "scientists": 0
                 }
             },
-            "production_speed": 1,
-            "queue_max_size": 5
+            "production_speed": 1
         },
         3: {
             "power": {
@@ -1492,10 +1494,11 @@ class BuildingFactory(Building):
                     "scientists": 0
                 }
             },
-            "production_speed": 1,
-            "queue_max_size": 5
+            "production_speed": 1
         }
     }
+
+    # queue max size: 5
 
     def __init__(self, colony_data):
         super().__init__(colony_data)
@@ -1504,7 +1507,7 @@ class BuildingFactory(Building):
 
     def can_make_item(self, item_name: str) -> bool:
         # check if the queue is full
-        if len(self.items_queue) >= self.parameters["queue_max_size"]:
+        if len(self.items_queue) >= 5:
             can_make_item = False
         else:
             # check if the colony has enough resources to make the item

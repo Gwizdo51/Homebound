@@ -911,6 +911,16 @@ class RigthWindowWidgetContent:
                         group=self.groups[3]
                     )
                     self.content["building_right_arrow_button_icon_green"].scale = .2
+                    # add worker button
+                    self.content["building_add_item_button_area"] = shapes.Rectangle(
+                        x = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 - 100,
+                        y = self.game_data.window_height - 470,
+                        width = 200,
+                        height = 60,
+                        color = (192, 192, 192, 0),
+                        batch=self.batch,
+                        group=self.groups[2]
+                    )
                     # workers icons
                     self.content["building_engineers_icon_white"] = Sprite(
                         img = self.game_data.icon_wrench_white,
@@ -950,16 +960,6 @@ class RigthWindowWidgetContent:
                         x = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 + 40,
                         y = self.game_data.window_height - 460,
                         anchor_x="center", batch=self.batch, group=self.groups[3])
-                    # add worker button
-                    self.content["building_add_item_button_area"] = shapes.Rectangle(
-                        x = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 - 100,
-                        y = self.game_data.window_height - 470,
-                        width = 200,
-                        height = 60,
-                        color = (192, 192, 192, 0),
-                        batch=self.batch,
-                        group=self.groups[2]
-                    )
                     # lines for training queue
                     self.content["building_training_queue_lines"] = []
                     self.content["building_training_queue_lines"].append(shapes.Line(
@@ -969,7 +969,7 @@ class RigthWindowWidgetContent:
                         y2 = self.game_data.window_height - 500,
                         width = 3,
                         color = (192, 192, 192, 255),
-                        batch=self.batch, group=self.groups[2]
+                        batch=self.batch, group=self.groups[3]
                     ))
                     self.content["building_training_queue_lines"].append(shapes.Line(
                         x = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 - 140,
@@ -978,39 +978,409 @@ class RigthWindowWidgetContent:
                         y2 = self.game_data.window_height - 550,
                         width = 3,
                         color = (192, 192, 192, 255),
-                        batch=self.batch, group=self.groups[2]
+                        batch=self.batch, group=self.groups[3]
                     ))
                     self.content["building_training_queue_lines"].append(shapes.Line(
                         x = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 - 140,
-                        y = self.game_data.window_height - 500 + 2,
+                        y = self.game_data.window_height - 500 + 1,
                         x2 = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 - 140,
-                        y2 = self.game_data.window_height - 550 - 1,
+                        y2 = self.game_data.window_height - 550 - 2,
                         width = 3,
                         color = (192, 192, 192, 255),
-                        batch=self.batch, group=self.groups[2]
+                        batch=self.batch, group=self.groups[3]
                     ))
                     self.content["building_training_queue_lines"].append(shapes.Line(
                         x = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 - 84,
-                        y = self.game_data.window_height - 500 + 2,
+                        y = self.game_data.window_height - 500 + 1,
                         x2 = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 - 84,
-                        y2 = self.game_data.window_height - 550 - 1,
+                        y2 = self.game_data.window_height - 550 - 2,
                         width = 3,
                         color = (192, 192, 192, 255),
-                        batch=self.batch, group=self.groups[2]
+                        batch=self.batch, group=self.groups[3]
                     ))
                     self.content["building_training_queue_lines"].append(shapes.Line(
                         x = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 + 140,
-                        y = self.game_data.window_height - 500 + 2,
+                        y = self.game_data.window_height - 500 + 1,
                         x2 = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 + 140,
-                        y2 = self.game_data.window_height - 550 - 1,
+                        y2 = self.game_data.window_height - 550 - 2,
                         width = 3,
                         color = (192, 192, 192, 255),
-                        batch=self.batch, group=self.groups[2]
+                        batch=self.batch, group=self.groups[3]
                     ))
+                    # current training worker button area
+                    self.content["building_cancel_first_item_button_area"] = shapes.Rectangle(
+                        x = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 - 140,
+                        y = self.game_data.window_height - 550,
+                        width = 56,
+                        height = 50,
+                        color = (192, 192, 192, 0),
+                        batch=self.batch,
+                        group=self.groups[2]
+                    )
+                    # empty queue button area
+                    self.content["building_empty_queue_button_area"] = shapes.Rectangle(
+                        x = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 - 84,
+                        y = self.game_data.window_height - 550,
+                        width = 56 * 4,
+                        height = 50,
+                        color = (192, 192, 192, 0),
+                        batch=self.batch,
+                        group=self.groups[2]
+                    )
                     # queue icons
                     self.content["building_training_queue_icons"] = []
+                    for queue_index in range(5):
+                        queue_icons = {}
+                        queue_icons["engineers"] = Sprite(
+                            img = self.game_data.icon_wrench_white,
+                            x = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 - 112 + queue_index * 56,
+                            y = self.game_data.window_height - 525,
+                            batch=self.batch,
+                            group=self.groups[3]
+                        )
+                        queue_icons["engineers"].scale = .15
+                        queue_icons["scientists"] = Sprite(
+                            img = self.game_data.icon_vial_white,
+                            x = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 - 112 + queue_index * 56,
+                            y = self.game_data.window_height - 525,
+                            batch=self.batch,
+                            group=self.groups[3]
+                        )
+                        queue_icons["scientists"].scale = .13
+                        queue_icons["pilots"] = Sprite(
+                            img = self.game_data.icon_plane_white,
+                            x = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 - 112 + queue_index * 56,
+                            y = self.game_data.window_height - 525,
+                            batch=self.batch,
+                            group=self.groups[3]
+                        )
+                        queue_icons["pilots"].scale = .13
+                        self.content["building_training_queue_icons"].append(queue_icons)
+                    # item completion percent
+                    self.content["building_item_percent_label"] = Label("XX%", font_name=self.game_data.subtitle_font_name, font_size=12,
+                        color = (192, 192, 192, 255),
+                        x = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 - 112,
+                        y = self.game_data.window_height - 495,
+                        anchor_x="center", batch=self.batch, group=self.groups[2])
                 elif self.selected_building.name == "factory":
-                    print("factory")
+                    # 0: emall spaceship
+                    # 1: medium spaceship
+                    # 2: large spaceship
+                    # 3: cargo hold module
+                    # 4: liquid tank module
+                    # 5: passengers module
+                    # 6: base module
+                    self.items_options_list = list(self.selected_building.items_price.keys())
+                    self.current_option_index = 0
+                    self.content["building_description_layout"] = TextLayout(
+                        document = decode_attributed(""),
+                        x = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 - 150,
+                        y = self.game_data.window_height - 370,
+                        width = 300,
+                        # height=0,
+                        anchor_y="baseline",
+                        multiline=True,
+                        batch=self.batch,
+                        group=self.groups[2]
+                    )
+                    # selection buttons
+                    self.content["building_left_arrow_button_area"] = shapes.Rectangle(
+                        x = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 - 150,
+                        y = self.game_data.window_height - 470,
+                        width = 40,
+                        height = 60,
+                        color = (192, 192, 192, 0),
+                        batch=self.batch,
+                        group=self.groups[2]
+                    )
+                    self.content["building_left_arrow_button_icon_white"] = Sprite(
+                        img = self.game_data.icon_left_chevron_white,
+                        x = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 - 130,
+                        y = self.game_data.window_height - 440,
+                        batch=self.batch,
+                        group=self.groups[3]
+                    )
+                    self.content["building_left_arrow_button_icon_white"].scale = .2
+                    self.content["building_left_arrow_button_icon_green"] = Sprite(
+                        img = self.game_data.icon_left_chevron_green,
+                        x = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 - 130,
+                        y = self.game_data.window_height - 440,
+                        batch=self.batch,
+                        group=self.groups[3]
+                    )
+                    self.content["building_left_arrow_button_icon_green"].scale = .2
+                    self.content["building_right_arrow_button_area"] = shapes.Rectangle(
+                        x = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 + 110,
+                        y = self.game_data.window_height - 470,
+                        width = 40,
+                        height = 60,
+                        color = (192, 192, 192, 0),
+                        batch=self.batch,
+                        group=self.groups[2]
+                    )
+                    self.content["building_right_arrow_button_icon_white"] = Sprite(
+                        img = self.game_data.icon_right_chevron_white,
+                        x = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 + 130,
+                        y = self.game_data.window_height - 440,
+                        batch=self.batch,
+                        group=self.groups[3]
+                    )
+                    self.content["building_right_arrow_button_icon_white"].scale = .2
+                    self.content["building_right_arrow_button_icon_green"] = Sprite(
+                        img = self.game_data.icon_right_chevron_green,
+                        x = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 + 130,
+                        y = self.game_data.window_height - 440,
+                        batch=self.batch,
+                        group=self.groups[3]
+                    )
+                    self.content["building_right_arrow_button_icon_green"].scale = .2
+                    # add item button
+                    self.content["building_add_item_button_area"] = shapes.Rectangle(
+                        x = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 - 100,
+                        y = self.game_data.window_height - 470,
+                        width = 200,
+                        height = 60,
+                        color = (192, 192, 192, 0),
+                        batch=self.batch,
+                        group=self.groups[2]
+                    )
+                    # items icons
+                    self.content["building_item_icon_spaceship_white"] = Sprite(
+                        img = self.game_data.icon_spaceship_slanted_white,
+                        x = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 - 80,
+                        y = self.game_data.window_height - 440,
+                        batch=self.batch,
+                        group=self.groups[3]
+                    )
+                    self.content["building_item_icon_cargo_module_white"] = Sprite(
+                        img = self.game_data.icon_crate_white,
+                        x = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 - 80,
+                        y = self.game_data.window_height - 440,
+                        batch=self.batch,
+                        group=self.groups[3]
+                    )
+                    self.content["building_item_icon_cargo_module_white"].scale = .15
+                    self.content["building_item_icon_tank_module_white"] = Sprite(
+                        img = self.game_data.icon_barrel_white,
+                        x = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 - 80,
+                        y = self.game_data.window_height - 440,
+                        batch=self.batch,
+                        group=self.groups[3]
+                    )
+                    self.content["building_item_icon_tank_module_white"].scale = .15
+                    self.content["building_item_icon_passengers_module_white"] = Sprite(
+                        img = self.game_data.icon_seat_white,
+                        x = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 - 80,
+                        y = self.game_data.window_height - 440,
+                        batch=self.batch,
+                        group=self.groups[3]
+                    )
+                    self.content["building_item_icon_passengers_module_white"].scale = .15
+                    self.content["building_item_icon_base_module_white"] = Sprite(
+                        img = self.game_data.icon_house_white,
+                        x = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 - 80,
+                        y = self.game_data.window_height - 440,
+                        batch=self.batch,
+                        group=self.groups[3]
+                    )
+                    self.content["building_item_icon_base_module_white"].scale = .15
+                    # clock icon
+                    self.content["building_item_icon_clock_light_gray"] = Sprite(
+                        img = self.game_data.icon_clock_light_gray,
+                        x = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 - 40,
+                        y = self.game_data.window_height - 420,
+                        batch=self.batch,
+                        group=self.groups[3]
+                    )
+                    self.content["building_item_icon_clock_light_gray"].scale = .07
+                    # workload label
+                    self.content["building_item_workload_label"] = Label("XXX", font_name=self.game_data.default_font_name, font_size=9,
+                        # color = (255, 255, 255, 255),
+                        x = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 - 40,
+                        y = self.game_data.window_height - 440,
+                        anchor_x="center", anchor_y="center", batch=self.batch, group=self.groups[3])
+                    # iron icon
+                    self.content["building_item_icon_iron_light_gray"] = Label("Fe", font_name=self.game_data.subtitle_font_name, font_size=12,
+                        color = (192, 192, 192, 255),
+                        x = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 - 10,
+                        y = self.game_data.window_height - 430,
+                        anchor_x="center", anchor_y="center", batch=self.batch, group=self.groups[3])
+                    # iron price label
+                    self.content["building_item_iron_price_label"] = Label("XXX", font_name=self.game_data.default_font_name, font_size=9,
+                        # color = (255, 255, 255, 255),
+                        x = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 - 10,
+                        y = self.game_data.window_height - 450,
+                        anchor_x="center", anchor_y="center", batch=self.batch, group=self.groups[3])
+                    # aluminium icon
+                    self.content["building_item_icon_aluminium_light_gray"] = Label("Al", font_name=self.game_data.subtitle_font_name, font_size=12,
+                        color = (192, 192, 192, 255),
+                        x = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 + 20,
+                        y = self.game_data.window_height - 420,
+                        anchor_x="center", anchor_y="center", batch=self.batch, group=self.groups[3])
+                    # aluminium price label
+                    self.content["building_item_aluminium_price_label"] = Label("XXX", font_name=self.game_data.default_font_name, font_size=9,
+                        # color = (255, 255, 255, 255),
+                        x = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 + 20,
+                        y = self.game_data.window_height - 440,
+                        anchor_x="center", anchor_y="center", batch=self.batch, group=self.groups[3])
+                    # copper icon
+                    self.content["building_item_icon_copper_light_gray"] = Label("Cu", font_name=self.game_data.subtitle_font_name, font_size=12,
+                        color = (192, 192, 192, 255),
+                        x = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 + 50,
+                        y = self.game_data.window_height - 430,
+                        anchor_x="center", anchor_y="center", batch=self.batch, group=self.groups[3])
+                    # copper price label
+                    self.content["building_item_copper_price_label"] = Label("XXX", font_name=self.game_data.default_font_name, font_size=9,
+                        # color = (255, 255, 255, 255),
+                        x = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 + 50,
+                        y = self.game_data.window_height - 450,
+                        anchor_x="center", anchor_y="center", batch=self.batch, group=self.groups[3])
+                    # titanium icon
+                    self.content["building_item_icon_titanium_light_gray"] = Label("Ti", font_name=self.game_data.subtitle_font_name, font_size=12,
+                        color = (192, 192, 192, 255),
+                        x = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 + 80,
+                        y = self.game_data.window_height - 420,
+                        anchor_x="center", anchor_y="center", batch=self.batch, group=self.groups[3])
+                    # titanium price label
+                    self.content["building_item_titanium_price_label"] = Label("XXX", font_name=self.game_data.default_font_name, font_size=9,
+                        # color = (255, 255, 255, 255),
+                        x = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 + 80,
+                        y = self.game_data.window_height - 440,
+                        anchor_x="center", anchor_y="center", batch=self.batch, group=self.groups[3])
+                    # lines for training queue
+                    self.content["building_training_queue_lines"] = []
+                    self.content["building_training_queue_lines"].append(shapes.Line(
+                        x = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 - 140,
+                        y = self.game_data.window_height - 500,
+                        x2 = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 + 140,
+                        y2 = self.game_data.window_height - 500,
+                        width = 3,
+                        color = (192, 192, 192, 255),
+                        batch=self.batch, group=self.groups[3]
+                    ))
+                    self.content["building_training_queue_lines"].append(shapes.Line(
+                        x = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 - 140,
+                        y = self.game_data.window_height - 550,
+                        x2 = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 + 140,
+                        y2 = self.game_data.window_height - 550,
+                        width = 3,
+                        color = (192, 192, 192, 255),
+                        batch=self.batch, group=self.groups[3]
+                    ))
+                    self.content["building_training_queue_lines"].append(shapes.Line(
+                        x = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 - 140,
+                        y = self.game_data.window_height - 500 + 1,
+                        x2 = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 - 140,
+                        y2 = self.game_data.window_height - 550 - 2,
+                        width = 3,
+                        color = (192, 192, 192, 255),
+                        batch=self.batch, group=self.groups[3]
+                    ))
+                    self.content["building_training_queue_lines"].append(shapes.Line(
+                        x = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 - 84,
+                        y = self.game_data.window_height - 500 + 1,
+                        x2 = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 - 84,
+                        y2 = self.game_data.window_height - 550 - 2,
+                        width = 3,
+                        color = (192, 192, 192, 255),
+                        batch=self.batch, group=self.groups[3]
+                    ))
+                    self.content["building_training_queue_lines"].append(shapes.Line(
+                        x = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 + 140,
+                        y = self.game_data.window_height - 500 + 1,
+                        x2 = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 + 140,
+                        y2 = self.game_data.window_height - 550 - 2,
+                        width = 3,
+                        color = (192, 192, 192, 255),
+                        batch=self.batch, group=self.groups[3]
+                    ))
+                    # current training worker button area
+                    self.content["building_cancel_first_item_button_area"] = shapes.Rectangle(
+                        x = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 - 140,
+                        y = self.game_data.window_height - 550,
+                        width = 56,
+                        height = 50,
+                        color = (192, 192, 192, 0),
+                        batch=self.batch,
+                        group=self.groups[2]
+                    )
+                    # empty queue button area
+                    self.content["building_empty_queue_button_area"] = shapes.Rectangle(
+                        x = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 - 84,
+                        y = self.game_data.window_height - 550,
+                        width = 56 * 4,
+                        height = 50,
+                        color = (192, 192, 192, 0),
+                        batch=self.batch,
+                        group=self.groups[2]
+                    )
+                    # queue icons
+                    self.content["building_items_queue_icons"] = []
+                    for queue_index in range(5):
+                        queue_icons = {}
+                        queue_icons["spaceship_small"] = Sprite(
+                            img = self.game_data.icon_spaceship_slanted_white,
+                            x = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 - 112 + queue_index * 56,
+                            y = self.game_data.window_height - 525,
+                            batch=self.batch,
+                            group=self.groups[3]
+                        )
+                        queue_icons["spaceship_small"].scale = .07
+                        queue_icons["spaceship_medium"] = Sprite(
+                            img = self.game_data.icon_spaceship_slanted_white,
+                            x = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 - 112 + queue_index * 56,
+                            y = self.game_data.window_height - 525,
+                            batch=self.batch,
+                            group=self.groups[3]
+                        )
+                        queue_icons["spaceship_medium"].scale = .11
+                        queue_icons["spaceship_large"] = Sprite(
+                            img = self.game_data.icon_spaceship_slanted_white,
+                            x = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 - 112 + queue_index * 56,
+                            y = self.game_data.window_height - 525,
+                            batch=self.batch,
+                            group=self.groups[3]
+                        )
+                        queue_icons["spaceship_large"].scale = .15
+                        queue_icons["module_cargo_hold"] = Sprite(
+                            img = self.game_data.icon_crate_white,
+                            x = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 - 112 + queue_index * 56,
+                            y = self.game_data.window_height - 525,
+                            batch=self.batch,
+                            group=self.groups[3]
+                        )
+                        queue_icons["module_cargo_hold"].scale = .13
+                        queue_icons["module_liquid_tanks"] = Sprite(
+                            img = self.game_data.icon_barrel_white,
+                            x = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 - 112 + queue_index * 56,
+                            y = self.game_data.window_height - 525,
+                            batch=self.batch,
+                            group=self.groups[3]
+                        )
+                        queue_icons["module_liquid_tanks"].scale = .13
+                        queue_icons["module_passengers"] = Sprite(
+                            img = self.game_data.icon_seat_white,
+                            x = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 - 112 + queue_index * 56,
+                            y = self.game_data.window_height - 525,
+                            batch=self.batch,
+                            group=self.groups[3]
+                        )
+                        queue_icons["module_passengers"].scale = .13
+                        queue_icons["module_headquarters"] = Sprite(
+                            img = self.game_data.icon_house_white,
+                            x = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 - 112 + queue_index * 56,
+                            y = self.game_data.window_height - 525,
+                            batch=self.batch,
+                            group=self.groups[3]
+                        )
+                        queue_icons["module_headquarters"].scale = .13
+                        self.content["building_items_queue_icons"].append(queue_icons)
+                    # item completion percent
+                    self.content["building_item_percent_label"] = Label("XX%", font_name=self.game_data.subtitle_font_name, font_size=12,
+                        color = (192, 192, 192, 255),
+                        x = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 - 112,
+                        y = self.game_data.window_height - 495,
+                        anchor_x="center", batch=self.batch, group=self.groups[2])
 
     def on_draw(self):
         # redraw the colors and opacity of items in the window according to the game state
@@ -1323,9 +1693,12 @@ class RigthWindowWidgetContent:
                                 self.content["building_metal_production_options"][resource]["button_area"].color = (192, 192, 192, 0)
                 elif self.selected_building.name == "school":
                     # building_description_string = self.style_description
-                    building_description_string += "Les écoles permettent d'entrainer de nouveaux colons.\n\n\n"
-                    # building_description_string += "\t\t    charge de travail :\n\n"
-                    # building_description_string += "\t\t    {bold True}" + str(self.selected_building.items_workload[self.workers_options_list[self.current_option_index]]) + "{bold False}\n\n"
+                    building_description_string += "Les écoles permettent d'entrainer de nouveaux colons.\n\n\n\n\n\n\n\n\n\n"
+                    building_description_string += "Vitesse de production par poste :\n\n"
+                    building_description_string += "{bold True}" + str(self.selected_building.parameters["production_speed"]) + "x{bold False}\n\n"
+                    if self.selected_building.level != self.selected_building.level_max:
+                        building_description_string += "{italic True}Prochain niveau :{italic False} {bold True}" + \
+                            str(self.selected_building.parameters_per_level[self.selected_building.level + 1]["production_speed"]) + "x{bold False}\n\n"
                     self.content["building_description_layout"].document = decode_attributed(building_description_string)
                     # left arrow
                     if self.current_option_index == 0:
@@ -1357,7 +1730,7 @@ class RigthWindowWidgetContent:
                             # show white icon
                             self.content["building_right_arrow_button_icon_white"].opacity = 255
                             self.content["building_right_arrow_button_icon_green"].opacity = 0
-                    # worker icon
+                    # workers icon
                     self.content["building_engineers_icon_white"].opacity = 0
                     self.content["building_scientists_icon_white"].opacity = 0
                     self.content["building_pilots_icon_white"].opacity = 0
@@ -1370,14 +1743,140 @@ class RigthWindowWidgetContent:
                     # worker training workload label
                     self.content["building_item_workload_label"].text = str(self.selected_building.items_workload[self.workers_options_list[self.current_option_index]])
                     # add worker button
-                    if (self.game_data.mouse_x, self.game_data.mouse_y) in self.content["building_add_item_button_area"]:
+                    if ((self.game_data.mouse_x, self.game_data.mouse_y) in self.content["building_add_item_button_area"]) and self.selected_building.can_add_worker():
                         self.content["building_add_item_button_area"].color = (192, 192, 192, 63)
                         self.game_data.mouse_clickable_area = True
                     else:
                         self.content["building_add_item_button_area"].color = (192, 192, 192, 0)
+                    # queue items
+                    # hide all icons
+                    for queue_index in range(5):
+                        self.content["building_training_queue_icons"][queue_index]["engineers"].opacity = 0
+                        self.content["building_training_queue_icons"][queue_index]["scientists"].opacity = 0
+                        self.content["building_training_queue_icons"][queue_index]["pilots"].opacity = 0
+                    # show the icons corresponding to the items in the queue
+                    for queue_index in range(len(self.selected_building.training_queue)):
+                        self.content["building_training_queue_icons"][queue_index][self.selected_building.training_queue[queue_index]].opacity = 255
+                    # item completion
+                    if len(self.selected_building.training_queue) == 0:
+                        self.content["building_item_percent_label"].text = "0%"
+                    else:
+                        self.content["building_item_percent_label"].text = str(round(self.selected_building.training_workload_completed * 100 / self.selected_building.items_workload[self.selected_building.training_queue[0]])) + "%"
+                    # cancel first item button
+                    if self.selected_building.can_cancel_training() and ((self.game_data.mouse_x, self.game_data.mouse_y) in self.content["building_cancel_first_item_button_area"]):
+                        self.content["building_cancel_first_item_button_area"].color = (192, 192, 192, 63)
+                        self.game_data.mouse_clickable_area = True
+                    else:
+                        self.content["building_cancel_first_item_button_area"].color = (192, 192, 192, 0)
+                    # empty queue button
+                    if self.selected_building.can_clear_queue() and (self.game_data.mouse_x, self.game_data.mouse_y) in self.content["building_empty_queue_button_area"]:
+                        self.content["building_empty_queue_button_area"].color = (192, 192, 192, 63)
+                        self.game_data.mouse_clickable_area = True
+                    else:
+                        self.content["building_empty_queue_button_area"].color = (192, 192, 192, 0)
                 elif self.selected_building.name == "factory":
-                    ...
-
+                    building_description_string += "Les usines permettent de fabriquer des vaisseaux ou des modules.\n\n\n\n\n\n\n\n\n\n"
+                    building_description_string += "Vitesse de production par poste :\n\n"
+                    building_description_string += "{bold True}" + str(self.selected_building.parameters["production_speed"]) + "x{bold False}\n\n"
+                    if self.selected_building.level != self.selected_building.level_max:
+                        building_description_string += "{italic True}Prochain niveau :{italic False} {bold True}" + \
+                            str(self.selected_building.parameters_per_level[self.selected_building.level + 1]["production_speed"]) + "x{bold False}\n\n"
+                    self.content["building_description_layout"].document = decode_attributed(building_description_string)
+                    # left arrow
+                    if self.current_option_index == 0:
+                        # show grayed out icon
+                        self.content["building_left_arrow_button_icon_white"].opacity = 100
+                        self.content["building_left_arrow_button_icon_green"].opacity = 0
+                    else:
+                        if (self.game_data.mouse_x, self.game_data.mouse_y) in self.content["building_left_arrow_button_area"]:
+                            # show green icon
+                            self.content["building_left_arrow_button_icon_white"].opacity = 0
+                            self.content["building_left_arrow_button_icon_green"].opacity = 255
+                            self.game_data.mouse_clickable_area = True
+                        else:
+                            # show white icon
+                            self.content["building_left_arrow_button_icon_white"].opacity = 255
+                            self.content["building_left_arrow_button_icon_green"].opacity = 0
+                    # right arrow
+                    if self.current_option_index == len(self.items_options_list) - 1:
+                        # show grayed out icon
+                        self.content["building_right_arrow_button_icon_white"].opacity = 100
+                        self.content["building_right_arrow_button_icon_green"].opacity = 0
+                    else:
+                        if (self.game_data.mouse_x, self.game_data.mouse_y) in self.content["building_right_arrow_button_area"]:
+                            # show green icon
+                            self.content["building_right_arrow_button_icon_white"].opacity = 0
+                            self.content["building_right_arrow_button_icon_green"].opacity = 255
+                            self.game_data.mouse_clickable_area = True
+                        else:
+                            # show white icon
+                            self.content["building_right_arrow_button_icon_white"].opacity = 255
+                            self.content["building_right_arrow_button_icon_green"].opacity = 0
+                    # add item button
+                    if ((self.game_data.mouse_x, self.game_data.mouse_y) in self.content["building_add_item_button_area"]) and self.selected_building.can_make_item(self.items_options_list[self.current_option_index]):
+                        self.content["building_add_item_button_area"].color = (192, 192, 192, 63)
+                        self.game_data.mouse_clickable_area = True
+                    else:
+                        self.content["building_add_item_button_area"].color = (192, 192, 192, 0)
+                    # items icon
+                    self.content["building_item_icon_spaceship_white"].opacity = 0
+                    self.content["building_item_icon_cargo_module_white"].opacity = 0
+                    self.content["building_item_icon_tank_module_white"].opacity = 0
+                    self.content["building_item_icon_passengers_module_white"].opacity = 0
+                    self.content["building_item_icon_base_module_white"].opacity = 0
+                    if self.items_options_list[self.current_option_index] == "spaceship_small":
+                        self.content["building_item_icon_spaceship_white"].opacity = 255
+                        self.content["building_item_icon_spaceship_white"].scale = .07
+                    elif self.items_options_list[self.current_option_index] == "spaceship_medium":
+                        self.content["building_item_icon_spaceship_white"].opacity = 255
+                        self.content["building_item_icon_spaceship_white"].scale = .11
+                    elif self.items_options_list[self.current_option_index] == "spaceship_large":
+                        self.content["building_item_icon_spaceship_white"].opacity = 255
+                        self.content["building_item_icon_spaceship_white"].scale = .15
+                    elif self.items_options_list[self.current_option_index] == "module_cargo_hold":
+                        self.content["building_item_icon_cargo_module_white"].opacity = 255
+                    elif self.items_options_list[self.current_option_index] == "module_liquid_tanks":
+                        self.content["building_item_icon_tank_module_white"].opacity = 255
+                    elif self.items_options_list[self.current_option_index] == "module_passengers":
+                        self.content["building_item_icon_passengers_module_white"].opacity = 255
+                    elif self.items_options_list[self.current_option_index] == "module_headquarters":
+                        self.content["building_item_icon_base_module_white"].opacity = 255
+                    # items price labels
+                    self.content["building_item_workload_label"].text = str(self.selected_building.items_price[self.items_options_list[self.current_option_index]]["workload"])
+                    self.content["building_item_iron_price_label"].text = str(self.selected_building.items_price[self.items_options_list[self.current_option_index]]["resources"]["iron"])
+                    self.content["building_item_aluminium_price_label"].text = str(self.selected_building.items_price[self.items_options_list[self.current_option_index]]["resources"]["aluminium"])
+                    self.content["building_item_copper_price_label"].text = str(self.selected_building.items_price[self.items_options_list[self.current_option_index]]["resources"]["copper"])
+                    self.content["building_item_titanium_price_label"].text = str(self.selected_building.items_price[self.items_options_list[self.current_option_index]]["resources"]["titanium"])
+                    # queue items
+                    # hide all icons
+                    for queue_index in range(5):
+                        self.content["building_items_queue_icons"][queue_index]["spaceship_small"].opacity = 0
+                        self.content["building_items_queue_icons"][queue_index]["spaceship_medium"].opacity = 0
+                        self.content["building_items_queue_icons"][queue_index]["spaceship_large"].opacity = 0
+                        self.content["building_items_queue_icons"][queue_index]["module_cargo_hold"].opacity = 0
+                        self.content["building_items_queue_icons"][queue_index]["module_liquid_tanks"].opacity = 0
+                        self.content["building_items_queue_icons"][queue_index]["module_passengers"].opacity = 0
+                        self.content["building_items_queue_icons"][queue_index]["module_headquarters"].opacity = 0
+                    # show the icons corresponding to the items in the queue
+                    for queue_index in range(len(self.selected_building.items_queue)):
+                        self.content["building_items_queue_icons"][queue_index][self.selected_building.items_queue[queue_index]].opacity = 255
+                    # item completion
+                    if len(self.selected_building.items_queue) == 0:
+                        self.content["building_item_percent_label"].text = "0%"
+                    else:
+                        self.content["building_item_percent_label"].text = str(round(self.selected_building.item_workload_completed * 100 / self.selected_building.items_price[self.selected_building.items_queue[0]]["workload"])) + "%"
+                    # cancel first item button
+                    if self.selected_building.can_cancel_item() and ((self.game_data.mouse_x, self.game_data.mouse_y) in self.content["building_cancel_first_item_button_area"]):
+                        self.content["building_cancel_first_item_button_area"].color = (192, 192, 192, 63)
+                        self.game_data.mouse_clickable_area = True
+                    else:
+                        self.content["building_cancel_first_item_button_area"].color = (192, 192, 192, 0)
+                    # empty queue button
+                    if self.selected_building.can_clear_queue() and (self.game_data.mouse_x, self.game_data.mouse_y) in self.content["building_empty_queue_button_area"]:
+                        self.content["building_empty_queue_button_area"].color = (192, 192, 192, 63)
+                        self.game_data.mouse_clickable_area = True
+                    else:
+                        self.content["building_empty_queue_button_area"].color = (192, 192, 192, 0)
 
     def on_mouse_press(self, x, y):
         # check if a building tile is selected
@@ -1454,9 +1953,36 @@ class RigthWindowWidgetContent:
                         # click on left arrow
                         if (x, y) in self.content["building_left_arrow_button_area"]:
                             self.current_option_index = max(0, self.current_option_index - 1)
+                        # click on right arrow
                         elif (x, y) in self.content["building_right_arrow_button_area"]:
                             self.current_option_index = min(len(self.workers_options_list) - 1, self.current_option_index + 1)
+                        # click on item
+                        elif (x, y) in self.content["building_add_item_button_area"]:
+                            # try to add the item to the queue
+                            self.selected_building.add_worker_to_queue(self.workers_options_list[self.current_option_index])
+                        elif (x, y) in self.content["building_cancel_first_item_button_area"]:
+                            # cancel the first item of the queue
+                            self.selected_building.cancel_training()
+                        elif (x, y) in self.content["building_empty_queue_button_area"]:
+                            # empty the queue
+                            self.selected_building.clear_queue()
+                    elif self.selected_building.name == "factory":
+                        # click on left arrow
+                        if (x, y) in self.content["building_left_arrow_button_area"]:
+                            self.current_option_index = max(0, self.current_option_index - 1)
                         # click on right arrow
+                        elif (x, y) in self.content["building_right_arrow_button_area"]:
+                            self.current_option_index = min(len(self.items_options_list) - 1, self.current_option_index + 1)
+                        # click on item
+                        elif (x, y) in self.content["building_add_item_button_area"]:
+                            # try to add the item to the queue
+                            self.selected_building.add_item_to_queue(self.items_options_list[self.current_option_index])
+                        elif (x, y) in self.content["building_cancel_first_item_button_area"]:
+                            # cancel the first item of the queue
+                            self.selected_building.cancel_item()
+                        elif (x, y) in self.content["building_empty_queue_button_area"]:
+                            # empty the queue
+                            self.selected_building.clear_queue()
 
     def on_delete(self):
         # manually delete text layout objects
@@ -2109,7 +2635,7 @@ class SceneColony(Scene):
 
         # small spaceship icon
         self.left_window_content["spaceship_small_icon"] = Sprite(
-            img = self.game_data.icon_spaceship_light_gray,
+            img = self.game_data.icon_spaceship_slanted_light_gray,
             x = self.left_window.width // 2 + 15 + 50,
             y = self.game_data.window_height - 620,
             batch = self.batch,
@@ -2124,7 +2650,7 @@ class SceneColony(Scene):
 
         # medium spaceship icon
         self.left_window_content["spaceship_medium_icon"] = Sprite(
-            img = self.game_data.icon_spaceship_light_gray,
+            img = self.game_data.icon_spaceship_slanted_light_gray,
             x = self.left_window.width // 2 + 15 + 95,
             y = self.game_data.window_height - 620,
             batch = self.batch,
@@ -2139,7 +2665,7 @@ class SceneColony(Scene):
 
         # large spaceship icon
         self.left_window_content["spaceship_large_icon"] = Sprite(
-            img = self.game_data.icon_spaceship_light_gray,
+            img = self.game_data.icon_spaceship_slanted_light_gray,
             x = self.left_window.width // 2 + 15 + 140,
             y = self.game_data.window_height - 620,
             batch = self.batch,
