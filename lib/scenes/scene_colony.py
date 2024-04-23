@@ -963,18 +963,18 @@ class RigthWindowWidgetContent:
                     # lines for training queue
                     self.content["building_training_queue_lines"] = []
                     self.content["building_training_queue_lines"].append(shapes.Line(
-                        x = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 - 140,
+                        x = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 - 140 - 2,
                         y = self.game_data.window_height - 500,
-                        x2 = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 + 140,
+                        x2 = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 + 140 + 1,
                         y2 = self.game_data.window_height - 500,
                         width = 3,
                         color = (192, 192, 192, 255),
                         batch=self.batch, group=self.groups[3]
                     ))
                     self.content["building_training_queue_lines"].append(shapes.Line(
-                        x = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 - 140,
+                        x = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 - 140 - 2,
                         y = self.game_data.window_height - 550,
-                        x2 = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 + 140,
+                        x2 = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 + 140 + 1,
                         y2 = self.game_data.window_height - 550,
                         width = 3,
                         color = (192, 192, 192, 255),
@@ -982,27 +982,27 @@ class RigthWindowWidgetContent:
                     ))
                     self.content["building_training_queue_lines"].append(shapes.Line(
                         x = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 - 140,
-                        y = self.game_data.window_height - 500 + 1,
+                        y = self.game_data.window_height - 500,
                         x2 = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 - 140,
-                        y2 = self.game_data.window_height - 550 - 2,
+                        y2 = self.game_data.window_height - 550,
                         width = 3,
                         color = (192, 192, 192, 255),
                         batch=self.batch, group=self.groups[3]
                     ))
                     self.content["building_training_queue_lines"].append(shapes.Line(
                         x = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 - 84,
-                        y = self.game_data.window_height - 500 + 1,
+                        y = self.game_data.window_height - 500,
                         x2 = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 - 84,
-                        y2 = self.game_data.window_height - 550 - 2,
+                        y2 = self.game_data.window_height - 550,
                         width = 3,
                         color = (192, 192, 192, 255),
                         batch=self.batch, group=self.groups[3]
                     ))
                     self.content["building_training_queue_lines"].append(shapes.Line(
                         x = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 + 140,
-                        y = self.game_data.window_height - 500 + 1,
+                        y = self.game_data.window_height - 500,
                         x2 = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 + 140,
-                        y2 = self.game_data.window_height - 550 - 2,
+                        y2 = self.game_data.window_height - 550,
                         width = 3,
                         color = (192, 192, 192, 255),
                         batch=self.batch, group=self.groups[3]
@@ -1250,18 +1250,18 @@ class RigthWindowWidgetContent:
                     # lines for training queue
                     self.content["building_training_queue_lines"] = []
                     self.content["building_training_queue_lines"].append(shapes.Line(
-                        x = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 - 140,
+                        x = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 - 140 - 2,
                         y = self.game_data.window_height - 500,
-                        x2 = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 + 140,
+                        x2 = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 + 140 + 1,
                         y2 = self.game_data.window_height - 500,
                         width = 3,
                         color = (192, 192, 192, 255),
                         batch=self.batch, group=self.groups[3]
                     ))
                     self.content["building_training_queue_lines"].append(shapes.Line(
-                        x = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 - 140,
+                        x = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 - 140 - 2,
                         y = self.game_data.window_height - 550,
-                        x2 = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 + 140,
+                        x2 = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 + 140 + 1,
                         y2 = self.game_data.window_height - 550,
                         width = 3,
                         color = (192, 192, 192, 255),
@@ -1269,27 +1269,27 @@ class RigthWindowWidgetContent:
                     ))
                     self.content["building_training_queue_lines"].append(shapes.Line(
                         x = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 - 140,
-                        y = self.game_data.window_height - 500 + 1,
+                        y = self.game_data.window_height - 500,
                         x2 = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 - 140,
-                        y2 = self.game_data.window_height - 550 - 2,
+                        y2 = self.game_data.window_height - 550,
                         width = 3,
                         color = (192, 192, 192, 255),
                         batch=self.batch, group=self.groups[3]
                     ))
                     self.content["building_training_queue_lines"].append(shapes.Line(
                         x = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 - 84,
-                        y = self.game_data.window_height - 500 + 1,
+                        y = self.game_data.window_height - 500,
                         x2 = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 - 84,
-                        y2 = self.game_data.window_height - 550 - 2,
+                        y2 = self.game_data.window_height - 550,
                         width = 3,
                         color = (192, 192, 192, 255),
                         batch=self.batch, group=self.groups[3]
                     ))
                     self.content["building_training_queue_lines"].append(shapes.Line(
                         x = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 + 140,
-                        y = self.game_data.window_height - 500 + 1,
+                        y = self.game_data.window_height - 500,
                         x2 = self.game_data.window_width - self.content["window_sprite"].width // 2 - 15 + 140,
-                        y2 = self.game_data.window_height - 550 - 2,
+                        y2 = self.game_data.window_height - 550,
                         width = 3,
                         color = (192, 192, 192, 255),
                         batch=self.batch, group=self.groups[3]
@@ -2111,9 +2111,9 @@ class SceneColony(Scene):
         self.bulding_grid_lines_color = (30, 52, 82, 255)
         for horizontal_line_index in range(8):
             self.building_grid_lines.append(shapes.Line(
-                x = (self.game_data.window_width // 2) - (3.5 * self.building_tile_size),
+                x = (self.game_data.window_width // 2) - (3.5 * self.building_tile_size) - 2,
                 y = (self.game_data.window_height // 2) - (3.5 * self.building_tile_size) + (horizontal_line_index * self.building_tile_size),
-                x2 = (self.game_data.window_width // 2) + (3.5 * self.building_tile_size),
+                x2 = (self.game_data.window_width // 2) + (3.5 * self.building_tile_size) + 3,
                 y2 = (self.game_data.window_height // 2) - (3.5 * self.building_tile_size) + (horizontal_line_index * self.building_tile_size),
                 width=5,
                 color=self.bulding_grid_lines_color,
@@ -2124,9 +2124,9 @@ class SceneColony(Scene):
         for vertical_line_index in range(8):
             self.building_grid_lines.append(shapes.Line(
                 x = (self.game_data.window_width // 2) - (3.5 * self.building_tile_size) + (vertical_line_index * self.building_tile_size),
-                y = (self.game_data.window_height // 2) - (3.5 * self.building_tile_size) - 2,
+                y = (self.game_data.window_height // 2) - (3.5 * self.building_tile_size),
                 x2 = (self.game_data.window_width // 2) - (3.5 * self.building_tile_size) + (vertical_line_index * self.building_tile_size),
-                y2 = (self.game_data.window_height // 2) + (3.5 * self.building_tile_size) + 3,
+                y2 = (self.game_data.window_height // 2) + (3.5 * self.building_tile_size),
                 width=5,
                 color=self.bulding_grid_lines_color,
                 batch=self.batch,
