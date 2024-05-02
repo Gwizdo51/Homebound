@@ -156,7 +156,7 @@ class BuildingWidget:
         #         self.selector_sprite.opacity = 255
         selected_building_tile_coords = current_colony.selected_building_tile_coords
         # if the current building tile is selected ...
-        if (selected_building_tile_coords is not None) and (selected_building_tile_coords[1] == self.line_index) and (selected_building_tile_coords[0] == self.colum_index):
+        if (selected_building_tile_coords is not None) and ((selected_building_tile_coords[1], selected_building_tile_coords[0]) == (self.line_index, self.colum_index)):
             self.selector_sprite.opacity = 255
         else:
             # if the mouse is over the tile ...
@@ -2091,7 +2091,7 @@ class RightWindowWidget:
         self.widget_content.on_draw()
 
     def on_mouse_press(self, x, y):
-        # only send the mouse press if the current state is the one displayed
+        # only send the left click if the current state is the one displayed
         if self.current_state == self.displayed_state:
             self.widget_content.on_mouse_press(x, y)
 
@@ -2100,7 +2100,6 @@ class SceneColony(Scene):
 
     def __init__(self, game_data: GameData):
         super().__init__(game_data)
-        # self.displayed_colony = None
         # from background to foreground
         self.groups = [Group(order) for order in range(6)]
 

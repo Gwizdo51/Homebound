@@ -111,7 +111,8 @@ class GameWindow(pyglet.window.Window):
         # self.counter += 1
         self.clear()
         # self.game_manager.scenes[self.game_manager.current_scene].batch.draw()
-        self.game_manager.scenes[self.game_manager.current_scene].draw()
+        # self.game_manager.scenes[self.game_manager.current_scene].draw()
+        self.game_manager.current_scene.draw()
         # update the cursor shape
         self.dispatch_event("on_mouse_motion", self.game_manager.game_data.mouse_x, self.game_manager.game_data.mouse_y, 0, 0)
         # FPS
