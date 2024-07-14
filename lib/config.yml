@@ -1,0 +1,60 @@
+pyglet:
+  # window attributes
+  window:
+    width: 1280
+    height: 720
+    caption: "Homebound"
+    resizable: False
+  # game update rate
+  update_rate: 30
+
+colonies:
+  # ressources production factors per colony
+  moon:
+    displayed_name: "LUNE"
+    production_factors: {}
+  venus:
+    displayed_name: "VENUS"
+    production_factors: {}
+  mars:
+    displayed_name: "MARS"
+    production_factors: {}
+  ganymede:
+    displayed_name: "GANYMEDE"
+    production_factors: {}
+  titan:
+    displayed_name: "TITAN"
+    production_factors: {}
+
+starting_assets:
+  buildings:
+  - name: "headquarters"
+    coords: [3, 3]
+  - name: "solar_panels"
+    coords: [0, 0]
+  - name: "drilling_station"
+    coords: [1, 0]
+  - name: "warehouse"
+    coords: [2, 0]
+  - name: "liquid_tank"
+    coords: [3, 0]
+  - name: "electrolysis_station"
+    coords: [4, 0]
+  - name: "furnace"
+    coords: [5, 0]
+  - name: "spaceport"
+    coords: [6, 0]
+  - name: "greenhouse"
+    coords: [0, 1]
+  - name: "school"
+    coords: [1, 1]
+  - name: "factory"
+    coords: [2, 1]
+  workers:
+    engineers: 20
+    scientists: 20
+    pilots: 0
+  ressources: {}
+  items: {}
+
+buildings: {}

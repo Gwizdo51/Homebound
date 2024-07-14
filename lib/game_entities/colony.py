@@ -27,7 +27,9 @@ class Colony:
         "spaceport": BuildingSpaceport
     }
 
-    def __init__(self, production_factors = {}, starting_colony: bool = False):
+    # def __init__(self, production_factors = {}, starting_colony: bool = False):
+    def __init__(self, game_config: dict[str], name: str):
+        self.game_config = game_config
         # buildings (matrix of Building objects, 7x7)
         self.building_grid: list[list[Optional[Building]]] = [[None for column_index in range(7)] for line_index in range(7)]
         # self.selected_building_tile_coords = (x, y) = (column index, line index)
@@ -73,7 +75,7 @@ class Colony:
             "aluminium_ore": 1.,
             "titanium_ore": 1.
         }
-        self.data["production_factors"].update(production_factors)
+        self.data["production_factors"].update(self.game_config["colonies"][name]["production_factors"])
         # workers
         self.data["workers"] = {
             "engineers": {
@@ -109,43 +111,50 @@ class Colony:
             "module_headquarters": 0
         }
         # special init if colony is the starting colony
-        self.starting_colony = starting_colony
+        # self.starting_colony = starting_colony
+        self.starting_colony = (name == "moon")
         if self.starting_colony:
-            # add starter buildings
-            self.building_grid[3][3] = BuildingHeadQuarters(self.data)
-            self.building_grid[0][0] = BuildingSolarPanels(self.data)
-            self.building_grid[0][0].level = 1
-            self.building_grid[0][0].is_constructing = False
-            self.building_grid[0][1] = BuildingDrillingStation(self.data)
-            self.building_grid[0][1].level = 1
-            self.building_grid[0][1].is_constructing = False
-            self.building_grid[0][2] = BuildingWarehouse(self.data)
-            self.building_grid[0][2].level = 1
-            self.building_grid[0][2].is_constructing = False
-            self.building_grid[0][3] = BuildingLiquidTank(self.data)
-            self.building_grid[0][3].level = 1
-            self.building_grid[0][3].is_constructing = False
-            self.building_grid[0][4] = BuildingElectrolysisStation(self.data)
-            self.building_grid[0][4].level = 1
-            self.building_grid[0][4].is_constructing = False
-            self.building_grid[0][5] = BuildingFurnace(self.data)
-            self.building_grid[0][5].level = 1
-            self.building_grid[0][5].is_constructing = False
-            self.building_grid[0][6] = BuildingSpaceport(self.data)
-            self.building_grid[0][6].level = 1
-            self.building_grid[0][6].is_constructing = False
-            self.building_grid[1][0] = BuildingGreenhouse(self.data)
-            self.building_grid[1][0].level = 1
-            self.building_grid[1][0].is_constructing = False
-            self.building_grid[1][1] = BuildingSchool(self.data)
-            self.building_grid[1][1].level = 1
-            self.building_grid[1][1].is_constructing = False
-            self.building_grid[1][2] = BuildingFactory(self.data)
-            self.building_grid[1][2].level = 1
-            self.building_grid[1][2].is_constructing = False
+            # # add starter buildings
+            # self.building_grid[3][3] = BuildingHeadQuarters(self.data)
+            # self.building_grid[0][0] = BuildingSolarPanels(self.data)
+            # self.building_grid[0][0].level = 1
+            # self.building_grid[0][0].is_constructing = False
+            # self.building_grid[0][1] = BuildingDrillingStation(self.data)
+            # self.building_grid[0][1].level = 1
+            # self.building_grid[0][1].is_constructing = False
+            # self.building_grid[0][2] = BuildingWarehouse(self.data)
+            # self.building_grid[0][2].level = 1
+            # self.building_grid[0][2].is_constructing = False
+            # self.building_grid[0][3] = BuildingLiquidTank(self.data)
+            # self.building_grid[0][3].level = 1
+            # self.building_grid[0][3].is_constructing = False
+            # self.building_grid[0][4] = BuildingElectrolysisStation(self.data)
+            # self.building_grid[0][4].level = 1
+            # self.building_grid[0][4].is_constructing = False
+            # self.building_grid[0][5] = BuildingFurnace(self.data)
+            # self.building_grid[0][5].level = 1
+            # self.building_grid[0][5].is_constructing = False
+            # self.building_grid[0][6] = BuildingSpaceport(self.data)
+            # self.building_grid[0][6].level = 1
+            # self.building_grid[0][6].is_constructing = False
+            # self.building_grid[1][0] = BuildingGreenhouse(self.data)
+            # self.building_grid[1][0].level = 1
+            # self.building_grid[1][0].is_constructing = False
+            # self.building_grid[1][1] = BuildingSchool(self.data)
+            # self.building_grid[1][1].level = 1
+            # self.building_grid[1][1].is_constructing = False
+            # self.building_grid[1][2] = BuildingFactory(self.data)
+            # self.building_grid[1][2].level = 1
+            # self.building_grid[1][2].is_constructing = False
+            for building_dict in self.game_config["starting_assets"]["buildings"]:
+                self.building_grid[building_dict["coords"][1]][building_dict["coords"][0]] = self.building_types_dict[building_dict["name"]](self.data)
+                self.building_grid[building_dict["coords"][1]][building_dict["coords"][0]].level = 1
+                self.building_grid[building_dict["coords"][1]][building_dict["coords"][0]].is_constructing = False
             # add people
-            self.data["workers"]["engineers"]["available"] = self.data["workers"]["engineers"]["total"] = 20
-            self.data["workers"]["scientists"]["available"] = self.data["workers"]["scientists"]["total"] = 20
+            # self.data["workers"]["engineers"]["available"] = self.data["workers"]["engineers"]["total"] = 20
+            # self.data["workers"]["scientists"]["available"] = self.data["workers"]["scientists"]["total"] = 20
+            self.data["workers"]["engineers"]["available"] = self.data["workers"]["engineers"]["total"] = self.game_config["starting_assets"]["workers"]["engineers"]
+            self.data["workers"]["scientists"]["available"] = self.data["workers"]["scientists"]["total"] = self.game_config["starting_assets"]["workers"]["scientists"]
 
     @property
     def power(self) -> dict[str, int]:

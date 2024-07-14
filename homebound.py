@@ -1,16 +1,28 @@
 import pyglet
 from pyglet.window import key, mouse
+from pathlib import Path
+import yaml
 
 from lib.game_manager import GameManager
 
 
 class GameWindow(pyglet.window.Window):
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self):
+        # load the configurations
+        config_file_path = Path(__file__).parent / "lib" / "config.yml"
+        with open(config_file_path, "r") as f:
+            self.game_config: dict[str] = yaml.safe_load(f)
+        # print(self.game_config)
         # init pyglet window
-        super().__init__(*args, **kwargs)
+        # super().__init__(*args, **kwargs)
+        # super().__init__(1280, 720, "Homebound", resizable=False)
+        # only works with args
+        args = []
+        super().__init__(*args, **self.game_config["pyglet"]["window"])
         # create the game manager and give it the window handlers
-        self.game_manager = GameManager(self.width, self.height)
+        # self.game_manager = GameManager(self.width, self.height)
+        self.game_manager = GameManager(self.game_config)
         self.push_handlers(self.game_manager)
         # cursors types
         self.cursors = {
@@ -19,7 +31,11 @@ class GameWindow(pyglet.window.Window):
         }
         # window icon
         self.set_icon(self.game_manager.game_data.game_logo)
-        # FPS
+        # update the game 30 times per seconds
+        # update_rate = 30
+        # pyglet.clock.schedule_interval(self.update, 1/update_rate)
+        pyglet.clock.schedule_interval(self.update, 1/self.game_config["pyglet"]["update_rate"])
+        # FPS counter
         self.fps_counter = pyglet.window.FPSDisplay(window=self, color=(255, 0, 0, 255))
 
         # self.counter = 0
@@ -126,9 +142,10 @@ class GameWindow(pyglet.window.Window):
 
 if __name__ == "__main__":
     # init the window
-    window = GameWindow(1280, 720, "Homebound", resizable=False)
+    # window = GameWindow(1280, 720, "Homebound", resizable=False)
+    window = GameWindow()
     # update the game 60 times per seconds
-    update_rate = 30
-    pyglet.clock.schedule_interval(window.update, 1/update_rate)
+    # update_rate = 30
+    # pyglet.clock.schedule_interval(window.update, 1/update_rate)
     # run the game
     pyglet.app.run()

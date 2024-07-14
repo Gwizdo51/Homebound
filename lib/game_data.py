@@ -17,10 +17,13 @@ def center_image(img):
 class GameData:
     "contains the current state of the game"
 
-    def __init__(self, window_width, window_height):
+    # def __init__(self, window_width, window_height):
+    def __init__(self, game_config: dict[str]):
 
+        # game config
+        self.game_config = game_config
         # window
-        self.window_width, self.window_height = window_width, window_height
+        self.window_width, self.window_height = game_config["pyglet"]["window"]["width"], game_config["pyglet"]["window"]["height"]
 
         # load resources
         self.load_resources()
@@ -38,19 +41,20 @@ class GameData:
         # game data
 
         # colonies dictionary
-        self.colonies: dict[str, Colony] = {
-            # starting colony
-            "moon": Colony(starting_colony=True),
-            "mercury": Colony(),
-            "venus": Colony(),
-            "mars": Colony(),
-            # Jupiter
-            "ganymede": Colony(),
-            "callisto": Colony(),
-            # Saturn
-            "titan": Colony(),
-            "enceladus": Colony()
-        }
+        # self.colonies: dict[str, Colony] = {
+        #     # starting colony
+        #     "moon": Colony(self.game_config, starting_colony=True),
+        #     # "mercury": Colony(self.game_config),
+        #     "venus": Colony(self.game_config),
+        #     "mars": Colony(self.game_config),
+        #     # Jupiter
+        #     "ganymede": Colony(self.game_config),
+        #     # "callisto": Colony(self.game_config),
+        #     # Saturn
+        #     "titan": Colony(self.game_config),
+        #     # "enceladus": Colony(self.game_config)
+        # }
+        self.colonies: dict[str, Colony] = {name: Colony(self.game_config, name) for name in self.game_config["colonies"].keys()}
         self.active_colony = "moon"
 
         # spaceships in transit

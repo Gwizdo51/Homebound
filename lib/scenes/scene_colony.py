@@ -2170,6 +2170,17 @@ class SceneColony(Scene):
         # left window static content
         self.left_window_content = {}
 
+        # background sprite + colony name can be in the __init__ because the scene is recreated on each switch
+        # background sprite
+        if self.game_data.active_colony == "moon":
+            self.background_sprite = Sprite(img=self.game_data.moon_background_img, y = -550, batch=self.batch, group=self.groups[0])
+            self.background_sprite.scale = self.game_data.window_width / self.game_data.moon_background_img.width
+
+        # colony name
+        self.colony_name_label = Label(self.game_data.game_config["colonies"][self.game_data.active_colony]["displayed_name"],
+            font_name=self.game_data.subtitle_font_name, font_size=25, x=25, y=self.game_data.window_height - 42, width=315,
+            align="center", anchor_y="center", batch=self.batch, group=self.groups[2])
+
         # workers title
         self.left_window_content["workers_label"] = Label("COLONS", font_name=self.game_data.subtitle_font_name, font_size=20,
             x=25, y=self.game_data.window_height - 95, width=315,
@@ -2214,7 +2225,7 @@ class SceneColony(Scene):
             anchor_x="center", batch=self.batch, group=self.groups[2])
 
         # resources title
-        self.left_window_content["resources_label"] = Label("RESOURCES", font_name=self.game_data.subtitle_font_name, font_size=20,
+        self.left_window_content["resources_label"] = Label("RESSOURCES", font_name=self.game_data.subtitle_font_name, font_size=20,
             x=25, y=self.game_data.window_height - 210, width=315,
             align="center", anchor_y="center", batch=self.batch, group=self.groups[2])
 
@@ -2686,16 +2697,18 @@ class SceneColony(Scene):
 
         # udpate the batch
 
-        # background sprite
-        if self.game_data.active_colony == "moon":
-            colony_name = "LUNE"
-            self.background_sprite = Sprite(img=self.game_data.moon_background_img, y = -550, batch=self.batch, group=self.groups[0])
-            self.background_sprite.scale = self.game_data.window_width / self.game_data.moon_background_img.width
+        # # background sprite
+        # # TODO: add a mechanism to only redraw the background if the colony is changed
+        # # => since now the scene is recreated everytime it is switched, we can draw the background and the colony name in the __init__
+        # if self.game_data.active_colony == "moon":
+        #     colony_name = "LUNE"
+        #     self.background_sprite = Sprite(img=self.game_data.moon_background_img, y = -550, batch=self.batch, group=self.groups[0])
+        #     self.background_sprite.scale = self.game_data.window_width / self.game_data.moon_background_img.width
 
-        # colony name
-        self.colony_name_label = Label(colony_name, font_name=self.game_data.subtitle_font_name, font_size=25,
-            x=25, y=self.game_data.window_height - 42, width=315,
-            align="center", anchor_y="center", batch=self.batch, group=self.groups[2])
+        # # colony name
+        # self.colony_name_label = Label(colony_name, font_name=self.game_data.subtitle_font_name, font_size=25,
+        #     x=25, y=self.game_data.window_height - 42, width=315,
+        #     align="center", anchor_y="center", batch=self.batch, group=self.groups[2])
 
         # information to list in left window:
         # - workers (available / total) by type

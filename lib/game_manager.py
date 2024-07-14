@@ -16,9 +16,12 @@ from lib.game_data import GameData
 class GameManager:
     "handles the communication between the window, the game state and the scenes"
 
-    def __init__(self, window_width: int, window_height: int):
+    # def __init__(self, window_width: int, window_height: int):
+    def __init__(self, game_config: dict[str]):
+        # self.game_config = game_config
         # init the game data
-        self.game_data = GameData(window_width=window_width, window_height=window_height)
+        # self.game_data = GameData(window_width=window_width, window_height=window_height)
+        self.game_data = GameData(game_config)
         # store the scenes in a dict
         # self.scenes: dict[str, Scene] = {
         #     "main menu": SceneMainMenu(self.game_data),
