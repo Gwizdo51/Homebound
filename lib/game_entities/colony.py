@@ -112,8 +112,9 @@ class Colony:
         }
         # special init if colony is the starting colony
         # self.starting_colony = starting_colony
-        self.starting_colony = (name == "moon")
-        if self.starting_colony:
+        # self.starting_colony = (name == "moon")
+        # if self.starting_colony:
+        if name == "moon":
             # # add starter buildings
             # self.building_grid[3][3] = BuildingHeadQuarters(self.data)
             # self.building_grid[0][0] = BuildingSolarPanels(self.data)
@@ -147,7 +148,7 @@ class Colony:
             # self.building_grid[1][2].level = 1
             # self.building_grid[1][2].is_constructing = False
             for building_dict in self.game_config["starting_assets"]["buildings"]:
-                self.building_grid[building_dict["coords"][1]][building_dict["coords"][0]] = self.building_types_dict[building_dict["name"]](self.data)
+                self.building_grid[building_dict["coords"][1]][building_dict["coords"][0]] = self.building_types_dict[building_dict["name"]](self.data, self.game_config)
                 self.building_grid[building_dict["coords"][1]][building_dict["coords"][0]].level = 1
                 self.building_grid[building_dict["coords"][1]][building_dict["coords"][0]].is_constructing = False
             # add people
@@ -155,6 +156,11 @@ class Colony:
             # self.data["workers"]["scientists"]["available"] = self.data["workers"]["scientists"]["total"] = 20
             self.data["workers"]["engineers"]["available"] = self.data["workers"]["engineers"]["total"] = self.game_config["starting_assets"]["workers"]["engineers"]
             self.data["workers"]["scientists"]["available"] = self.data["workers"]["scientists"]["total"] = self.game_config["starting_assets"]["workers"]["scientists"]
+            self.data["workers"]["pilots"] = self.game_config["starting_assets"]["workers"]["pilots"]
+            # add resources
+            ...
+            # add items
+            ...
 
     @property
     def power(self) -> dict[str, int]:
@@ -209,34 +215,33 @@ class Colony:
     def selected_building(self, building: Optional[Building]):
         self.building_grid[self.selected_building_tile_coords[1]][self.selected_building_tile_coords[0]] = building
 
-
     def can_add_building(self, building_name: str) -> bool:
         # checks whether the colony has enough resources and power to add the building
         can_add_building = True
         # check available power
         power = self.power
         available_power = power["produced"] - power["consumed"]
-        if available_power < self.building_types_dict[building_name].parameters_per_level[1]["power"]["consumed"]:
+        # if available_power < self.building_types_dict[building_name].parameters_per_level[1]["power"]["consumed"]:
+        if available_power < self.game_config["buildings"][building_name]["parameters_per_level"][1]["power"]["consumed"]:
             can_add_building = False
         # check available resources
         else:
-            construction_costs = self.building_types_dict[building_name].parameters_per_level[0]["construction_costs"]
+            # construction_costs = self.building_types_dict[building_name].parameters_per_level[0]["construction_costs"]
+            construction_costs = self.game_config["buildings"][building_name]["parameters_per_level"][0]["construction_costs"]
             for resource_name in construction_costs.keys():
                 if self.data["resources"][resource_name] < construction_costs[resource_name]:
                     can_add_building = False
                     break
         return can_add_building
 
-
     def add_building(self, building_name: str):
         if self.can_add_building(building_name):
             # add the building to the colony
-            self.selected_building = self.building_types_dict[building_name](self.data)
+            self.selected_building = self.building_types_dict[building_name](self.data, self.game_config)
             # pay the resources for the building
             construction_costs = self.selected_building.parameters["construction_costs"]
             for resource_name in construction_costs.keys():
                 self.data["resources"][resource_name] -= construction_costs[resource_name]
-
 
     def can_upgrade_building(self) -> bool:
         # checks whether the colony has enough resources and power to upgrade the building
@@ -255,7 +260,6 @@ class Colony:
                 can_upgrade_building = False
         return can_upgrade_building
 
-
     def cancel_building_construction(self):
         # cancel the selected building construction
         self.selected_building.cancel_upgrade()
@@ -263,7 +267,6 @@ class Colony:
         if self.selected_building.level == 0:
             self.selected_building = None
             # self.destroy_building()
-
 
     def can_destroy_building(self) -> bool:
         can_destroy_building = True
@@ -281,7 +284,6 @@ class Colony:
         # it also cannot be destroyed if it is the headquarters
         return can_destroy_building and (building.name != "headquarters")
 
-
     def destroy_building(self):
         if self.can_destroy_building():
             # prepare the building for destruction
@@ -289,23 +291,18 @@ class Colony:
             # remove the building from the building grid
             self.selected_building = None
 
-
     def land_ship(self):
         # place the landing ship and its contents inside the colony
         pass
 
-
     # def launch_ship(self):
     #     pass
-
 
     # def manufacture(self):
     #     pass
 
-
     # def train_worker(self):
     #     pass
-
 
     def update(self, dt):
         # update the resources based on the workers and the buildings

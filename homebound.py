@@ -13,13 +13,9 @@ class GameWindow(pyglet.window.Window):
         config_file_path = Path(__file__).parent / "lib" / "config.yml"
         with open(config_file_path, "r") as f:
             self.game_config: dict[str] = yaml.safe_load(f)
-        # print(self.game_config)
+        # print(self.game_config["buildings"])
         # init pyglet window
-        # super().__init__(*args, **kwargs)
-        # super().__init__(1280, 720, "Homebound", resizable=False)
-        # only works with args
-        args = []
-        super().__init__(*args, **self.game_config["pyglet"]["window"])
+        super().__init__(**self.game_config["pyglet"]["window"])
         # create the game manager and give it the window handlers
         # self.game_manager = GameManager(self.width, self.height)
         self.game_manager = GameManager(self.game_config)

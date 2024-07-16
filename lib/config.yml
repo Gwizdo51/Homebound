@@ -5,7 +5,7 @@ pyglet:
     height: 720
     caption: "Homebound"
     resizable: False
-  # game update rate
+  # game engine update rate
   update_rate: 30
 
 colonies:
@@ -57,4 +57,767 @@ starting_assets:
   ressources: {}
   items: {}
 
-buildings: {}
+buildings:
+  headquarters:
+    displayed_name: "QG"
+    parameters_per_level:
+      1:
+        power:
+          consumed: 0
+          produced: 0
+        storage:
+          food: 50
+          water: 50
+          oxygen: 50
+          hydrogen: 50
+          iron_ore: 250
+          iron: 250
+          aluminium_ore: 250
+          aluminium: 250
+          copper_ore: 250
+          copper: 250
+          titanium_ore: 250
+          titanium: 250
+        jobs:
+          construction:
+            engineers: 0
+            scientists: 0
+          production:
+            engineers: 0
+            scientists: 0
+  solar_panels:
+    displayed_name: "PANNEAUX SOLAIRES"
+    parameters_per_level:
+      0:
+        power:
+          consumed: 0
+          produced: 0
+        construction_costs:
+          iron: 0
+          aluminium: 0
+          copper: 0
+          titanium: 0
+        construction_workload: 100
+        storage: null
+        jobs:
+          construction:
+            engineers: 5
+            scientists: 0
+          production:
+            engineers: 0
+            scientists: 0
+      1:
+        power:
+          consumed: 0
+          produced: 100
+        construction_costs:
+          iron: 0
+          aluminium: 0
+          copper: 0
+          titanium: 0
+        construction_workload: 100
+        storage: null
+        jobs:
+          construction:
+            engineers: 5
+            scientists: 0
+          production:
+            engineers: 0
+            scientists: 0
+      2:
+        power:
+          consumed: 0
+          produced: 200
+        construction_costs:
+          iron: 0
+          aluminium: 0
+          copper: 0
+          titanium": 0
+        construction_workload: 100
+        storage: null
+        jobs:
+          construction:
+            engineers: 0
+            scientists: 0
+          production:
+            engineers: 0
+            scientists: 0
+      3:
+        power:
+          consumed: 0
+          produced: 0
+        storage: null
+        jobs:
+          construction:
+            engineers: 0
+            scientists: 0
+          production:
+            engineers: 0
+            scientists: 0
+  warehouse:
+    displayed_name: "ENTREPOT"
+    parameters_per_level:
+      0:
+        power:
+          consumed: 0
+          produced: 0
+        construction_costs:
+          iron: 0
+          aluminium: 0
+          copper: 0
+          titanium: 0
+        construction_workload: 100
+        storage:
+          food: 0
+          iron_ore: 0
+          iron: 0
+          aluminium_ore: 0
+          aluminium: 0
+          copper_ore: 0
+          copper: 0
+          titanium_ore: 0
+          titanium: 0
+        jobs:
+          construction:
+            engineers: 0
+            scientists: 0
+          production:
+            engineers: 0
+            scientists: 0
+      1:
+        power:
+          consumed: 0
+          produced: 0
+        construction_costs:
+          iron: 0
+          aluminium: 0
+          copper: 0
+          titanium: 0
+        construction_workload: 100
+        storage:
+          food: 500
+          iron_ore: 500
+          iron: 500
+          aluminium_ore: 500
+          aluminium: 500
+          copper_ore: 500
+          copper: 500
+          titanium_ore: 500
+          titanium: 500
+        jobs:
+          construction:
+            engineers: 0
+            scientists: 0
+          production:
+            engineers: 0
+            scientists: 0
+      2:
+        power:
+          consumed: 0
+          produced: 0
+        construction_costs:
+          iron: 0
+          aluminium: 0
+          copper: 0
+          titanium: 0
+        construction_workload: 100
+        storage:
+          food: 0
+          iron_ore: 0
+          iron: 0
+          aluminium_ore: 0
+          aluminium: 0
+          copper_ore: 0
+          copper: 0
+          titanium_ore: 0
+          titanium: 0
+        jobs:
+          construction:
+            engineers: 0
+            scientists: 0
+          production:
+            engineers: 0
+            scientists: 0
+      3:
+        power:
+          consumed: 0
+          produced: 0
+        storage:
+          food: 0
+          iron_ore: 0
+          iron: 0
+          aluminium_ore: 0
+          aluminium: 0
+          copper_ore: 0
+          copper: 0
+          titanium_ore: 0
+          titanium: 0
+        jobs:
+          construction:
+            engineers: 0
+            scientists: 0
+          production:
+            engineers: 0
+            scientists: 0
+  liquid_tank:
+    displayed_name: "RESERVOIR"
+    parameters_per_level:
+      0:
+        power:
+          consumed: 0
+          produced: 0
+        construction_costs:
+          iron: 0
+          aluminium: 0
+          copper: 0
+          titanium: 0
+        construction_workload: 100
+        storage:
+          water: 0
+          oxygen: 0
+          hydrogen: 0
+        jobs:
+          construction:
+            engineers: 0
+            scientists: 0
+          production:
+            engineers: 0
+            scientists: 0
+      1:
+        power:
+          consumed: 0
+          produced: 0
+        construction_costs:
+          iron: 0
+          aluminium: 0
+          copper: 0
+          titanium: 0
+        construction_workload: 100
+        storage:
+          water: 0
+          oxygen: 0
+          hydrogen: 0
+        jobs:
+          construction:
+            engineers: 0
+            scientists: 0
+          production:
+            engineers: 0
+            scientists: 0
+      2:
+        power:
+          consumed: 0
+          produced: 0
+        construction_costs:
+          iron: 0
+          aluminium: 0
+          copper: 0
+          titanium: 0
+        construction_workload: 100
+        storage:
+          water: 0
+          oxygen: 0
+          hydrogen: 0
+        jobs:
+          construction:
+            engineers: 0
+            scientists: 0
+          production:
+            engineers: 0
+            scientists: 0
+      3:
+        power:
+          consumed: 0
+          produced: 0
+        storage:
+          water: 0
+          oxygen: 0
+          hydrogen: 0
+        jobs:
+          construction:
+            engineers: 0
+            scientists: 0
+          production:
+            engineers: 0
+            scientists: 0
+  drilling_station:
+    displayed_name: "FOREUSE"
+    parameters_per_level:
+      0:
+        power:
+          consumed: 0
+          produced: 0
+        construction_costs:
+          iron: 0
+          aluminium: 0
+          copper: 0
+          titanium: 0
+        construction_workload: 100
+        storage: null
+        jobs:
+          construction:
+            engineers: 0
+            scientists: 0
+          production:
+            engineers: 0
+            scientists: 0
+        production_speed: 0
+      1:
+        power:
+          consumed: 0
+          produced: 0
+        construction_costs:
+          iron: 0
+          aluminium: 0
+          copper: 0
+          titanium: 0
+        construction_workload: 100
+        storage: null
+        jobs:
+          construction:
+            engineers: 0
+            scientists: 0
+          production:
+            engineers: 5
+            scientists: 0
+        production_speed: 1
+      2:
+        power:
+          consumed: 0
+          produced: 0
+        construction_costs:
+          iron: 0
+          aluminium: 0
+          copper: 0
+          titanium: 0
+        construction_workload: 100
+        storage: null
+        jobs:
+          construction:
+            engineers: 0
+            scientists: 0
+          production:
+            engineers: 0
+            scientists: 0
+        production_speed: 1
+      3:
+        power:
+          consumed: 0
+          produced: 0
+        storage: null
+        jobs:
+          construction:
+            engineers: 0
+            scientists: 0
+          production:
+            engineers: 0
+            scientists: 0
+        production_speed: 1
+  furnace:
+    displayed_name: "FOURNEAU"
+    parameters_per_level:
+      0:
+        power:
+          consumed: 0
+          produced: 0
+        construction_costs:
+          iron: 0
+          aluminium: 0
+          copper: 0
+          titanium: 0
+        construction_workload: 100
+        storage: null
+        jobs:
+          construction:
+            engineers: 0
+            scientists: 0
+          production:
+            engineers: 0
+            scientists: 0
+        production_speed: 0
+      1:
+        power:
+          consumed: 0
+          produced: 0
+        construction_costs:
+          iron: 0
+          aluminium: 0
+          copper: 0
+          titanium: 0
+        construction_workload: 100
+        storage: null
+        jobs:
+          construction:
+            engineers: 0
+            scientists: 0
+          production:
+            engineers: 5
+            scientists: 0
+        production_speed: 1
+      2:
+        power:
+          consumed: 0
+          produced: 0
+        construction_costs:
+          iron: 0
+          aluminium: 0
+          copper: 0
+          titanium: 0
+        construction_workload: 100
+        storage: null
+        jobs:
+          construction:
+            engineers: 0
+            scientists: 0
+          production:
+            engineers: 0
+            scientists: 0
+        production_speed: 1
+      3:
+        power:
+          consumed: 0
+          produced: 0
+        storage: null
+        jobs:
+          construction:
+            engineers: 0
+            scientists: 0
+          production:
+            engineers: 0
+            scientists: 0
+        production_speed: 1
+  electrolysis_station:
+    displayed_name: "STATION D'ELECTROLYSE"
+    parameters_per_level:
+      0:
+        power:
+          consumed: 0
+          produced: 0
+        construction_costs:
+          iron: 0
+          aluminium: 0
+          copper: 0
+          titanium: 0
+        construction_workload: 100
+        storage: null
+        jobs:
+          construction:
+            engineers: 0
+            scientists: 0
+          production:
+            engineers: 0
+            scientists: 0
+        production_speed: 0
+      1:
+        power:
+          consumed: 0
+          produced: 0
+        construction_costs:
+          iron: 0
+          aluminium: 0
+          copper: 0
+          titanium: 0
+        construction_workload: 100
+        storage: null
+        jobs:
+          construction:
+            engineers: 0
+            scientists: 0
+          production:
+            engineers: 0
+            scientists: 5
+        production_speed: 1
+      2:
+        power:
+          consumed: 0
+          produced: 0
+        construction_costs:
+          iron: 0
+          aluminium: 0
+          copper: 0
+          titanium: 0
+        construction_workload: 100
+        storage: null
+        jobs:
+          construction:
+            engineers: 0
+            scientists: 0
+          production:
+            engineers: 0
+            scientists: 0
+        production_speed: 1
+      3:
+        power:
+          consumed: 0
+          produced: 0
+        storage: null
+        jobs:
+          construction:
+            engineers: 0
+            scientists: 0
+          production:
+            engineers: 0
+            scientists: 0
+        production_speed: 1
+  greenhouse:
+    displayed_name: "SERRE"
+    parameters_per_level:
+      0:
+        power:
+          consumed: 0
+          produced: 0
+        construction_costs:
+          iron: 0
+          aluminium: 0
+          copper: 0
+          titanium: 0
+        construction_workload: 100
+        storage: null
+        jobs:
+          construction:
+            engineers: 0
+            scientists: 0
+          production:
+            engineers: 0
+            scientists: 0
+        production_speed: 0
+      1:
+        power:
+          consumed: 0
+          produced: 0
+        construction_costs:
+          iron: 0
+          aluminium: 0
+          copper: 0
+          titanium: 0
+        construction_workload: 100
+        storage: null
+        jobs:
+          construction:
+            engineers: 0
+            scientists: 0
+          production:
+            engineers: 0
+            scientists: 0
+        production_speed: 1
+      2:
+        power:
+          consumed: 0
+          produced: 0
+        construction_costs:
+          iron: 0
+          aluminium: 0
+          copper: 0
+          titanium: 0
+        construction_workload: 100
+        storage: null
+        jobs:
+          construction:
+            engineers: 0
+            scientists: 0
+          production:
+            engineers: 0
+            scientists: 0
+        production_speed: 1
+      3:
+        power:
+          consumed: 0
+          produced: 0
+        storage: null
+        jobs:
+          construction:
+            engineers: 0
+            scientists: 0
+          production:
+            engineers: 0
+            scientists: 0
+        production_speed: 1
+  school:
+    displayed_name: "ECOLE"
+    parameters_per_level:
+      0:
+        power:
+          consumed: 0
+          produced: 0
+        construction_costs:
+          iron: 0
+          aluminium: 0
+          copper: 0
+          titanium: 0
+        construction_workload: 100
+        storage: null
+        jobs:
+          construction:
+            engineers: 0
+            scientists: 0
+          production:
+            engineers: 0
+            scientists: 0
+        production_speed: 0
+      1:
+        power:
+          consumed: 0
+          produced: 0
+        construction_costs:
+          iron: 0
+          aluminium: 0
+          copper: 0
+          titanium: 0
+        construction_workload: 100
+        storage: null
+        jobs:
+          construction:
+            engineers: 0
+            scientists: 0
+          production:
+            engineers: 0
+            scientists: 5
+        production_speed: 1
+      2:
+        power:
+          consumed: 0
+          produced: 0
+        construction_costs:
+          iron: 0
+          aluminium: 0
+          copper: 0
+          titanium: 0
+        construction_workload: 100
+        storage: null
+        jobs:
+          construction:
+            engineers: 0
+            scientists: 0
+          production:
+            engineers: 0
+            scientists: 0
+        production_speed: 1
+      3:
+        power:
+          consumed: 0
+          produced: 0
+        storage: null
+        jobs:
+          construction:
+            engineers: 0
+            scientists: 0
+          production:
+            engineers: 0
+            scientists: 0
+        production_speed: 1
+  factory:
+    displayed_name: "USINE"
+    parameters_per_level:
+      0:
+        power:
+          consumed: 0
+          produced: 0
+        construction_costs:
+          iron: 0
+          aluminium: 0
+          copper: 0
+          titanium: 0
+        construction_workload: 100
+        storage: null
+        jobs:
+          construction:
+            engineers: 0
+            scientists: 0
+          production:
+            engineers: 0
+            scientists: 0
+        production_speed: 0
+      1:
+        power:
+          consumed: 0
+          produced: 0
+        construction_costs:
+          iron: 0
+          aluminium: 0
+          copper: 0
+          titanium: 0
+        construction_workload: 100
+        storage: null
+        jobs:
+          construction:
+            engineers: 0
+            scientists: 0
+          production:
+            engineers: 5
+            scientists: 0
+        production_speed: 1
+      2:
+        power:
+          consumed: 0
+          produced: 0
+        construction_costs:
+          iron: 0
+          aluminium: 0
+          copper: 0
+          titanium: 0
+        construction_workload: 100
+        storage: null
+        jobs:
+          construction:
+            engineers: 0
+            scientists: 0
+          production:
+            engineers: 0
+            scientists: 0
+        production_speed: 1
+      3:
+        power:
+          consumed: 0
+          produced: 0
+        storage: null
+        jobs:
+          construction:
+            engineers: 0
+            scientists: 0
+          production:
+            engineers: 0
+            scientists: 0
+        production_speed: 1
+  spaceport:
+    displayed_name: "PORT SPACIAL"
+    parameters_per_level:
+      0:
+        power:
+          consumed: 0
+          produced: 0
+        construction_costs:
+          iron: 0
+          aluminium: 0
+          copper: 0
+          titanium: 0
+        construction_workload: 100
+        storage: null
+        jobs:
+          construction:
+            engineers: 0
+            scientists: 0
+          production:
+            engineers: 0
+            scientists: 0
+      1:
+        power:
+          consumed: 0
+          produced: 0
+        storage: null
+        jobs:
+          construction:
+            engineers: 0
+            scientists: 0
+          production:
+            engineers: 0
+            scientists: 0
+
+ore_per_ingot:
+  iron: 5
+  aluminium: 5
+  copper: 5
+  titanium: 5
+
+workers_training_workload: {}
+
+items_price: {}

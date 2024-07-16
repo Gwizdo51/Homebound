@@ -286,7 +286,8 @@ class RigthWindowWidgetContent:
                     )
                     power_icon.scale = .05
                     building_option["power_icon"] = power_icon
-                    building_parameters_per_level = self.current_colony.building_types_dict[building_name].parameters_per_level
+                    # building_parameters_per_level = self.current_colony.building_types_dict[building_name].parameters_per_level
+                    building_parameters_per_level = self.game_data.game_config["buildings"][building_name]["parameters_per_level"]
                     # power label
                     power_label_string = "{:+}".format(building_parameters_per_level[1]["power"]["produced"] -
                                                        building_parameters_per_level[1]["power"]["consumed"])
@@ -355,7 +356,10 @@ class RigthWindowWidgetContent:
                 self.content["building_options_dict"] = building_options_dict
             else:
                 # window title
-                self.content["title_label"] = Label(self.building_name_translation_en2fr[self.selected_building.name], font_name=self.game_data.subtitle_font_name, font_size=15,
+                building_displayed_name = self.game_data.game_config["buildings"][self.selected_building.name]["displayed_name"]
+                # self.content["title_label"] = Label(self.building_name_translation_en2fr[self.selected_building.name],
+                #     font_name=self.game_data.subtitle_font_name, font_size=15,
+                self.content["title_label"] = Label(building_displayed_name, font_name=self.game_data.subtitle_font_name, font_size=15,
                     x=self.game_data.window_width - 25 - 315, y=self.game_data.window_height - 43, width=315,
                     align="center", anchor_y="center", batch=self.batch, group=self.groups[2])
                 # display for each building:
@@ -1063,7 +1067,7 @@ class RigthWindowWidgetContent:
                         y = self.game_data.window_height - 495,
                         anchor_x="center", batch=self.batch, group=self.groups[2])
                 elif self.selected_building.name == "factory":
-                    # 0: emall spaceship
+                    # 0: small spaceship
                     # 1: medium spaceship
                     # 2: large spaceship
                     # 3: cargo hold module

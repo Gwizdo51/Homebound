@@ -9,12 +9,13 @@ class Building:
     # - can build and upgrade
 
     name: str
-    parameters_per_level: dict[int, Any]
+    # parameters_per_level: dict[int, Any]
 
-    def __init__(self, colony_data: dict[str]):
+    def __init__(self, colony_data: dict[str], game_config: dict[str]):
         if type(self) is Building:
             raise TypeError("The Building class should not be instanciated directly")
         self.colony_data = colony_data
+        self.parameters_per_level = game_config["buildings"][self.name]["parameters_per_level"]
         # building level
         # 0: not built
         # 1, 2, 3: current building level
@@ -169,41 +170,42 @@ class Building:
 class BuildingHeadQuarters(Building):
 
     name = "headquarters"
-    parameters_per_level = {
-        1: {
-            "power": {
-                "consumed": 0,
-                "produced": 0
-            },
-            "storage": {
-                "food": 50,
-                "water": 50,
-                "oxygen": 50,
-                "hydrogen": 50,
-                "iron_ore": 250,
-                "iron": 250,
-                "aluminium_ore": 250,
-                "aluminium": 250,
-                "copper_ore": 250,
-                "copper": 250,
-                "titanium_ore": 250,
-                "titanium": 250
-            },
-            "jobs": {
-                "construction": {
-                    "engineers": 0,
-                    "scientists": 0
-                },
-                "production": {
-                    "engineers": 0,
-                    "scientists": 0
-                }
-            }
-        }
-    }
+    # parameters_per_level = {
+    #     1: {
+    #         "power": {
+    #             "consumed": 0,
+    #             "produced": 0
+    #         },
+    #         "storage": {
+    #             "food": 50,
+    #             "water": 50,
+    #             "oxygen": 50,
+    #             "hydrogen": 50,
+    #             "iron_ore": 250,
+    #             "iron": 250,
+    #             "aluminium_ore": 250,
+    #             "aluminium": 250,
+    #             "copper_ore": 250,
+    #             "copper": 250,
+    #             "titanium_ore": 250,
+    #             "titanium": 250
+    #         },
+    #         "jobs": {
+    #             "construction": {
+    #                 "engineers": 0,
+    #                 "scientists": 0
+    #             },
+    #             "production": {
+    #                 "engineers": 0,
+    #                 "scientists": 0
+    #             }
+    #         }
+    #     }
+    # }
 
-    def __init__(self, colony_data: dict[str]):
-        super().__init__(colony_data)
+    def __init__(self, colony_data: dict[str], game_config: dict[str]):
+        super().__init__(colony_data, game_config)
+        # self.parameters_per_level = self.colony_data["buildings"][self.name]["parameters_per_level"]
         # headquarters are always at level 1
         self.level = 1
         self.level_max = 1
@@ -237,97 +239,97 @@ class BuildingSolarPanels(Building):
 
     name = "solar_panels"
 
-    parameters_per_level = {
-        0: {
-            "power": {
-                "consumed": 0,
-                "produced": 0
-            },
-            "construction_costs": {
-                "iron": 0,
-                "aluminium": 0,
-                "copper": 0,
-                "titanium": 0
-            },
-            "construction_workload": 100,
-            "storage": None,
-            "jobs": {
-                "construction": {
-                    "engineers": 5,
-                    "scientists": 0
-                },
-                "production": {
-                    "engineers": 0,
-                    "scientists": 0
-                }
-            }
-        },
-        1: {
-            "power": {
-                "consumed": 0,
-                "produced": 100
-            },
-            "construction_costs": {
-                "iron": 0,
-                "aluminium": 0,
-                "copper": 0,
-                "titanium": 0
-            },
-            "construction_workload": 100,
-            "storage": None,
-            "jobs": {
-                "construction": {
-                    "engineers": 5,
-                    "scientists": 0
-                },
-                "production": {
-                    "engineers": 0,
-                    "scientists": 0
-                }
-            }
-        },
-        2: {
-            "power": {
-                "consumed": 0,
-                "produced": 200
-            },
-            "construction_costs": {
-                "iron": 0,
-                "aluminium": 0,
-                "copper": 0,
-                "titanium": 0
-            },
-            "construction_workload": 100,
-            "storage": None,
-            "jobs": {
-                "construction": {
-                    "engineers": 0,
-                    "scientists": 0
-                },
-                "production": {
-                    "engineers": 0,
-                    "scientists": 0
-                }
-            }
-        },
-        3: {
-            "power": {
-                "consumed": 0,
-                "produced": 0
-            },
-            "storage": None,
-            "jobs": {
-                "construction": {
-                    "engineers": 0,
-                    "scientists": 0
-                },
-                "production": {
-                    "engineers": 0,
-                    "scientists": 0
-                }
-            }
-        }
-    }
+    # parameters_per_level = {
+    #     0: {
+    #         "power": {
+    #             "consumed": 0,
+    #             "produced": 0
+    #         },
+    #         "construction_costs": {
+    #             "iron": 0,
+    #             "aluminium": 0,
+    #             "copper": 0,
+    #             "titanium": 0
+    #         },
+    #         "construction_workload": 100,
+    #         "storage": None,
+    #         "jobs": {
+    #             "construction": {
+    #                 "engineers": 5,
+    #                 "scientists": 0
+    #             },
+    #             "production": {
+    #                 "engineers": 0,
+    #                 "scientists": 0
+    #             }
+    #         }
+    #     },
+    #     1: {
+    #         "power": {
+    #             "consumed": 0,
+    #             "produced": 100
+    #         },
+    #         "construction_costs": {
+    #             "iron": 0,
+    #             "aluminium": 0,
+    #             "copper": 0,
+    #             "titanium": 0
+    #         },
+    #         "construction_workload": 100,
+    #         "storage": None,
+    #         "jobs": {
+    #             "construction": {
+    #                 "engineers": 5,
+    #                 "scientists": 0
+    #             },
+    #             "production": {
+    #                 "engineers": 0,
+    #                 "scientists": 0
+    #             }
+    #         }
+    #     },
+    #     2: {
+    #         "power": {
+    #             "consumed": 0,
+    #             "produced": 200
+    #         },
+    #         "construction_costs": {
+    #             "iron": 0,
+    #             "aluminium": 0,
+    #             "copper": 0,
+    #             "titanium": 0
+    #         },
+    #         "construction_workload": 100,
+    #         "storage": None,
+    #         "jobs": {
+    #             "construction": {
+    #                 "engineers": 0,
+    #                 "scientists": 0
+    #             },
+    #             "production": {
+    #                 "engineers": 0,
+    #                 "scientists": 0
+    #             }
+    #         }
+    #     },
+    #     3: {
+    #         "power": {
+    #             "consumed": 0,
+    #             "produced": 0
+    #         },
+    #         "storage": None,
+    #         "jobs": {
+    #             "construction": {
+    #                 "engineers": 0,
+    #                 "scientists": 0
+    #             },
+    #             "production": {
+    #                 "engineers": 0,
+    #                 "scientists": 0
+    #             }
+    #         }
+    #     }
+    # }
 
     # def __init__(self, colony_data):
     #     super().__init__(colony_data)
@@ -358,104 +360,104 @@ class BuildingSolarPanels(Building):
 class BuildingDrillingStation(Building):
 
     name = "drilling_station"
-    parameters_per_level = {
-        0: {
-            "power": {
-                "consumed": 0,
-                "produced": 0
-            },
-            "construction_costs": {
-                "iron": 0,
-                "aluminium": 0,
-                "copper": 0,
-                "titanium": 0
-            },
-            "construction_workload": 100,
-            "storage": None,
-            "jobs": {
-                "construction": {
-                    "engineers": 0,
-                    "scientists": 0
-                },
-                "production": {
-                    "engineers": 0,
-                    "scientists": 0
-                }
-            },
-            "production_speed": 0
-        },
-        1: {
-            "power": {
-                "consumed": 0,
-                "produced": 0
-            },
-            "construction_costs": {
-                "iron": 0,
-                "aluminium": 0,
-                "copper": 0,
-                "titanium": 0
-            },
-            "construction_workload": 100,
-            "storage": None,
-            "jobs": {
-                "construction": {
-                    "engineers": 0,
-                    "scientists": 0
-                },
-                "production": {
-                    "engineers": 5,
-                    "scientists": 0
-                }
-            },
-            "production_speed": 1
-        },
-        2: {
-            "power": {
-                "consumed": 0,
-                "produced": 0
-            },
-            "construction_costs": {
-                "iron": 0,
-                "aluminium": 0,
-                "copper": 0,
-                "titanium": 0
-            },
-            "construction_workload": 100,
-            "storage": None,
-            "jobs": {
-                "construction": {
-                    "engineers": 0,
-                    "scientists": 0
-                },
-                "production": {
-                    "engineers": 0,
-                    "scientists": 0
-                }
-            },
-            "production_speed": 1
-        },
-        3: {
-            "power": {
-                "consumed": 0,
-                "produced": 0
-            },
-            "storage": None,
-            "jobs": {
-                "construction": {
-                    "engineers": 0,
-                    "scientists": 0
-                },
-                "production": {
-                    "engineers": 0,
-                    "scientists": 0
-                }
-            },
-            "production_speed": 1
-        }
-    }
+    # parameters_per_level = {
+    #     0: {
+    #         "power": {
+    #             "consumed": 0,
+    #             "produced": 0
+    #         },
+    #         "construction_costs": {
+    #             "iron": 0,
+    #             "aluminium": 0,
+    #             "copper": 0,
+    #             "titanium": 0
+    #         },
+    #         "construction_workload": 100,
+    #         "storage": None,
+    #         "jobs": {
+    #             "construction": {
+    #                 "engineers": 0,
+    #                 "scientists": 0
+    #             },
+    #             "production": {
+    #                 "engineers": 0,
+    #                 "scientists": 0
+    #             }
+    #         },
+    #         "production_speed": 0
+    #     },
+    #     1: {
+    #         "power": {
+    #             "consumed": 0,
+    #             "produced": 0
+    #         },
+    #         "construction_costs": {
+    #             "iron": 0,
+    #             "aluminium": 0,
+    #             "copper": 0,
+    #             "titanium": 0
+    #         },
+    #         "construction_workload": 100,
+    #         "storage": None,
+    #         "jobs": {
+    #             "construction": {
+    #                 "engineers": 0,
+    #                 "scientists": 0
+    #             },
+    #             "production": {
+    #                 "engineers": 5,
+    #                 "scientists": 0
+    #             }
+    #         },
+    #         "production_speed": 1
+    #     },
+    #     2: {
+    #         "power": {
+    #             "consumed": 0,
+    #             "produced": 0
+    #         },
+    #         "construction_costs": {
+    #             "iron": 0,
+    #             "aluminium": 0,
+    #             "copper": 0,
+    #             "titanium": 0
+    #         },
+    #         "construction_workload": 100,
+    #         "storage": None,
+    #         "jobs": {
+    #             "construction": {
+    #                 "engineers": 0,
+    #                 "scientists": 0
+    #             },
+    #             "production": {
+    #                 "engineers": 0,
+    #                 "scientists": 0
+    #             }
+    #         },
+    #         "production_speed": 1
+    #     },
+    #     3: {
+    #         "power": {
+    #             "consumed": 0,
+    #             "produced": 0
+    #         },
+    #         "storage": None,
+    #         "jobs": {
+    #             "construction": {
+    #                 "engineers": 0,
+    #                 "scientists": 0
+    #             },
+    #             "production": {
+    #                 "engineers": 0,
+    #                 "scientists": 0
+    #             }
+    #         },
+    #         "production_speed": 1
+    #     }
+    # }
 
-    def __init__(self, colony_data):
-        super().__init__(colony_data)
+    def __init__(self, colony_data: dict[str], game_config: dict[str]):
+        super().__init__(colony_data, game_config)
         # self.resource_produced = "water", "iron_ore", "aluminium_ore", "copper_ore" or "titanium_ore"
         self.resource_produced = None
 
@@ -475,137 +477,137 @@ class BuildingDrillingStation(Building):
 class BuildingWarehouse(Building):
 
     name = "warehouse"
-    parameters_per_level = {
-        0: {
-            "power": {
-                "consumed": 0,
-                "produced": 0
-            },
-            "construction_costs": {
-                "iron": 0,
-                "aluminium": 0,
-                "copper": 0,
-                "titanium": 0
-            },
-            "construction_workload": 100,
-            "storage": {
-                "food": 0,
-                "iron_ore": 0,
-                "iron": 0,
-                "aluminium_ore": 0,
-                "aluminium": 0,
-                "copper_ore": 0,
-                "copper": 0,
-                "titanium_ore": 0,
-                "titanium": 0
-            },
-            "jobs": {
-                "construction": {
-                    "engineers": 0,
-                    "scientists": 0
-                },
-                "production": {
-                    "engineers": 0,
-                    "scientists": 0
-                }
-            }
-        },
-        1: {
-            "power": {
-                "consumed": 0,
-                "produced": 0
-            },
-            "construction_costs": {
-                "iron": 0,
-                "aluminium": 0,
-                "copper": 0,
-                "titanium": 0
-            },
-            "construction_workload": 100,
-            "storage": {
-                "food": 500,
-                "iron_ore": 500,
-                "iron": 500,
-                "aluminium_ore": 500,
-                "aluminium": 500,
-                "copper_ore": 500,
-                "copper": 500,
-                "titanium_ore": 500,
-                "titanium": 500
-            },
-            "jobs": {
-                "construction": {
-                    "engineers": 0,
-                    "scientists": 0
-                },
-                "production": {
-                    "engineers": 0,
-                    "scientists": 0
-                }
-            }
-        },
-        2: {
-            "power": {
-                "consumed": 0,
-                "produced": 0
-            },
-            "construction_costs": {
-                "iron": 0,
-                "aluminium": 0,
-                "copper": 0,
-                "titanium": 0
-            },
-            "construction_workload": 100,
-            "storage": {
-                "food": 0,
-                "iron_ore": 0,
-                "iron": 0,
-                "aluminium_ore": 0,
-                "aluminium": 0,
-                "copper_ore": 0,
-                "copper": 0,
-                "titanium_ore": 0,
-                "titanium": 0
-            },
-            "jobs": {
-                "construction": {
-                    "engineers": 0,
-                    "scientists": 0
-                },
-                "production": {
-                    "engineers": 0,
-                    "scientists": 0
-                }
-            }
-        },
-        3: {
-            "power": {
-                "consumed": 0,
-                "produced": 0
-            },
-            "storage": {
-                "food": 0,
-                "iron_ore": 0,
-                "iron": 0,
-                "aluminium_ore": 0,
-                "aluminium": 0,
-                "copper_ore": 0,
-                "copper": 0,
-                "titanium_ore": 0,
-                "titanium": 0
-            },
-            "jobs": {
-                "construction": {
-                    "engineers": 0,
-                    "scientists": 0
-                },
-                "production": {
-                    "engineers": 0,
-                    "scientists": 0
-                }
-            }
-        }
-    }
+    # parameters_per_level = {
+    #     0: {
+    #         "power": {
+    #             "consumed": 0,
+    #             "produced": 0
+    #         },
+    #         "construction_costs": {
+    #             "iron": 0,
+    #             "aluminium": 0,
+    #             "copper": 0,
+    #             "titanium": 0
+    #         },
+    #         "construction_workload": 100,
+    #         "storage": {
+    #             "food": 0,
+    #             "iron_ore": 0,
+    #             "iron": 0,
+    #             "aluminium_ore": 0,
+    #             "aluminium": 0,
+    #             "copper_ore": 0,
+    #             "copper": 0,
+    #             "titanium_ore": 0,
+    #             "titanium": 0
+    #         },
+    #         "jobs": {
+    #             "construction": {
+    #                 "engineers": 0,
+    #                 "scientists": 0
+    #             },
+    #             "production": {
+    #                 "engineers": 0,
+    #                 "scientists": 0
+    #             }
+    #         }
+    #     },
+    #     1: {
+    #         "power": {
+    #             "consumed": 0,
+    #             "produced": 0
+    #         },
+    #         "construction_costs": {
+    #             "iron": 0,
+    #             "aluminium": 0,
+    #             "copper": 0,
+    #             "titanium": 0
+    #         },
+    #         "construction_workload": 100,
+    #         "storage": {
+    #             "food": 500,
+    #             "iron_ore": 500,
+    #             "iron": 500,
+    #             "aluminium_ore": 500,
+    #             "aluminium": 500,
+    #             "copper_ore": 500,
+    #             "copper": 500,
+    #             "titanium_ore": 500,
+    #             "titanium": 500
+    #         },
+    #         "jobs": {
+    #             "construction": {
+    #                 "engineers": 0,
+    #                 "scientists": 0
+    #             },
+    #             "production": {
+    #                 "engineers": 0,
+    #                 "scientists": 0
+    #             }
+    #         }
+    #     },
+    #     2: {
+    #         "power": {
+    #             "consumed": 0,
+    #             "produced": 0
+    #         },
+    #         "construction_costs": {
+    #             "iron": 0,
+    #             "aluminium": 0,
+    #             "copper": 0,
+    #             "titanium": 0
+    #         },
+    #         "construction_workload": 100,
+    #         "storage": {
+    #             "food": 0,
+    #             "iron_ore": 0,
+    #             "iron": 0,
+    #             "aluminium_ore": 0,
+    #             "aluminium": 0,
+    #             "copper_ore": 0,
+    #             "copper": 0,
+    #             "titanium_ore": 0,
+    #             "titanium": 0
+    #         },
+    #         "jobs": {
+    #             "construction": {
+    #                 "engineers": 0,
+    #                 "scientists": 0
+    #             },
+    #             "production": {
+    #                 "engineers": 0,
+    #                 "scientists": 0
+    #             }
+    #         }
+    #     },
+    #     3: {
+    #         "power": {
+    #             "consumed": 0,
+    #             "produced": 0
+    #         },
+    #         "storage": {
+    #             "food": 0,
+    #             "iron_ore": 0,
+    #             "iron": 0,
+    #             "aluminium_ore": 0,
+    #             "aluminium": 0,
+    #             "copper_ore": 0,
+    #             "copper": 0,
+    #             "titanium_ore": 0,
+    #             "titanium": 0
+    #         },
+    #         "jobs": {
+    #             "construction": {
+    #                 "engineers": 0,
+    #                 "scientists": 0
+    #             },
+    #             "production": {
+    #                 "engineers": 0,
+    #                 "scientists": 0
+    #             }
+    #         }
+    #     }
+    # }
 
     # def __init__(self, colony_data):
     #     super().__init__(colony_data)
@@ -615,113 +617,113 @@ class BuildingWarehouse(Building):
 class BuildingLiquidTank(Building):
 
     name = "liquid_tank"
-    parameters_per_level = {
-        0: {
-            "power": {
-                "consumed": 0,
-                "produced": 0
-            },
-            "construction_costs": {
-                "iron": 0,
-                "aluminium": 0,
-                "copper": 0,
-                "titanium": 0
-            },
-            "construction_workload": 100,
-            "storage": {
-                "water": 0,
-                "oxygen": 0,
-                "hydrogen": 0
-            },
-            "jobs": {
-                "construction": {
-                    "engineers": 0,
-                    "scientists": 0
-                },
-                "production": {
-                    "engineers": 0,
-                    "scientists": 0
-                }
-            }
-        },
-        1: {
-            "power": {
-                "consumed": 0,
-                "produced": 0
-            },
-            "construction_costs": {
-                "iron": 0,
-                "aluminium": 0,
-                "copper": 0,
-                "titanium": 0
-            },
-            "construction_workload": 100,
-            "storage": {
-                "water": 0,
-                "oxygen": 0,
-                "hydrogen": 0
-            },
-            "jobs": {
-                "construction": {
-                    "engineers": 0,
-                    "scientists": 0
-                },
-                "production": {
-                    "engineers": 0,
-                    "scientists": 0
-                }
-            }
-        },
-        2: {
-            "power": {
-                "consumed": 0,
-                "produced": 0
-            },
-            "construction_costs": {
-                "iron": 0,
-                "aluminium": 0,
-                "copper": 0,
-                "titanium": 0
-            },
-            "construction_workload": 100,
-            "storage": {
-                "water": 0,
-                "oxygen": 0,
-                "hydrogen": 0
-            },
-            "jobs": {
-                "construction": {
-                    "engineers": 0,
-                    "scientists": 0
-                },
-                "production": {
-                    "engineers": 0,
-                    "scientists": 0
-                }
-            }
-        },
-        3: {
-            "power": {
-                "consumed": 0,
-                "produced": 0
-            },
-            "storage": {
-                "water": 0,
-                "oxygen": 0,
-                "hydrogen": 0
-            },
-            "jobs": {
-                "construction": {
-                    "engineers": 0,
-                    "scientists": 0
-                },
-                "production": {
-                    "engineers": 0,
-                    "scientists": 0
-                }
-            }
-        }
-    }
+    # parameters_per_level = {
+    #     0: {
+    #         "power": {
+    #             "consumed": 0,
+    #             "produced": 0
+    #         },
+    #         "construction_costs": {
+    #             "iron": 0,
+    #             "aluminium": 0,
+    #             "copper": 0,
+    #             "titanium": 0
+    #         },
+    #         "construction_workload": 100,
+    #         "storage": {
+    #             "water": 0,
+    #             "oxygen": 0,
+    #             "hydrogen": 0
+    #         },
+    #         "jobs": {
+    #             "construction": {
+    #                 "engineers": 0,
+    #                 "scientists": 0
+    #             },
+    #             "production": {
+    #                 "engineers": 0,
+    #                 "scientists": 0
+    #             }
+    #         }
+    #     },
+    #     1: {
+    #         "power": {
+    #             "consumed": 0,
+    #             "produced": 0
+    #         },
+    #         "construction_costs": {
+    #             "iron": 0,
+    #             "aluminium": 0,
+    #             "copper": 0,
+    #             "titanium": 0
+    #         },
+    #         "construction_workload": 100,
+    #         "storage": {
+    #             "water": 0,
+    #             "oxygen": 0,
+    #             "hydrogen": 0
+    #         },
+    #         "jobs": {
+    #             "construction": {
+    #                 "engineers": 0,
+    #                 "scientists": 0
+    #             },
+    #             "production": {
+    #                 "engineers": 0,
+    #                 "scientists": 0
+    #             }
+    #         }
+    #     },
+    #     2: {
+    #         "power": {
+    #             "consumed": 0,
+    #             "produced": 0
+    #         },
+    #         "construction_costs": {
+    #             "iron": 0,
+    #             "aluminium": 0,
+    #             "copper": 0,
+    #             "titanium": 0
+    #         },
+    #         "construction_workload": 100,
+    #         "storage": {
+    #             "water": 0,
+    #             "oxygen": 0,
+    #             "hydrogen": 0
+    #         },
+    #         "jobs": {
+    #             "construction": {
+    #                 "engineers": 0,
+    #                 "scientists": 0
+    #             },
+    #             "production": {
+    #                 "engineers": 0,
+    #                 "scientists": 0
+    #             }
+    #         }
+    #     },
+    #     3: {
+    #         "power": {
+    #             "consumed": 0,
+    #             "produced": 0
+    #         },
+    #         "storage": {
+    #             "water": 0,
+    #             "oxygen": 0,
+    #             "hydrogen": 0
+    #         },
+    #         "jobs": {
+    #             "construction": {
+    #                 "engineers": 0,
+    #                 "scientists": 0
+    #             },
+    #             "production": {
+    #                 "engineers": 0,
+    #                 "scientists": 0
+    #             }
+    #         }
+    #     }
+    # }
 
     # def __init__(self, colony_data):
     #     super().__init__(colony_data)
@@ -731,101 +733,101 @@ class BuildingLiquidTank(Building):
 class BuildingElectrolysisStation(Building):
 
     name = "electrolysis_station"
-    parameters_per_level = {
-        0: {
-            "power": {
-                "consumed": 0,
-                "produced": 0
-            },
-            "construction_costs": {
-                "iron": 0,
-                "aluminium": 0,
-                "copper": 0,
-                "titanium": 0
-            },
-            "construction_workload": 100,
-            "storage": None,
-            "jobs": {
-                "construction": {
-                    "engineers": 0,
-                    "scientists": 0
-                },
-                "production": {
-                    "engineers": 0,
-                    "scientists": 0
-                }
-            },
-            "production_speed": 0
-        },
-        1: {
-            "power": {
-                "consumed": 0,
-                "produced": 0
-            },
-            "construction_costs": {
-                "iron": 0,
-                "aluminium": 0,
-                "copper": 0,
-                "titanium": 0
-            },
-            "construction_workload": 100,
-            "storage": None,
-            "jobs": {
-                "construction": {
-                    "engineers": 0,
-                    "scientists": 0
-                },
-                "production": {
-                    "engineers": 0,
-                    "scientists": 5
-                }
-            },
-            "production_speed": 1
-        },
-        2: {
-            "power": {
-                "consumed": 0,
-                "produced": 0
-            },
-            "construction_costs": {
-                "iron": 0,
-                "aluminium": 0,
-                "copper": 0,
-                "titanium": 0
-            },
-            "construction_workload": 100,
-            "storage": None,
-            "jobs": {
-                "construction": {
-                    "engineers": 0,
-                    "scientists": 0
-                },
-                "production": {
-                    "engineers": 0,
-                    "scientists": 0
-                }
-            },
-            "production_speed": 1
-        },
-        3: {
-            "power": {
-                "consumed": 0,
-                "produced": 0
-            },
-            "storage": None,
-            "jobs": {
-                "construction": {
-                    "engineers": 0,
-                    "scientists": 0
-                },
-                "production": {
-                    "engineers": 0,
-                    "scientists": 0
-                }
-            },
-            "production_speed": 1
-        }
-    }
+    # parameters_per_level = {
+    #     0: {
+    #         "power": {
+    #             "consumed": 0,
+    #             "produced": 0
+    #         },
+    #         "construction_costs": {
+    #             "iron": 0,
+    #             "aluminium": 0,
+    #             "copper": 0,
+    #             "titanium": 0
+    #         },
+    #         "construction_workload": 100,
+    #         "storage": None,
+    #         "jobs": {
+    #             "construction": {
+    #                 "engineers": 0,
+    #                 "scientists": 0
+    #             },
+    #             "production": {
+    #                 "engineers": 0,
+    #                 "scientists": 0
+    #             }
+    #         },
+    #         "production_speed": 0
+    #     },
+    #     1: {
+    #         "power": {
+    #             "consumed": 0,
+    #             "produced": 0
+    #         },
+    #         "construction_costs": {
+    #             "iron": 0,
+    #             "aluminium": 0,
+    #             "copper": 0,
+    #             "titanium": 0
+    #         },
+    #         "construction_workload": 100,
+    #         "storage": None,
+    #         "jobs": {
+    #             "construction": {
+    #                 "engineers": 0,
+    #                 "scientists": 0
+    #             },
+    #             "production": {
+    #                 "engineers": 0,
+    #                 "scientists": 5
+    #             }
+    #         },
+    #         "production_speed": 1
+    #     },
+    #     2: {
+    #         "power": {
+    #             "consumed": 0,
+    #             "produced": 0
+    #         },
+    #         "construction_costs": {
+    #             "iron": 0,
+    #             "aluminium": 0,
+    #             "copper": 0,
+    #             "titanium": 0
+    #         },
+    #         "construction_workload": 100,
+    #         "storage": None,
+    #         "jobs": {
+    #             "construction": {
+    #                 "engineers": 0,
+    #                 "scientists": 0
+    #             },
+    #             "production": {
+    #                 "engineers": 0,
+    #                 "scientists": 0
+    #             }
+    #         },
+    #         "production_speed": 1
+    #     },
+    #     3: {
+    #         "power": {
+    #             "consumed": 0,
+    #             "produced": 0
+    #         },
+    #         "storage": None,
+    #         "jobs": {
+    #             "construction": {
+    #                 "engineers": 0,
+    #                 "scientists": 0
+    #             },
+    #             "production": {
+    #                 "engineers": 0,
+    #                 "scientists": 0
+    #             }
+    #         },
+    #         "production_speed": 1
+    #     }
+    # }
 
     def update(self, dt):
         super().update(dt)
@@ -846,109 +848,109 @@ class BuildingElectrolysisStation(Building):
 class BuildingFurnace(Building):
 
     name = "furnace"
-    parameters_per_level = {
-        0: {
-            "power": {
-                "consumed": 0,
-                "produced": 0
-            },
-            "construction_costs": {
-                "iron": 0,
-                "aluminium": 0,
-                "copper": 0,
-                "titanium": 0
-            },
-            "construction_workload": 100,
-            "storage": None,
-            "jobs": {
-                "construction": {
-                    "engineers": 0,
-                    "scientists": 0
-                },
-                "production": {
-                    "engineers": 0,
-                    "scientists": 0
-                }
-            },
-            "production_speed": 0
-        },
-        1: {
-            "power": {
-                "consumed": 0,
-                "produced": 0
-            },
-            "construction_costs": {
-                "iron": 0,
-                "aluminium": 0,
-                "copper": 0,
-                "titanium": 0
-            },
-            "construction_workload": 100,
-            "storage": None,
-            "jobs": {
-                "construction": {
-                    "engineers": 0,
-                    "scientists": 0
-                },
-                "production": {
-                    "engineers": 5,
-                    "scientists": 0
-                }
-            },
-            "production_speed": 1,
-            # "production_per_cycle": 1
-        },
-        2: {
-            "power": {
-                "consumed": 0,
-                "produced": 0
-            },
-            "construction_costs": {
-                "iron": 0,
-                "aluminium": 0,
-                "copper": 0,
-                "titanium": 0
-            },
-            "construction_workload": 100,
-            "storage": None,
-            "jobs": {
-                "construction": {
-                    "engineers": 0,
-                    "scientists": 0
-                },
-                "production": {
-                    "engineers": 0,
-                    "scientists": 0
-                }
-            },
-            "production_speed": 1,
-            # "production_per_cycle": 1
-        },
-        3: {
-            "power": {
-                "consumed": 0,
-                "produced": 0
-            },
-            "storage": None,
-            "jobs": {
-                "construction": {
-                    "engineers": 0,
-                    "scientists": 0
-                },
-                "production": {
-                    "engineers": 0,
-                    "scientists": 0
-                }
-            },
-            "production_speed": 1,
-            # "production_per_cycle": 1
-        }
-    }
+    # parameters_per_level = {
+    #     0: {
+    #         "power": {
+    #             "consumed": 0,
+    #             "produced": 0
+    #         },
+    #         "construction_costs": {
+    #             "iron": 0,
+    #             "aluminium": 0,
+    #             "copper": 0,
+    #             "titanium": 0
+    #         },
+    #         "construction_workload": 100,
+    #         "storage": None,
+    #         "jobs": {
+    #             "construction": {
+    #                 "engineers": 0,
+    #                 "scientists": 0
+    #             },
+    #             "production": {
+    #                 "engineers": 0,
+    #                 "scientists": 0
+    #             }
+    #         },
+    #         "production_speed": 0
+    #     },
+    #     1: {
+    #         "power": {
+    #             "consumed": 0,
+    #             "produced": 0
+    #         },
+    #         "construction_costs": {
+    #             "iron": 0,
+    #             "aluminium": 0,
+    #             "copper": 0,
+    #             "titanium": 0
+    #         },
+    #         "construction_workload": 100,
+    #         "storage": None,
+    #         "jobs": {
+    #             "construction": {
+    #                 "engineers": 0,
+    #                 "scientists": 0
+    #             },
+    #             "production": {
+    #                 "engineers": 5,
+    #                 "scientists": 0
+    #             }
+    #         },
+    #         "production_speed": 1,
+    #         # "production_per_cycle": 1
+    #     },
+    #     2: {
+    #         "power": {
+    #             "consumed": 0,
+    #             "produced": 0
+    #         },
+    #         "construction_costs": {
+    #             "iron": 0,
+    #             "aluminium": 0,
+    #             "copper": 0,
+    #             "titanium": 0
+    #         },
+    #         "construction_workload": 100,
+    #         "storage": None,
+    #         "jobs": {
+    #             "construction": {
+    #                 "engineers": 0,
+    #                 "scientists": 0
+    #             },
+    #             "production": {
+    #                 "engineers": 0,
+    #                 "scientists": 0
+    #             }
+    #         },
+    #         "production_speed": 1,
+    #         # "production_per_cycle": 1
+    #     },
+    #     3: {
+    #         "power": {
+    #             "consumed": 0,
+    #             "produced": 0
+    #         },
+    #         "storage": None,
+    #         "jobs": {
+    #             "construction": {
+    #                 "engineers": 0,
+    #                 "scientists": 0
+    #             },
+    #             "production": {
+    #                 "engineers": 0,
+    #                 "scientists": 0
+    #             }
+    #         },
+    #         "production_speed": 1,
+    #         # "production_per_cycle": 1
+    #     }
+    # }
 
     # ore to ingot ratio : 5/1
 
-    def __init__(self, colony_data):
-        super().__init__(colony_data)
+    def __init__(self, colony_data: dict[str], game_config: dict[str]):
+        super().__init__(colony_data, game_config)
         # self.resource_produced = "iron", "aluminium", "copper" or "titanium"
         self.resource_produced = None
         self.smelting_completed_percent = 0
@@ -1003,153 +1005,153 @@ class BuildingFurnace(Building):
 class BuildingSpaceport(Building):
 
     name = "spaceport"
-    parameters_per_level = {
-        0: {
-            "power": {
-                "consumed": 0,
-                "produced": 0
-            },
-            "construction_costs": {
-                "iron": 0,
-                "aluminium": 0,
-                "copper": 0,
-                "titanium": 0
-            },
-            "construction_workload": 100,
-            "storage": None,
-            "jobs": {
-                "construction": {
-                    "engineers": 0,
-                    "scientists": 0
-                },
-                "production": {
-                    "engineers": 0,
-                    "scientists": 0
-                }
-            }
-        },
-        1: {
-            "power": {
-                "consumed": 0,
-                "produced": 0
-            },
-            "storage": None,
-            "jobs": {
-                "construction": {
-                    "engineers": 0,
-                    "scientists": 0
-                },
-                "production": {
-                    "engineers": 0,
-                    "scientists": 0
-                }
-            }
-        }
-    }
+    # parameters_per_level = {
+    #     0: {
+    #         "power": {
+    #             "consumed": 0,
+    #             "produced": 0
+    #         },
+    #         "construction_costs": {
+    #             "iron": 0,
+    #             "aluminium": 0,
+    #             "copper": 0,
+    #             "titanium": 0
+    #         },
+    #         "construction_workload": 100,
+    #         "storage": None,
+    #         "jobs": {
+    #             "construction": {
+    #                 "engineers": 0,
+    #                 "scientists": 0
+    #             },
+    #             "production": {
+    #                 "engineers": 0,
+    #                 "scientists": 0
+    #             }
+    #         }
+    #     },
+    #     1: {
+    #         "power": {
+    #             "consumed": 0,
+    #             "produced": 0
+    #         },
+    #         "storage": None,
+    #         "jobs": {
+    #             "construction": {
+    #                 "engineers": 0,
+    #                 "scientists": 0
+    #             },
+    #             "production": {
+    #                 "engineers": 0,
+    #                 "scientists": 0
+    #             }
+    #         }
+    #     }
+    # }
 
-    def __init__(self, colony_data):
-        super().__init__(colony_data)
+    def __init__(self, colony_data: dict[str], game_config: dict[str]):
+        super().__init__(colony_data, game_config)
         self.level_max = 1
 
 
 class BuildingGreenhouse(Building):
 
     name = "greenhouse"
-    parameters_per_level = {
-        0: {
-            "power": {
-                "consumed": 0,
-                "produced": 0
-            },
-            "construction_costs": {
-                "iron": 0,
-                "aluminium": 0,
-                "copper": 0,
-                "titanium": 0
-            },
-            "construction_workload": 100,
-            "storage": None,
-            "jobs": {
-                "construction": {
-                    "engineers": 0,
-                    "scientists": 0
-                },
-                "production": {
-                    "engineers": 0,
-                    "scientists": 0
-                }
-            },
-            "production_speed": 0
-        },
-        1: {
-            "power": {
-                "consumed": 0,
-                "produced": 0
-            },
-            "construction_costs": {
-                "iron": 0,
-                "aluminium": 0,
-                "copper": 0,
-                "titanium": 0
-            },
-            "construction_workload": 100,
-            "storage": None,
-            "jobs": {
-                "construction": {
-                    "engineers": 0,
-                    "scientists": 0
-                },
-                "production": {
-                    "engineers": 0,
-                    "scientists": 0
-                }
-            },
-            "production_speed": 1
-        },
-        2: {
-            "power": {
-                "consumed": 0,
-                "produced": 0
-            },
-            "construction_costs": {
-                "iron": 0,
-                "aluminium": 0,
-                "copper": 0,
-                "titanium": 0
-            },
-            "construction_workload": 100,
-            "storage": None,
-            "jobs": {
-                "construction": {
-                    "engineers": 0,
-                    "scientists": 0
-                },
-                "production": {
-                    "engineers": 0,
-                    "scientists": 0
-                }
-            },
-            "production_speed": 1
-        },
-        3: {
-            "power": {
-                "consumed": 0,
-                "produced": 0
-            },
-            "storage": None,
-            "jobs": {
-                "construction": {
-                    "engineers": 0,
-                    "scientists": 0
-                },
-                "production": {
-                    "engineers": 0,
-                    "scientists": 0
-                }
-            },
-            "production_speed": 1
-        }
-    }
+    # parameters_per_level = {
+    #     0: {
+    #         "power": {
+    #             "consumed": 0,
+    #             "produced": 0
+    #         },
+    #         "construction_costs": {
+    #             "iron": 0,
+    #             "aluminium": 0,
+    #             "copper": 0,
+    #             "titanium": 0
+    #         },
+    #         "construction_workload": 100,
+    #         "storage": None,
+    #         "jobs": {
+    #             "construction": {
+    #                 "engineers": 0,
+    #                 "scientists": 0
+    #             },
+    #             "production": {
+    #                 "engineers": 0,
+    #                 "scientists": 0
+    #             }
+    #         },
+    #         "production_speed": 0
+    #     },
+    #     1: {
+    #         "power": {
+    #             "consumed": 0,
+    #             "produced": 0
+    #         },
+    #         "construction_costs": {
+    #             "iron": 0,
+    #             "aluminium": 0,
+    #             "copper": 0,
+    #             "titanium": 0
+    #         },
+    #         "construction_workload": 100,
+    #         "storage": None,
+    #         "jobs": {
+    #             "construction": {
+    #                 "engineers": 0,
+    #                 "scientists": 0
+    #             },
+    #             "production": {
+    #                 "engineers": 0,
+    #                 "scientists": 0
+    #             }
+    #         },
+    #         "production_speed": 1
+    #     },
+    #     2: {
+    #         "power": {
+    #             "consumed": 0,
+    #             "produced": 0
+    #         },
+    #         "construction_costs": {
+    #             "iron": 0,
+    #             "aluminium": 0,
+    #             "copper": 0,
+    #             "titanium": 0
+    #         },
+    #         "construction_workload": 100,
+    #         "storage": None,
+    #         "jobs": {
+    #             "construction": {
+    #                 "engineers": 0,
+    #                 "scientists": 0
+    #             },
+    #             "production": {
+    #                 "engineers": 0,
+    #                 "scientists": 0
+    #             }
+    #         },
+    #         "production_speed": 1
+    #     },
+    #     3: {
+    #         "power": {
+    #             "consumed": 0,
+    #             "produced": 0
+    #         },
+    #         "storage": None,
+    #         "jobs": {
+    #             "construction": {
+    #                 "engineers": 0,
+    #                 "scientists": 0
+    #             },
+    #             "production": {
+    #                 "engineers": 0,
+    #                 "scientists": 0
+    #             }
+    #         },
+    #         "production_speed": 1
+    #     }
+    # }
 
     def update(self, dt):
         super().update(dt)
@@ -1175,106 +1177,106 @@ class BuildingSchool(Building):
         "scientists": 200,
         "pilots": 300
     }
-    parameters_per_level = {
-        0: {
-            "power": {
-                "consumed": 0,
-                "produced": 0
-            },
-            "construction_costs": {
-                "iron": 0,
-                "aluminium": 0,
-                "copper": 0,
-                "titanium": 0
-            },
-            "construction_workload": 100,
-            "storage": None,
-            "jobs": {
-                "construction": {
-                    "engineers": 0,
-                    "scientists": 0
-                },
-                "production": {
-                    "engineers": 0,
-                    "scientists": 0
-                }
-            },
-            "production_speed": 0
-        },
-        1: {
-            "power": {
-                "consumed": 0,
-                "produced": 0
-            },
-            "construction_costs": {
-                "iron": 0,
-                "aluminium": 0,
-                "copper": 0,
-                "titanium": 0
-            },
-            "construction_workload": 100,
-            "storage": None,
-            "jobs": {
-                "construction": {
-                    "engineers": 0,
-                    "scientists": 0
-                },
-                "production": {
-                    "engineers": 0,
-                    "scientists": 5
-                }
-            },
-            "production_speed": 1
-        },
-        2: {
-            "power": {
-                "consumed": 0,
-                "produced": 0
-            },
-            "construction_costs": {
-                "iron": 0,
-                "aluminium": 0,
-                "copper": 0,
-                "titanium": 0
-            },
-            "construction_workload": 100,
-            "storage": None,
-            "jobs": {
-                "construction": {
-                    "engineers": 0,
-                    "scientists": 0
-                },
-                "production": {
-                    "engineers": 0,
-                    "scientists": 0
-                }
-            },
-            "production_speed": 1
-        },
-        3: {
-            "power": {
-                "consumed": 0,
-                "produced": 0
-            },
-            "storage": None,
-            "jobs": {
-                "construction": {
-                    "engineers": 0,
-                    "scientists": 0
-                },
-                "production": {
-                    "engineers": 0,
-                    "scientists": 0
-                }
-            },
-            "production_speed": 1
-        }
-    }
+    # parameters_per_level = {
+    #     0: {
+    #         "power": {
+    #             "consumed": 0,
+    #             "produced": 0
+    #         },
+    #         "construction_costs": {
+    #             "iron": 0,
+    #             "aluminium": 0,
+    #             "copper": 0,
+    #             "titanium": 0
+    #         },
+    #         "construction_workload": 100,
+    #         "storage": None,
+    #         "jobs": {
+    #             "construction": {
+    #                 "engineers": 0,
+    #                 "scientists": 0
+    #             },
+    #             "production": {
+    #                 "engineers": 0,
+    #                 "scientists": 0
+    #             }
+    #         },
+    #         "production_speed": 0
+    #     },
+    #     1: {
+    #         "power": {
+    #             "consumed": 0,
+    #             "produced": 0
+    #         },
+    #         "construction_costs": {
+    #             "iron": 0,
+    #             "aluminium": 0,
+    #             "copper": 0,
+    #             "titanium": 0
+    #         },
+    #         "construction_workload": 100,
+    #         "storage": None,
+    #         "jobs": {
+    #             "construction": {
+    #                 "engineers": 0,
+    #                 "scientists": 0
+    #             },
+    #             "production": {
+    #                 "engineers": 0,
+    #                 "scientists": 5
+    #             }
+    #         },
+    #         "production_speed": 1
+    #     },
+    #     2: {
+    #         "power": {
+    #             "consumed": 0,
+    #             "produced": 0
+    #         },
+    #         "construction_costs": {
+    #             "iron": 0,
+    #             "aluminium": 0,
+    #             "copper": 0,
+    #             "titanium": 0
+    #         },
+    #         "construction_workload": 100,
+    #         "storage": None,
+    #         "jobs": {
+    #             "construction": {
+    #                 "engineers": 0,
+    #                 "scientists": 0
+    #             },
+    #             "production": {
+    #                 "engineers": 0,
+    #                 "scientists": 0
+    #             }
+    #         },
+    #         "production_speed": 1
+    #     },
+    #     3: {
+    #         "power": {
+    #             "consumed": 0,
+    #             "produced": 0
+    #         },
+    #         "storage": None,
+    #         "jobs": {
+    #             "construction": {
+    #                 "engineers": 0,
+    #                 "scientists": 0
+    #             },
+    #             "production": {
+    #                 "engineers": 0,
+    #                 "scientists": 0
+    #             }
+    #         },
+    #         "production_speed": 1
+    #     }
+    # }
 
     # queue max size: 5
 
-    def __init__(self, colony_data):
-        super().__init__(colony_data)
+    def __init__(self, colony_data: dict[str], game_config: dict[str]):
+        super().__init__(colony_data, game_config)
         self.training_queue = []
         self.training_workload_completed = 0
 
@@ -1402,106 +1404,106 @@ class BuildingFactory(Building):
             "workload": 100
         },
     }
-    parameters_per_level = {
-        0: {
-            "power": {
-                "consumed": 0,
-                "produced": 0
-            },
-            "construction_costs": {
-                "iron": 0,
-                "aluminium": 0,
-                "copper": 0,
-                "titanium": 0
-            },
-            "construction_workload": 100,
-            "storage": None,
-            "jobs": {
-                "construction": {
-                    "engineers": 0,
-                    "scientists": 0
-                },
-                "production": {
-                    "engineers": 0,
-                    "scientists": 0
-                }
-            },
-            "production_speed": 0
-        },
-        1: {
-            "power": {
-                "consumed": 0,
-                "produced": 0
-            },
-            "construction_costs": {
-                "iron": 0,
-                "aluminium": 0,
-                "copper": 0,
-                "titanium": 0
-            },
-            "construction_workload": 100,
-            "storage": None,
-            "jobs": {
-                "construction": {
-                    "engineers": 0,
-                    "scientists": 0
-                },
-                "production": {
-                    "engineers": 5,
-                    "scientists": 0
-                }
-            },
-            "production_speed": 1
-        },
-        2: {
-            "power": {
-                "consumed": 0,
-                "produced": 0
-            },
-            "construction_costs": {
-                "iron": 0,
-                "aluminium": 0,
-                "copper": 0,
-                "titanium": 0
-            },
-            "construction_workload": 100,
-            "storage": None,
-            "jobs": {
-                "construction": {
-                    "engineers": 0,
-                    "scientists": 0
-                },
-                "production": {
-                    "engineers": 0,
-                    "scientists": 0
-                }
-            },
-            "production_speed": 1
-        },
-        3: {
-            "power": {
-                "consumed": 0,
-                "produced": 0
-            },
-            "storage": None,
-            "jobs": {
-                "construction": {
-                    "engineers": 0,
-                    "scientists": 0
-                },
-                "production": {
-                    "engineers": 0,
-                    "scientists": 0
-                }
-            },
-            "production_speed": 1
-        }
-    }
+    # parameters_per_level = {
+    #     0: {
+    #         "power": {
+    #             "consumed": 0,
+    #             "produced": 0
+    #         },
+    #         "construction_costs": {
+    #             "iron": 0,
+    #             "aluminium": 0,
+    #             "copper": 0,
+    #             "titanium": 0
+    #         },
+    #         "construction_workload": 100,
+    #         "storage": None,
+    #         "jobs": {
+    #             "construction": {
+    #                 "engineers": 0,
+    #                 "scientists": 0
+    #             },
+    #             "production": {
+    #                 "engineers": 0,
+    #                 "scientists": 0
+    #             }
+    #         },
+    #         "production_speed": 0
+    #     },
+    #     1: {
+    #         "power": {
+    #             "consumed": 0,
+    #             "produced": 0
+    #         },
+    #         "construction_costs": {
+    #             "iron": 0,
+    #             "aluminium": 0,
+    #             "copper": 0,
+    #             "titanium": 0
+    #         },
+    #         "construction_workload": 100,
+    #         "storage": None,
+    #         "jobs": {
+    #             "construction": {
+    #                 "engineers": 0,
+    #                 "scientists": 0
+    #             },
+    #             "production": {
+    #                 "engineers": 5,
+    #                 "scientists": 0
+    #             }
+    #         },
+    #         "production_speed": 1
+    #     },
+    #     2: {
+    #         "power": {
+    #             "consumed": 0,
+    #             "produced": 0
+    #         },
+    #         "construction_costs": {
+    #             "iron": 0,
+    #             "aluminium": 0,
+    #             "copper": 0,
+    #             "titanium": 0
+    #         },
+    #         "construction_workload": 100,
+    #         "storage": None,
+    #         "jobs": {
+    #             "construction": {
+    #                 "engineers": 0,
+    #                 "scientists": 0
+    #             },
+    #             "production": {
+    #                 "engineers": 0,
+    #                 "scientists": 0
+    #             }
+    #         },
+    #         "production_speed": 1
+    #     },
+    #     3: {
+    #         "power": {
+    #             "consumed": 0,
+    #             "produced": 0
+    #         },
+    #         "storage": None,
+    #         "jobs": {
+    #             "construction": {
+    #                 "engineers": 0,
+    #                 "scientists": 0
+    #             },
+    #             "production": {
+    #                 "engineers": 0,
+    #                 "scientists": 0
+    #             }
+    #         },
+    #         "production_speed": 1
+    #     }
+    # }
 
     # queue max size: 5
 
-    def __init__(self, colony_data):
-        super().__init__(colony_data)
+    def __init__(self, colony_data: dict[str], game_config: dict[str]):
+        super().__init__(colony_data, game_config)
         self.items_queue = []
         self.item_workload_completed = 0
 
@@ -1586,8 +1588,32 @@ class BuildingFactory(Building):
                 self.item_workload_completed = 0
 
 
-class BuildingResearchLabs(Building):
+# class BuildingResearchLabs(Building):
 
-    # forget for now
-    def __init__(self, colony_data):
-        raise NotImplementedError("research labs not yet implemented")
+#     # forget for now
+#     def __init__(self, colony_data):
+#         raise NotImplementedError("research labs not yet implemented")
+
+
+if __name__ == "__main__":
+    import yaml
+    import sys
+    from pathlib import Path
+
+    # print(BuildingHeadQuarters.parameters_per_level)
+    buildings_parameters_per_level_dict = {}
+    for name in dir():
+        if "Building" in name:
+            # print(name)
+            building_class = eval(name)
+            # print(building_class)
+            if "parameters_per_level" in dir(building_class):
+                # print(building_class.name)
+                # print(building_class.parameters_per_level)
+                buildings_parameters_per_level_dict[building_class.name] = building_class.parameters_per_level
+    file_path = Path(__file__).parent / "buildings_parameters_per_level.yml"
+    with open(file_path, "w", encoding="utf_8") as f:
+        yaml.safe_dump(buildings_parameters_per_level_dict, f, sort_keys=False)
+    # print(dir(Building))
+    # yaml.safe_dump(BuildingHeadQuarters.parameters_per_level, sys.stdout, sort_keys=False)
+    # print(yaml.safe_dump(BuildingHeadQuarters.parameters_per_level, None, sort_keys=False))
