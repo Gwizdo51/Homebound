@@ -294,9 +294,9 @@ buildings:
           titanium: 0
         construction_workload: 100
         storage:
-          water: 0
-          oxygen: 0
-          hydrogen: 0
+          water: 50
+          oxygen: 50
+          hydrogen: 50
         jobs:
           construction:
             engineers: 0

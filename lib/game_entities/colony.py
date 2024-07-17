@@ -39,33 +39,33 @@ class Colony:
         # resources
         self.data["resources"] = {
             # "power": 0,
-            "food": 0,
-            "water": 0,
-            "oxygen": 0,
-            "hydrogen": 0,
-            "iron_ore": 0,
-            "iron": 0,
-            "aluminium_ore": 0,
-            "aluminium": 0,
-            "copper_ore": 0,
-            "copper": 0,
-            "titanium_ore": 0,
-            "titanium": 0
+            "food": 0.,
+            "water": 0.,
+            "oxygen": 0.,
+            "hydrogen": 0.,
+            "iron_ore": 0.,
+            "iron": 0.,
+            "aluminium_ore": 0.,
+            "aluminium": 0.,
+            "copper_ore": 0.,
+            "copper": 0.,
+            "titanium_ore": 0.,
+            "titanium": 0.
         }
         # resource buffer for the buildings production
         self.data["resources_buffer"] = {
-            "food": 0,
-            "water": 0,
-            "oxygen": 0,
-            "hydrogen": 0,
-            "iron_ore": 0,
-            "iron": 0,
-            "aluminium_ore": 0,
-            "aluminium": 0,
-            "copper_ore": 0,
-            "copper": 0,
-            "titanium_ore": 0,
-            "titanium": 0
+            "food": 0.,
+            "water": 0.,
+            "oxygen": 0.,
+            "hydrogen": 0.,
+            "iron_ore": 0.,
+            "iron": 0.,
+            "aluminium_ore": 0.,
+            "aluminium": 0.,
+            "copper_ore": 0.,
+            "copper": 0.,
+            "titanium_ore": 0.,
+            "titanium": 0.
         }
         # production factors
         self.data["production_factors"] = {
@@ -313,11 +313,12 @@ class Colony:
                 if building is not None:
                     building.update(dt)
         # add the resources in the buffer to the colony, taking into account the maximum storage space of the colony
+        # delete resources that overflow if a storage building is destroyed
         max_storage = self.max_storage
         for resource in self.data["resources_buffer"].keys():
-            if self.data["resources_buffer"][resource] > 0:
-                self.data["resources"][resource] = min(max_storage[resource], self.data["resources"][resource] + self.data["resources_buffer"][resource])
-                # clear the resource buffer
-                self.data["resources_buffer"][resource] = 0
+            # if self.data["resources_buffer"][resource] > 0:
+            self.data["resources"][resource] = min(max_storage[resource], self.data["resources"][resource] + self.data["resources_buffer"][resource])
+            # clear the resource buffer
+            self.data["resources_buffer"][resource] = 0.
         # remove the resources (oxygen + food) consumed by the workers
         ...

@@ -1283,7 +1283,9 @@ class BuildingSchool(Building):
         self.training_workload_completed = 0
 
     def can_add_worker(self) -> bool:
-        return len(self.training_queue) < 5
+        # return len(self.training_queue) < 5
+        # can't add workers if the queue is full or the building level is 0
+        return (len(self.training_queue) < 5) and self.level > 0
 
     def add_worker_to_queue(self, worker_type: str):
         # worker_type = "engineers", "scientists" or "pilots"
@@ -1511,8 +1513,8 @@ class BuildingFactory(Building):
         self.item_workload_completed = 0
 
     def can_make_item(self, item_name: str) -> bool:
-        # check if the queue is full
-        if len(self.items_queue) >= 5:
+        # check if the queue is full or the building level is 0
+        if (len(self.items_queue) == 5) or (self.level == 0):
             can_make_item = False
         else:
             # check if the colony has enough resources to make the item
