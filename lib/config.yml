@@ -818,6 +818,58 @@ ore_per_ingot:
   copper: 5
   titanium: 5
 
-workers_training_workload: {}
+workers_training_workload:
+  engineers: 100
+  scientists: 200
+  pilots: 300
 
-items_price: {}
+items_price:
+  spaceship_small:
+    resources:
+      iron: 0
+      aluminium: 0
+      copper: 0
+      titanium: 0
+    workload: 100
+  spaceship_medium:
+    resources:
+      iron: 0
+      aluminium: 0
+      copper: 0
+      titanium: 0
+    workload: 100
+  spaceship_large:
+    resources:
+      iron: 0
+      aluminium: 0
+      copper: 0
+      titanium: 0
+    workload: 100
+  module_cargo_hold:
+    resources:
+      iron: 0
+      aluminium: 0
+      copper: 0
+      titanium: 0
+    workload: 100
+  module_liquid_tanks:
+    resources:
+      iron: 0
+      aluminium: 0
+      copper: 0
+      titanium: 0
+    workload: 100
+  module_passengers:
+    resources:
+      iron: 0
+      aluminium: 0
+      copper: 0
+      titanium: 0
+    workload: 100
+  module_headquarters:
+    resources:
+      iron: 0
+      aluminium: 0
+      copper: 0
+      titanium: 0
+    workload: 100

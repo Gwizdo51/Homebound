@@ -15,6 +15,7 @@ class Building:
         if type(self) is Building:
             raise TypeError("The Building class should not be instanciated directly")
         self.colony_data = colony_data
+        self.game_config = game_config
         self.parameters_per_level = game_config["buildings"][self.name]["parameters_per_level"]
         # building level
         # 0: not built
@@ -962,7 +963,7 @@ class BuildingFurnace(Building):
             # reset the smelting cycle
             self.smelting_completed_percent = 0
             self.ore_consumed = False
-        self.resource_produced = resource_type
+            self.resource_produced = resource_type
 
     # def use_power_switch(self):
     #     # reset the smelting cycle if the building is turned off
@@ -975,10 +976,11 @@ class BuildingFurnace(Building):
         ore_to_consume = self.resource_produced + "_ore"
         # if the colony has enough ore to start a cycle ...
         # if self.colony_data["resources"][ore_to_consume] >= 2 * self.parameters["production_per_cycle"]:
-        if self.colony_data["resources"][ore_to_consume] >= 5:
+        ore_needed = self.game_config["ore_per_ingot"][self.resource_produced]
+        if self.colony_data["resources"][ore_to_consume] >= ore_needed:
             # consume the ore
             # self.colony_data["resources"][ore_to_consume] -= 2 * self.parameters["production_per_cycle"]
-            self.colony_data["resources"][ore_to_consume] -= 5
+            self.colony_data["resources"][ore_to_consume] -= ore_needed
             self.ore_consumed = True
 
     def update(self, dt):
@@ -1172,11 +1174,11 @@ class BuildingGreenhouse(Building):
 class BuildingSchool(Building):
 
     name = "school"
-    items_workload = {
-        "engineers": 100,
-        "scientists": 200,
-        "pilots": 300
-    }
+    # items_workload = {
+    #     "engineers": 100,
+    #     "scientists": 200,
+    #     "pilots": 300
+    # }
     # parameters_per_level = {
     #     0: {
     #         "power": {
@@ -1324,7 +1326,8 @@ class BuildingSchool(Building):
             self.training_workload_completed += dt * self.parameters["production_speed"] \
                 * (self.assigned_workers["production"]["engineers"] + self.assigned_workers["production"]["scientists"])
             # if the cycle is completed ...
-            if self.training_workload_completed >= self.items_workload[self.training_queue[0]]:
+            # if self.training_workload_completed >= self.items_workload[self.training_queue[0]]:
+            if self.training_workload_completed >= self.game_config["workers_training_workload"][self.training_queue[0]]:
                 # add the worker to the colony
                 if self.training_queue[0] == "pilots":
                     self.colony_data["workers"]["pilots"] += 1
@@ -1514,7 +1517,8 @@ class BuildingFactory(Building):
         else:
             # check if the colony has enough resources to make the item
             can_make_item = True
-            item_resources_required = self.items_price[item_name]["resources"]
+            # item_resources_required = self.items_price[item_name]["resources"]
+            item_resources_required = self.game_config["items_price"][item_name]["resources"]
             for resource_name in item_resources_required.keys():
                 if self.colony_data["resources"][resource_name] < item_resources_required[resource_name]:
                     can_make_item = False
@@ -1524,7 +1528,8 @@ class BuildingFactory(Building):
     def add_item_to_queue(self, item_name: str):
         if self.can_make_item(item_name):
             # pay the item price
-            item_resources_required = self.items_price[item_name]["resources"]
+            # item_resources_required = self.items_price[item_name]["resources"]
+            item_resources_required = self.game_config["items_price"][item_name]["resources"]
             for resource_name in item_resources_required.keys():
                 self.colony_data["resources"][resource_name] -= item_resources_required[resource_name]
             # add the item to the list
@@ -1537,7 +1542,8 @@ class BuildingFactory(Building):
         # can be called even if impossible (update != on_draw)
         if self.can_cancel_item():
             # give the resources back to the colony
-            item_resources_required = self.items_price[self.items_queue[0]]["resources"]
+            # item_resources_required = self.items_price[self.items_queue[0]]["resources"]
+            item_resources_required = self.game_config["items_price"][self.items_queue[0]]["resources"]
             for resource_name in item_resources_required.keys():
                 self.colony_data["resources_buffer"][resource_name] += item_resources_required[resource_name]
             # cancel the current item
@@ -1554,7 +1560,8 @@ class BuildingFactory(Building):
             # delete the last item of the queue
             item_deleted = self.items_queue.pop(-1)
             # give the resources of the item deleted back to the colony
-            item_resources_required = self.items_price[item_deleted]["resources"]
+            # item_resources_required = self.items_price[item_deleted]["resources"]
+            item_resources_required = self.game_config["items_price"][item_deleted]["resources"]
             for resource_name in item_resources_required.keys():
                 self.colony_data["resources_buffer"][resource_name] += item_resources_required[resource_name]
 
@@ -1580,7 +1587,8 @@ class BuildingFactory(Building):
             self.item_workload_completed += dt * self.parameters["production_speed"] \
                 * (self.assigned_workers["production"]["engineers"] + self.assigned_workers["production"]["scientists"])
             # if the cycle is completed ...
-            if self.item_workload_completed >= self.items_price[self.items_queue[0]]["workload"]:
+            # if self.item_workload_completed >= self.items_price[self.items_queue[0]]["workload"]:
+            if self.item_workload_completed >= self.game_config["items_price"][self.items_queue[0]]["workload"]:
                 # add the item to the colony
                 self.colony_data["items"][self.items_queue[0]] += 1
                 # remove the first element from the queue and reset the cycle

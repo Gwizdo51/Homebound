@@ -851,7 +851,8 @@ class RigthWindowWidgetContent:
                     # 0: engineers
                     # 1: scientists
                     # 2: pilots
-                    self.workers_options_list = list(self.selected_building.items_workload.keys())
+                    # self.workers_options_list = list(self.selected_building.items_workload.keys())
+                    self.workers_options_list = list(self.game_data.game_config["workers_training_workload"].keys())
                     self.current_option_index = 0
                     self.content["building_description_layout"] = TextLayout(
                         document = decode_attributed(""),
@@ -1074,7 +1075,8 @@ class RigthWindowWidgetContent:
                     # 4: liquid tank module
                     # 5: passengers module
                     # 6: base module
-                    self.items_options_list = list(self.selected_building.items_price.keys())
+                    # self.items_options_list = list(self.selected_building.items_price.keys())
+                    self.items_options_list = list(self.game_data.game_config["items_price"].keys())
                     self.current_option_index = 0
                     self.content["building_description_layout"] = TextLayout(
                         document = decode_attributed(""),
@@ -1745,7 +1747,8 @@ class RigthWindowWidgetContent:
                     else:
                         self.content["building_pilots_icon_white"].opacity = 255
                     # worker training workload label
-                    self.content["building_item_workload_label"].text = str(self.selected_building.items_workload[self.workers_options_list[self.current_option_index]])
+                    # self.content["building_item_workload_label"].text = str(self.selected_building.items_workload[self.workers_options_list[self.current_option_index]])
+                    self.content["building_item_workload_label"].text = str(self.game_data.game_config["workers_training_workload"][self.workers_options_list[self.current_option_index]])
                     # add worker button
                     if ((self.game_data.mouse_x, self.game_data.mouse_y) in self.content["building_add_item_button_area"]) and self.selected_building.can_add_worker():
                         self.content["building_add_item_button_area"].color = (192, 192, 192, 63)
@@ -1765,7 +1768,9 @@ class RigthWindowWidgetContent:
                     if len(self.selected_building.training_queue) == 0:
                         self.content["building_item_percent_label"].text = "0%"
                     else:
-                        self.content["building_item_percent_label"].text = str(round(self.selected_building.training_workload_completed * 100 / self.selected_building.items_workload[self.selected_building.training_queue[0]])) + "%"
+                        # self.content["building_item_percent_label"].text = str(round(self.selected_building.training_workload_completed * 100 / self.selected_building.items_workload[self.selected_building.training_queue[0]])) + "%"
+                        self.content["building_item_percent_label"].text = str(round(self.selected_building.training_workload_completed * 100 / self.game_data.game_config["workers_training_workload"][self.selected_building.training_queue[0]])) + "%"
+
                     # cancel first item button
                     if self.selected_building.can_cancel_training() and ((self.game_data.mouse_x, self.game_data.mouse_y) in self.content["building_cancel_first_item_button_area"]):
                         self.content["building_cancel_first_item_button_area"].color = (192, 192, 192, 63)
@@ -1846,11 +1851,16 @@ class RigthWindowWidgetContent:
                     elif self.items_options_list[self.current_option_index] == "module_headquarters":
                         self.content["building_item_icon_base_module_white"].opacity = 255
                     # items price labels
-                    self.content["building_item_workload_label"].text = str(self.selected_building.items_price[self.items_options_list[self.current_option_index]]["workload"])
-                    self.content["building_item_iron_price_label"].text = str(self.selected_building.items_price[self.items_options_list[self.current_option_index]]["resources"]["iron"])
-                    self.content["building_item_aluminium_price_label"].text = str(self.selected_building.items_price[self.items_options_list[self.current_option_index]]["resources"]["aluminium"])
-                    self.content["building_item_copper_price_label"].text = str(self.selected_building.items_price[self.items_options_list[self.current_option_index]]["resources"]["copper"])
-                    self.content["building_item_titanium_price_label"].text = str(self.selected_building.items_price[self.items_options_list[self.current_option_index]]["resources"]["titanium"])
+                    # self.content["building_item_workload_label"].text = str(self.selected_building.items_price[self.items_options_list[self.current_option_index]]["workload"])
+                    # self.content["building_item_iron_price_label"].text = str(self.selected_building.items_price[self.items_options_list[self.current_option_index]]["resources"]["iron"])
+                    # self.content["building_item_aluminium_price_label"].text = str(self.selected_building.items_price[self.items_options_list[self.current_option_index]]["resources"]["aluminium"])
+                    # self.content["building_item_copper_price_label"].text = str(self.selected_building.items_price[self.items_options_list[self.current_option_index]]["resources"]["copper"])
+                    # self.content["building_item_titanium_price_label"].text = str(self.selected_building.items_price[self.items_options_list[self.current_option_index]]["resources"]["titanium"])
+                    self.content["building_item_workload_label"].text = str(self.game_data.game_config["items_price"][self.items_options_list[self.current_option_index]]["workload"])
+                    self.content["building_item_iron_price_label"].text = str(self.game_data.game_config["items_price"][self.items_options_list[self.current_option_index]]["resources"]["iron"])
+                    self.content["building_item_aluminium_price_label"].text = str(self.game_data.game_config["items_price"][self.items_options_list[self.current_option_index]]["resources"]["aluminium"])
+                    self.content["building_item_copper_price_label"].text = str(self.game_data.game_config["items_price"][self.items_options_list[self.current_option_index]]["resources"]["copper"])
+                    self.content["building_item_titanium_price_label"].text = str(self.game_data.game_config["items_price"][self.items_options_list[self.current_option_index]]["resources"]["titanium"])
                     # queue items
                     # hide all icons
                     for queue_index in range(5):
@@ -1868,7 +1878,8 @@ class RigthWindowWidgetContent:
                     if len(self.selected_building.items_queue) == 0:
                         self.content["building_item_percent_label"].text = "0%"
                     else:
-                        self.content["building_item_percent_label"].text = str(round(self.selected_building.item_workload_completed * 100 / self.selected_building.items_price[self.selected_building.items_queue[0]]["workload"])) + "%"
+                        # self.content["building_item_percent_label"].text = str(round(self.selected_building.item_workload_completed * 100 / self.selected_building.items_price[self.selected_building.items_queue[0]]["workload"])) + "%"
+                        self.content["building_item_percent_label"].text = str(round(self.selected_building.item_workload_completed * 100 / self.game_data.game_config["items_price"][self.selected_building.items_queue[0]]["workload"])) + "%"
                     # cancel first item button
                     if self.selected_building.can_cancel_item() and ((self.game_data.mouse_x, self.game_data.mouse_y) in self.content["building_cancel_first_item_button_area"]):
                         self.content["building_cancel_first_item_button_area"].color = (192, 192, 192, 63)
