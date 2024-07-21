@@ -132,7 +132,7 @@ buildings:
           iron: 0
           aluminium: 0
           copper: 0
-          titanium": 0
+          titanium: 0
         construction_workload: 100
         storage: null
         jobs:

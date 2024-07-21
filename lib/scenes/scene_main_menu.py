@@ -64,8 +64,8 @@ class SceneMainMenu(Scene):
             self.resume_button_label.color = (100, 100, 100, 255)
 
         # sound sprite
-        if self.sound_button_sprite is not None:
-            self.sound_button_sprite.delete()
+        # if self.sound_button_sprite is not None:
+        #     self.sound_button_sprite.delete()
         if self.game_data.sound_on:
             self.sound_button_sprite = Sprite(img=self.game_data.sound_on_img,
                 x=self.game_data.window_width*5/6, y=self.game_data.window_height/8, batch=self.batch)

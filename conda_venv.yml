@@ -8,3 +8,4 @@ dependencies:
   - pip:
     - pyglet==2.0.15
     - pyinstaller==6.6.0
+    - PyYAML==6.0.1
